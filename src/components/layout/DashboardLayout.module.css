@@ -1,0 +1,114 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--color-background);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 280px; /* Width of sidebar */
+  min-width: 0; /* This fixes flex child overflow so horizontal scroll works */
+  min-height: 100vh;
+  transition: margin-left var(--transition-base);
+}
+
+.header {
+  height: 64px;
+  background-color: var(--color-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menuButton {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-base);
+}
+
+.menuButton:hover {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+.content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 30;
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-text-muted);
+}
+
+.iconButton {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.iconButton:hover {
+  color: var(--color-text);
+}
+
+.avatar {
+  height: 2rem;
+  width: 2rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  border: 2px solid var(--color-surface-solid);
+  box-shadow: var(--shadow-sm);
+  margin-left: 0.5rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+  }
+  
+  .menuButton {
+    display: flex;
+  }
+}
+@media (min-width: 769px) {
+  .overlay {
+    display: none;
+  }
+}
