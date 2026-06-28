@@ -29,7 +29,7 @@ export function MergeCompanyModal({ isOpen, onClose, onSaved, sourceCompany, all
       try {
         const res = await mergeCompanies(sourceCompany.id, targetCompanyId)
         if (res && !res.success) {
-          toast.error(res.error || 'Errore durante l\\'unione delle aziende')
+          toast.error(res.error || "Errore durante l'unione delle aziende")
           return
         }
         toast.success('Aziende unite con successo')

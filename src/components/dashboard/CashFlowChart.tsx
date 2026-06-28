@@ -1,6 +1,6 @@
 import React from 'react'
 import { Euro } from 'lucide-react'
-import styles from './Dashboard.module.css'
+import styles from '@/app/Dashboard.module.css'
 import type { Project } from './projects/ProjectBoard'
 
 interface Invoice {
