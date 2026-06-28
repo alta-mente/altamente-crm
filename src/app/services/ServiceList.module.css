@@ -1,0 +1,106 @@
+.container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.tableContainer {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: var(--color-surface-solid);
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.rowExpiring {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.rowExpired {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-text-muted);
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badgeActive {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.badgeExpiring {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.badgeExpired {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editBtn, .deleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+  color: var(--color-text-muted);
+}
+
+.editBtn:hover {
+  background: var(--color-surface-solid);
+  color: var(--color-text);
+}
+
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
+}

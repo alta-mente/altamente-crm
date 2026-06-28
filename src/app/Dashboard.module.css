@@ -3,93 +3,171 @@
   flex-direction: column;
   gap: 2rem;
   animation: fadeIn var(--transition-base);
+  padding: 1rem 0;
 }
 
-.welcome h1 {
-  font-size: var(--font-size-3xl);
-  margin-bottom: 0.5rem;
-  background: linear-gradient(90deg, #fff, #94a3b8);
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(180px, auto);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.bentoHero {
+  grid-column: span 2;
+  grid-row: span 3;
+}
+
+.bentoSmall {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.bentoTall {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.bentoWide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.bentoFull {
+  grid-column: span 4;
+  grid-row: span 2;
+}
+
+@media (max-width: 1024px) {
+  .bentoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .bentoGrid {
+    grid-template-columns: 1fr;
+  }
+  .bentoHero, .bentoSmall, .bentoTall, .bentoWide, .bentoFull {
+    grid-column: span 1;
+    grid-row: auto;
+  }
+}
+
+/* Specific Card Layouts */
+.cardContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cardLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.cardIcon {
+  opacity: 0.5;
+}
+
+.cardValue {
+  font-size: var(--font-size-4xl);
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  margin-top: 0.5rem;
+  line-height: 1;
+}
+
+.cardSub {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 0.5rem;
+}
+
+.cardGraph {
+  margin-top: auto;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.cardGraph svg {
+  width: 100%;
+  height: 100%;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Hero Content Styles */
+.heroTitle {
+  font-size: var(--font-size-5xl);
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  background: linear-gradient(90deg, #111, #666);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.welcome p {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-lg);
+.heroStats {
+  display: flex;
+  gap: 2rem;
+  margin-top: auto;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-}
-
-.card {
-  padding: 1.5rem;
-  border-radius: var(--radius-xl);
+.heroStatBlock {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-glow);
+.heroStatValue {
+  font-size: var(--font-size-2xl);
+  font-weight: 400;
+  color: #111;
 }
 
-.cardHeader {
+.heroStatLabel {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Lists */
+.listItem {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 13px;
+  color: inherit;
+  text-decoration: none;
 }
 
-.iconWrapper {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.listItem:last-child {
+  border-bottom: none;
 }
 
-.cardTitle {
+.itemTitle {
   font-weight: 600;
-  color: var(--color-text-muted);
-  font-family: var(--font-heading);
 }
 
-.cardValue {
-  font-size: var(--font-size-3xl);
-  font-weight: 700;
-  font-family: var(--font-heading);
-  color: var(--color-text);
-  letter-spacing: -0.02em;
-}
-
-.cardFooter {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-}
-
-.chartsRow {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.chartCard {
-  padding: 2rem;
-  border-radius: var(--radius-xl);
-  min-height: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.chartCard h3 {
-  font-size: var(--font-size-xl);
-  color: var(--color-text);
+.itemMeta {
+  opacity: 0.7;
+  font-size: 11px;
 }
 
 @keyframes fadeIn {

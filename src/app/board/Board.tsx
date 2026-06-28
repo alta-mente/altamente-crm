@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
-import { Building, BookOpen, Clock } from 'lucide-react'
+import { Building, BookOpen, Clock, Minimize2, Maximize2, ZoomIn, ZoomOut, Briefcase, User } from 'lucide-react'
 import clsx from 'clsx'
 import { toast } from 'sonner'
 import styles from './Board.module.css'
@@ -19,11 +19,13 @@ interface Deal {
   title: string
   company_id: string | null
   contact_id: string | null
-  course: string | null
   value: number
   source: Source
   phase_id: string
   created_at: string
+  projects?: { id: string }[]
+  companies?: { name: string } | null
+  contacts?: { first_name: string; last_name: string } | null
 }
 
 interface Phase {
@@ -42,6 +44,8 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
   const [deals, setDeals] = useState<Deal[]>([])
   const [phases, setPhases] = useState<Phase[]>([])
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null)
+  const [collapsedPhases, setCollapsedPhases] = useState<Record<string, boolean>>({})
+  const [zoomLevel, setZoomLevel] = useState<number>(1)
   
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDown = useRef(false)
@@ -53,7 +57,36 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
   useEffect(() => {
     setIsBrowser(true)
     fetchData()
+
+    // Load collapsed states
+    const savedCollapsed = localStorage.getItem('altamente_collapsed_phases')
+    if (savedCollapsed) {
+      try {
+        setCollapsedPhases(JSON.parse(savedCollapsed))
+      } catch (e) {
+        console.error('Error parsing collapsed phases', e)
+      }
+    }
+    // Load zoom level
+    const savedZoom = localStorage.getItem('altamente_board_zoom')
+    if (savedZoom) {
+      setZoomLevel(parseFloat(savedZoom))
+    }
   }, [])
+
+  const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value)
+    setZoomLevel(val)
+    localStorage.setItem('altamente_board_zoom', val.toString())
+  }
+
+  const togglePhaseCollapse = (phaseId: string) => {
+    setCollapsedPhases(prev => {
+      const newState = { ...prev, [phaseId]: !prev[phaseId] }
+      localStorage.setItem('altamente_collapsed_phases', JSON.stringify(newState))
+      return newState
+    })
+  }
 
   const fetchData = async () => {
     // Fetch phases
@@ -67,7 +100,7 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
     // Fetch deals
     const { data: dealsData } = await supabase
       .from('deals')
-      .select('*')
+      .select('*, projects(id), companies(name), contacts(first_name, last_name)')
       .order('created_at', { ascending: false })
       
     if (dealsData) setDeals(dealsData as Deal[])
@@ -174,6 +207,27 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
         deal={selectedDeal}
         onSaved={fetchData}
       />
+
+      {/* Toolbar */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-surface-solid)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', border: '1px solid var(--color-border)' }}>
+          <ZoomOut size={16} color="var(--color-text-muted)" />
+          <input 
+            type="range" 
+            min="0.6" 
+            max="1.2" 
+            step="0.05" 
+            value={zoomLevel} 
+            onChange={handleZoomChange}
+            style={{ width: '100px' }}
+          />
+          <ZoomIn size={16} color="var(--color-text-muted)" />
+          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text)', minWidth: '40px', textAlign: 'right' }}>
+            {Math.round(zoomLevel * 100)}%
+          </span>
+        </div>
+      </div>
+
       <DragDropContext onDragEnd={onDragEnd}>
       <div 
         className={styles.boardContainer}
@@ -182,27 +236,36 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
-        style={{ cursor: 'grab' }}
+        style={{ cursor: 'grab', '--zoom-factor': zoomLevel } as React.CSSProperties}
       >
         {phases.map(phase => {
           const columnDeals = deals.filter(d => d.phase_id === phase.id)
+          const isCollapsed = collapsedPhases[phase.id]
 
           return (
-            <div key={phase.id} className={styles.column}>
-              <div className={styles.columnHeader}>
-                <div className={styles.columnTitle}>
+            <div key={phase.id} className={clsx(styles.column, isCollapsed && styles.columnCollapsed)}>
+              <div className={clsx(styles.columnHeader, isCollapsed && styles.columnHeaderCollapsed)}>
+                <div className={clsx(styles.columnTitle, isCollapsed && styles.columnTitleCollapsed)}>
                   {phase.title}
-                  <span className={styles.countBadge}>{columnDeals.length}</span>
+                  {!isCollapsed && <span className={styles.countBadge}>{columnDeals.length}</span>}
                 </div>
+                <button 
+                  className={styles.collapseButton} 
+                  onClick={() => togglePhaseCollapse(phase.id)}
+                  title={isCollapsed ? "Espandi" : "Comprimi"}
+                >
+                  {isCollapsed ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
+                </button>
               </div>
 
-              <Droppable droppableId={phase.id}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={clsx(styles.cardList, snapshot.isDraggingOver && styles.cardListDraggingOver)}
-                  >
+              {!isCollapsed && (
+                <Droppable droppableId={phase.id}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className={clsx(styles.cardList, snapshot.isDraggingOver && styles.cardListDraggingOver)}
+                    >
                     {columnDeals.map((deal, index) => (
                       <Draggable key={deal.id} draggableId={deal.id} index={index}>
                         {(provided, snapshot) => (
@@ -225,17 +288,30 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
                               </span>
                             </div>
 
-                            <div className={styles.cardMeta}>
-                              <div className={styles.metaRow}>
-                                <BookOpen size={12} /> {deal.course || 'Nessun corso specificato'}
+                            {(deal.companies || deal.contacts) && (
+                              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                {deal.companies && (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <Building size={12} /> {deal.companies.name}
+                                  </div>
+                                )}
+                                {deal.contacts && (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <User size={12} /> {deal.contacts.first_name} {deal.contacts.last_name}
+                                  </div>
+                                )}
                               </div>
-                            </div>
+                            )}
 
                             <div className={styles.cardFooter}>
                               <div className={styles.cardValue}>
                                 €{deal.value.toLocaleString('it-IT')}
                               </div>
-                              <div className={styles.cardAvatar} title="Assegnato a me" />
+                              {deal.phase_id === 'won' && deal.projects && deal.projects.length > 0 && (
+                                <div style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center' }} title="Progetto Associato">
+                                  <Briefcase size={14} />
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}
@@ -245,6 +321,7 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
                   </div>
                 )}
               </Droppable>
+              )}
             </div>
           )
         })}

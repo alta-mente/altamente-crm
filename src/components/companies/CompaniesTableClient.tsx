@@ -19,7 +19,7 @@ export function CompaniesTableClient() {
     setIsLoading(true)
     const { data } = await supabase
       .from('companies')
-      .select('*')
+      .select('*, contacts(id, first_name, last_name)')
       .order('created_at', { ascending: false })
     
     if (data) setCompanies(data)
@@ -56,6 +56,13 @@ export function CompaniesTableClient() {
     { key: 'name', title: 'Nome Azienda', render: (c: any) => <strong>{c.name}</strong> },
     { key: 'vat_number', title: 'Partita IVA', render: (c: any) => c.vat_number || '-' },
     { key: 'address', title: 'Indirizzo', render: (c: any) => c.address || '-' },
+    { 
+      key: 'contacts', 
+      title: 'Contatti', 
+      render: (c: any) => c.contacts && c.contacts.length > 0 
+        ? <div style={{ fontSize: '0.85rem' }}>{c.contacts.map((contact: any) => `${contact.first_name} ${contact.last_name}`).join(', ')}</div>
+        : <span style={{color: 'var(--color-text-muted)'}}>-</span> 
+    },
     { key: 'created_at', title: 'Creato il', render: (c: any) => new Date(c.created_at).toLocaleDateString('it-IT') },
     { 
       key: 'actions', 

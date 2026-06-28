@@ -36,10 +36,6 @@ export function DealDetailModal({ isOpen, onClose, deal }: DealDetailModalProps)
             <span className={styles.valueSuccess}>€{deal.value.toLocaleString('it-IT')}</span>
           </div>
           <div className={styles.section}>
-            <span className={styles.label}>Corso / Servizio</span>
-            <span className={styles.value}>{deal.course || 'N/A'}</span>
-          </div>
-          <div className={styles.section}>
             <span className={styles.label}>Data Creazione</span>
             <span className={styles.value}>{new Date(deal.createdAt).toLocaleDateString('it-IT')}</span>
           </div>

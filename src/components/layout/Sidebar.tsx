@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import clsx from 'clsx'
-import { LayoutDashboard, Users, Building, Settings, LogOut, Briefcase } from 'lucide-react'
+import { LayoutDashboard, Users, Building, Settings, LogOut, Briefcase, BookOpen, Calendar as CalendarIcon, Clock } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import styles from './Sidebar.module.css'
 import { Button } from '../ui/Button'
@@ -25,8 +25,11 @@ export function Sidebar({ isOpen }: SidebarProps) {
   }
 
   const navItems = [
-    { name: 'Board', href: '/board', icon: LayoutDashboard },
-    { name: 'Deals', href: '/deals', icon: Briefcase },
+    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Vendite (Deal)', href: '/board', icon: Briefcase },
+    { name: 'Progetti', href: '/projects', icon: BookOpen },
+    { name: 'Scadenze', href: '/services', icon: CalendarIcon },
+    { name: 'Ore (Consuntivi)', href: '/time-tracking', icon: Clock },
     { name: 'Contatti', href: '/contacts', icon: Users },
     { name: 'Aziende', href: '/companies', icon: Building },
     { name: 'Impostazioni', href: '/settings', icon: Settings },

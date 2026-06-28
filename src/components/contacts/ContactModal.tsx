@@ -20,7 +20,6 @@ export function ContactModal({ isOpen, onClose, onSaved, contact }: ContactModal
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
-  const [role, setRole] = useState('')
   const [companyId, setCompanyId] = useState('')
   const [companies, setCompanies] = useState<any[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -41,14 +40,12 @@ export function ContactModal({ isOpen, onClose, onSaved, contact }: ContactModal
       setLastName(contact.last_name || '')
       setEmail(contact.email || '')
       setPhone(contact.phone || '')
-      setRole(contact.role || '')
       setCompanyId(contact.company_id || '')
     } else {
       setFirstName('')
       setLastName('')
       setEmail('')
       setPhone('')
-      setRole('')
       setCompanyId('')
     }
   }, [contact, isOpen])
@@ -62,7 +59,6 @@ export function ContactModal({ isOpen, onClose, onSaved, contact }: ContactModal
       last_name: lastName,
       email,
       phone,
-      role,
       company_id: companyId || null
     }
 
@@ -133,11 +129,6 @@ export function ContactModal({ isOpen, onClose, onSaved, contact }: ContactModal
               <div className={styles.formGroup}>
                 <label>Telefono</label>
                 <input type="text" value={phone} onChange={e => setPhone(e.target.value)} />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Ruolo/Mansione</label>
-                <input type="text" value={role} onChange={e => setRole(e.target.value)} />
               </div>
 
               <div className={styles.formGroup}>

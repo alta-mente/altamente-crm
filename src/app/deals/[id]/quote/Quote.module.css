@@ -1,0 +1,263 @@
+.page {
+  background: white;
+  min-height: 100vh;
+  padding: 40px;
+  color: #333;
+  font-family: var(--font-inter);
+}
+
+.document {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 60px;
+  border-radius: 8px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 50px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 30px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -1px;
+}
+
+.companyInfo {
+  text-align: right;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 30px;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.metaCol {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.metaLabel {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.metaValue {
+  font-size: 16px;
+  font-weight: 500;
+  color: #222;
+}
+
+.description {
+  margin-bottom: 50px;
+}
+
+.descriptionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.descriptionContent {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.descriptionContent img {
+  max-width: 100%;
+  height: auto;
+}
+
+.descriptionContent ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.descriptionContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
+.descriptionContent th,
+.descriptionContent td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.descriptionContent th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.totalSection {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 2px solid #111;
+}
+
+.totalBox {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.totalLabel {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+}
+
+.totalValue {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111;
+}
+
+.footer {
+  margin-top: 80px;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  display: none; /* Nascosto di default, usiamo il pageFooter per la stampa */
+}
+
+.quoteTerms {
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 2px solid #f0f0f0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.quoteTermsTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 15px;
+}
+
+.pageFooter {
+  display: none;
+}
+
+/* Nasconde gli elementi della UI non necessari quando si stampa */
+@media print {
+  @page {
+    margin: 15mm 15mm 20mm 15mm;
+  }
+
+  .page {
+    padding: 0;
+    background: white;
+  }
+  .document {
+    box-shadow: none;
+    padding: 10mm 15mm 80px 15mm; /* Più padding sul testo per staccarlo dai bordi */
+    max-width: 100%;
+    margin: 0;
+  }
+  .printButton {
+    display: none !important;
+  }
+
+  .pageFooter {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    font-size: 10px;
+    color: #888;
+    background: white;
+  }
+  
+  .pageFooterLogo img {
+    max-height: 30px;
+    max-width: 120px;
+    filter: grayscale(100%) opacity(0.8);
+  }
+
+  .pageFooterText {
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  .descriptionContent h1, 
+  .descriptionContent h2, 
+  .descriptionContent h3 {
+    page-break-after: avoid;
+  }
+  
+  .descriptionContent img, 
+  .descriptionContent table,
+  .descriptionContent tr {
+    page-break-inside: avoid;
+  }
+}
+
+.printButton {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.2s;
+}
+
+.printButton:hover {
+  transform: translateY(-2px);
+}

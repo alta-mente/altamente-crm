@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Modal } from '@/components/ui/Modal'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
@@ -13,11 +13,30 @@ interface QuickAddDealModalProps {
 
 export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalProps) {
   const [title, setTitle] = useState('')
-  const [company, setCompany] = useState('')
-  const [course, setCourse] = useState('')
+  const [companyId, setCompanyId] = useState('')
+  const [contactId, setContactId] = useState('')
   const [value, setValue] = useState('')
   const [loading, setLoading] = useState(false)
+  
+  const [companies, setCompanies] = useState<any[]>([])
+  const [contacts, setContacts] = useState<any[]>([])
+
   const supabase = createClient()
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchOptions()
+    }
+  }, [isOpen])
+
+  const fetchOptions = async () => {
+    const [compRes, contRes] = await Promise.all([
+      supabase.from('companies').select('id, name').order('name'),
+      supabase.from('contacts').select('id, first_name, last_name').order('first_name')
+    ])
+    if (compRes.data) setCompanies(compRes.data)
+    if (contRes.data) setContacts(contRes.data)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,10 +45,9 @@ export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalP
     // Create new deal in DB
     const dealData = {
       title,
-      company_id: null,
-      contact_id: null,
-      course,
-      value: parseFloat(value) || 0,
+      company_id: companyId || null,
+      contact_id: contactId || null,
+      value: Number(value) || 0,
       source: 'web', // Default
       phase_id: 'unassigned'
     }
@@ -53,8 +71,8 @@ export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalP
     
     // Reset form
     setTitle('')
-    setCompany('')
-    setCourse('')
+    setCompanyId('')
+    setContactId('')
     setValue('')
   }
 
@@ -69,21 +87,33 @@ export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalP
           required 
         />
         
-        <Input 
-          label="Azienda / Contatto" 
-          placeholder="es. Acme Corp" 
-          value={company}
-          onChange={e => setCompany(e.target.value)}
-          required 
-        />
+        <div className={styles.row}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>Azienda</label>
+            <select 
+              value={companyId}
+              onChange={e => setCompanyId(e.target.value)}
+              style={{ padding: '0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text)' }}
+            >
+              <option value="">-- Seleziona Azienda --</option>
+              {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>Contatto</label>
+            <select 
+              value={contactId}
+              onChange={e => setContactId(e.target.value)}
+              style={{ padding: '0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text)' }}
+            >
+              <option value="">-- Seleziona Contatto --</option>
+              {contacts.map(c => <option key={c.id} value={c.id}>{c.first_name} {c.last_name}</option>)}
+            </select>
+          </div>
+        </div>
         
         <div className={styles.row}>
-          <Input 
-            label="Corso / Servizio" 
-            placeholder="es. Mobile Dev" 
-            value={course}
-            onChange={e => setCourse(e.target.value)}
-          />
           <Input 
             label="Valore (€)" 
             type="number" 

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Menu, Bell, Search, Calendar } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { AgendaSidebar } from './AgendaSidebar'
+import { NotificationManager } from './NotificationManager'
 import { CommandPalette } from '../ui/CommandPalette'
 import styles from './DashboardLayout.module.css'
 
@@ -19,6 +20,7 @@ export function DashboardLayout({ children, title = 'Dashboard' }: DashboardLayo
   return (
     <div className={styles.layout}>
       <Sidebar isOpen={isSidebarOpen} />
+      <NotificationManager />
       
       {/* Overlay for mobile */}
       {isSidebarOpen && (
@@ -41,16 +43,20 @@ export function DashboardLayout({ children, title = 'Dashboard' }: DashboardLayo
           </div>
           
           <div className={styles.headerRight}>
-            <button className={styles.iconButton}>
+            <button 
+              className={styles.iconButton}
+              onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+              title="Cerca (Cmd+K)"
+            >
               <Search size={20} />
             </button>
-            <button className={styles.iconButton} onClick={() => setIsAgendaOpen(true)}>
+            <button 
+              className={styles.iconButton} 
+              onClick={() => setIsAgendaOpen(true)}
+              title="Agenda"
+            >
               <Calendar size={20} />
             </button>
-            <button className={styles.iconButton}>
-              <Bell size={20} />
-            </button>
-            <div className={styles.avatar}></div>
           </div>
         </header>
 

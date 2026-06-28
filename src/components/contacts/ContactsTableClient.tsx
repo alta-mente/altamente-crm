@@ -54,7 +54,6 @@ export function ContactsTableClient() {
 
   const columns = [
     { key: 'name', title: 'Nome', render: (c: any) => <strong>{c.first_name} {c.last_name}</strong> },
-    { key: 'role', title: 'Ruolo', render: (c: any) => c.role || '-' },
     { key: 'company', title: 'Azienda', render: (c: any) => c.companies ? <span style={{display: 'flex', gap: '4px', alignItems: 'center'}}><Building size={14}/> {c.companies.name}</span> : '-' },
     { key: 'contact_info', title: 'Recapiti', render: (c: any) => (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem' }}>
