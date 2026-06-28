@@ -10,7 +10,8 @@ export default async function PublicReportPage({
 }: { 
   params: Promise<{ token: string }>
 }) {
-  const resolvedParams = await params
+  try {
+    const resolvedParams = await params
   
   if (!resolvedParams.token || resolvedParams.token.length < 5) {
     notFound()
@@ -292,4 +293,15 @@ export default async function PublicReportPage({
       
     </div>
   )
+  } catch (error: any) {
+    return (
+      <div style={{ padding: '2rem', color: 'red', fontFamily: 'sans-serif' }}>
+        <h2>Errore Server (Debug)</h2>
+        <pre>{error.message}</pre>
+        <pre>{error.stack}</pre>
+        <p>URL: {process.env.NEXT_PUBLIC_SUPABASE_URL ? 'OK' : 'MISSING'}</p>
+        <p>KEY: {process.env.SUPABASE_SERVICE_ROLE_KEY ? 'OK' : 'MISSING'}</p>
+      </div>
+    )
+  }
 }
