@@ -256,3 +256,72 @@
   align-items: center;
   gap: 1rem;
 }
+
+.accordion {
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-lg);
+  margin-bottom: 0.75rem;
+  background: var(--color-bg-base);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.accordion:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.accordionSummary {
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  list-style: none; /* Hide default arrow in some browsers */
+  color: var(--color-text);
+}
+
+.accordionSummary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion[open] .accordionSummary {
+  border-bottom: 1px solid var(--color-border-dark);
+  background: rgba(0,0,0,0.02);
+}
+
+.accordionContent {
+  background: #fff;
+}
+
+.batchIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  color: var(--color-text-muted);
+}
+
+.batchTitle {
+  flex: 1;
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+}
+
+.batchStats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.batchTime {
+  color: var(--color-text-muted);
+  font-family: monospace;
+  font-size: 1.1em;
+}
+
+.batchCost {
+  color: var(--color-success);
+  font-weight: 700;
+  font-size: var(--font-size-xl);
+}
+

@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
-import { Clock, Euro, CheckCircle2, Package, Archive, CalendarDays, Activity } from 'lucide-react'
+import { Clock, Euro, CheckCircle2, Package, Archive, CalendarDays, Activity, Folder } from 'lucide-react'
 import styles from '../Report.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -54,6 +54,18 @@ export default async function PublicReportPage({
   const allHours = hours || []
   const activeHours = allHours.filter(h => !h.billed)
   const archivedHours = allHours.filter(h => h.billed)
+
+  const archivedBatches = archivedHours.reduce((acc, row) => {
+    const batch = row.batch_id || 'pregresso'
+    if (!acc[batch]) acc[batch] = { hours: [], totalMinutes: 0 }
+    acc[batch].hours.push(row)
+    acc[batch].totalMinutes += row.minutes
+    return acc
+  }, {} as Record<string, { hours: typeof archivedHours, totalMinutes: number }>)
+  
+  const sortedBatches = Object.entries(archivedBatches).sort(([batchA], [batchB]) => {
+    return batchB.localeCompare(batchA)
+  })
 
   const totalActiveMinutes = activeHours.reduce((acc, curr) => acc + curr.minutes, 0)
   
@@ -204,30 +216,54 @@ export default async function PublicReportPage({
               <div className={`${styles.iconWrapper} ${styles.archived}`}>
                 <Archive size={20} />
               </div>
-              Storico Attività Archiviate
+              Archivio Storico
             </div>
             
-            <table className={styles.table}>
-              <tbody>
-                {archivedHours.map(row => (
-                  <tr key={row.id}>
-                    <td className={styles.date}>
-                      {new Date(row.date).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}
-                    </td>
-                    <td>
-                      <span className={styles.badge} title="Lotto archiviazione">
-                        <Archive size={10} /> 
-                        {row.batch_id ? new Date(row.batch_id.slice(0,4) + '-' + row.batch_id.slice(4,6) + '-' + row.batch_id.slice(6,8)).toLocaleDateString('it-IT') : 'Pregresso'}
-                      </span>
-                      {row.description}
-                    </td>
-                    <td className={styles.right} style={{ color: 'var(--color-text-muted)' }}>
-                      {formatTime(row.minutes)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div>
+              {sortedBatches.map(([batchId, data]) => {
+                const batchDate = batchId !== 'pregresso' && batchId.length >= 8
+                  ? new Date(batchId.slice(0,4) + '-' + batchId.slice(4,6) + '-' + batchId.slice(6,8)).toLocaleDateString('it-IT')
+                  : 'Pregresso'
+                
+                const costDisplay = rate > 0 
+                  ? `€ ${((data.totalMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                  : null
+
+                return (
+                  <details key={batchId} className={styles.accordion}>
+                    <summary className={styles.accordionSummary}>
+                      <div className={styles.batchIcon}>
+                        <Folder size={24} />
+                      </div>
+                      <div className={styles.batchTitle}>
+                        Archiviato il {batchDate}
+                      </div>
+                      <div className={styles.batchStats}>
+                        <span className={styles.batchTime}>({formatTime(data.totalMinutes)})</span>
+                        {costDisplay && <span className={styles.batchCost}>— {costDisplay}</span>}
+                      </div>
+                    </summary>
+                    <div className={styles.accordionContent}>
+                      <table className={styles.table}>
+                        <tbody>
+                          {data.hours.map(row => (
+                            <tr key={row.id}>
+                              <td className={styles.date}>
+                                {new Date(row.date).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}
+                              </td>
+                              <td>{row.description}</td>
+                              <td className={styles.right} style={{ color: 'var(--color-text-muted)' }}>
+                                {formatTime(row.minutes)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </details>
+                )
+              })}
+            </div>
           </div>
         )}
 
