@@ -3,14 +3,16 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Table } from '@/components/ui/Table'
 import { Button } from '@/components/ui/Button'
-import { Edit2, Trash2 } from 'lucide-react'
+import { Edit2, Trash2, Link } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { CompanyModal } from './CompanyModal'
+import { MergeCompanyModal } from './MergeCompanyModal'
 import { toast } from 'sonner'
 
 export function CompaniesTableClient() {
   const [companies, setCompanies] = useState<any[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isMergeModalOpen, setIsMergeModalOpen] = useState(false)
   const [selectedCompany, setSelectedCompany] = useState<any | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const supabase = createClient()
@@ -47,6 +49,11 @@ export function CompaniesTableClient() {
     setIsModalOpen(true)
   }
 
+  const handleMerge = (company: any) => {
+    setSelectedCompany(company)
+    setIsMergeModalOpen(true)
+  }
+
   const handleNew = () => {
     setSelectedCompany(null)
     setIsModalOpen(true)
@@ -70,12 +77,21 @@ export function CompaniesTableClient() {
       render: (c: any) => (
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button 
+            title="Modifica Azienda"
             onClick={() => handleEdit(c)}
             style={{ background: 'none', border: 'none', color: 'var(--color-primary)', cursor: 'pointer' }}
           >
             <Edit2 size={16} />
           </button>
           <button 
+            title="Unisci ad un'altra Azienda"
+            onClick={() => handleMerge(c)}
+            style={{ background: 'none', border: 'none', color: 'var(--color-warning)', cursor: 'pointer' }}
+          >
+            <Link size={16} />
+          </button>
+          <button 
+            title="Elimina"
             onClick={() => handleDelete(c.id, c.name)}
             style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer' }}
           >
@@ -98,6 +114,14 @@ export function CompaniesTableClient() {
         onClose={() => setIsModalOpen(false)}
         onSaved={fetchCompanies}
         company={selectedCompany}
+      />
+
+      <MergeCompanyModal 
+        isOpen={isMergeModalOpen}
+        onClose={() => setIsMergeModalOpen(false)}
+        onSaved={fetchCompanies}
+        sourceCompany={selectedCompany}
+        allCompanies={companies}
       />
 
       {isLoading ? (
