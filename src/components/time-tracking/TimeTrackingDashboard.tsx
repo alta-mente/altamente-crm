@@ -54,9 +54,9 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+      <div className="rounded-lg overflow-hidden glass">
         <table className="w-full text-sm text-left">
-          <thead className="bg-gray-50 text-gray-500 uppercase text-xs font-semibold">
+          <thead className="uppercase text-xs font-semibold" style={{ backgroundColor: 'rgba(0,0,0,0.2)', color: 'var(--color-text-muted)' }}>
             <tr>
               <th className="px-6 py-4">Azienda</th>
               <th className="px-6 py-4">Contratto</th>
@@ -65,7 +65,7 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
               <th className="px-6 py-4 text-right">Azioni</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody style={{ borderTop: '1px solid var(--color-border)' }}>
             {filteredCompanies.map(company => {
               const currentMin = totalsMap[company.id] || 0
               const prepaidMin = company.prepaid_minutes || 0
@@ -88,13 +88,13 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
               }
 
               return (
-                <tr key={company.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900">{company.name}</td>
+                <tr key={company.id} style={{ borderBottom: '1px solid var(--color-border)' }} className="transition-colors hover:bg-white/5">
+                  <td className="px-6 py-4 font-medium" style={{ color: 'var(--color-text-inverse)' }}>{company.name}</td>
                   <td className="px-6 py-4">{contractType}</td>
                   <td className="px-6 py-4 font-mono font-medium text-base">
                     {currentMin > 0 ? formatTime(currentMin) : '-'}
                   </td>
-                  <td className="px-6 py-4 text-gray-600 font-medium">
+                  <td className="px-6 py-4 font-medium" style={{ color: 'var(--color-text-muted)' }}>
                     {statusText}
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -110,7 +110,7 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
             })}
             {filteredCompanies.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={5} className="px-6 py-8 text-center" style={{ color: 'var(--color-text-muted)' }}>
                   Nessuna azienda trovata. Assicurati che l'opzione "Time Tracking" sia abilitata per l'azienda.
                 </td>
               </tr>
