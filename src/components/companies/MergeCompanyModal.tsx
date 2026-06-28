@@ -27,7 +27,11 @@ export function MergeCompanyModal({ isOpen, onClose, onSaved, sourceCompany, all
     if (window.confirm(`ATTENZIONE: Questa azione sposterà tutti i dati da "${sourceCompany.name}" all'azienda selezionata e quindi ELIMINERÀ in modo irreversibile "${sourceCompany.name}". Sei sicuro di voler procedere?`)) {
       setIsSubmitting(true)
       try {
-        await mergeCompanies(sourceCompany.id, targetCompanyId)
+        const res = await mergeCompanies(sourceCompany.id, targetCompanyId)
+        if (res && !res.success) {
+          toast.error(res.error || 'Errore durante l\\'unione delle aziende')
+          return
+        }
         toast.success('Aziende unite con successo')
         onSaved()
         onClose()

@@ -1,10 +1,10 @@
 import React from 'react'
 import { createClient } from '@/utils/supabase/server'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
-import { DashboardCharts } from './DashboardCharts'
+import { DashboardCharts } from '@/components/dashboard/DashboardCharts'
 import { redirect } from 'next/navigation'
 import styles from './Dashboard.module.css'
-import { CashFlowChart } from './CashFlowChart'
+import { CashFlowChart } from '@/components/dashboard/CashFlowChart'
 import { TrendingUp, Users, Briefcase, Award, Calendar, ChevronRight, Clock, Building } from 'lucide-react'
 import Link from 'next/link'
 

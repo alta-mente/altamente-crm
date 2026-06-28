@@ -4,11 +4,11 @@ import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 
 export async function mergeCompanies(sourceId: string, targetId: string) {
-  if (sourceId === targetId) {
-    throw new Error('Impossibile unire l\'azienda con se stessa.');
-  }
-
   const supabase = await createClient();
+
+  if (sourceId === targetId) {
+    return { success: false, error: 'Impossibile unire l\'azienda con se stessa.' };
+  }
 
   // 1. Get both companies
   const { data: sourceCompany, error: sourceErr } = await supabase
@@ -23,8 +23,8 @@ export async function mergeCompanies(sourceId: string, targetId: string) {
     .eq('id', targetId)
     .single();
 
-  if (sourceErr || !sourceCompany || targetErr || !targetCompany) {
-    throw new Error('Errore durante il recupero delle aziende.');
+  if (sourceErr || targetErr || !sourceCompany || !targetCompany) {
+    return { success: false, error: 'Errore durante il recupero delle aziende.' };
   }
 
   // 2. Merge properties into target if they are missing
@@ -65,7 +65,7 @@ export async function mergeCompanies(sourceId: string, targetId: string) {
       .eq('id', targetId);
     
     if (updateErr) {
-      throw new Error(`Errore aggiornamento dati azienda target: ${updateErr.message}`);
+      return { success: false, error: `Errore aggiornamento dati azienda target: ${updateErr.message}` };
     }
   }
 
@@ -79,8 +79,7 @@ export async function mergeCompanies(sourceId: string, targetId: string) {
       .eq('company_id', sourceId);
       
     if (relErr) {
-      console.error(`Error updating relations in ${table}:`, relErr);
-      throw new Error(`Errore durante lo spostamento dei dati in ${table}.`);
+      return { success: false, error: `Errore durante lo spostamento dei dati in ${table}.` };
     }
   }
 
@@ -91,7 +90,7 @@ export async function mergeCompanies(sourceId: string, targetId: string) {
     .eq('id', sourceId);
 
   if (delErr) {
-    throw new Error(`Errore durante l'eliminazione dell'azienda di origine: ${delErr.message}`);
+    return { success: false, error: `Errore durante l'eliminazione dell'azienda di origine: ${delErr.message}` };
   }
 
   revalidatePath('/companies');
