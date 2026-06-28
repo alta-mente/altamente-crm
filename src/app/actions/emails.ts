@@ -22,7 +22,7 @@ export async function sendLowHoursAlertEmail({
   }
 
   try {
-    const data = await resend.emails.send({
+    const response = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
       subject: `Avviso: Monte ore in esaurimento - ${companyName}`,
@@ -40,7 +40,13 @@ export async function sendLowHoursAlertEmail({
         </div>
       `
     })
-    return { success: true, data }
+
+    if (response.error) {
+      console.error('Resend API Error:', response.error)
+      return { success: false, error: response.error.message }
+    }
+
+    return { success: true, data: response.data }
   } catch (error) {
     console.error('Email sending failed:', error)
     return { success: false, error }
@@ -64,7 +70,7 @@ export async function sendReportArchivedEmail({
   }
 
   try {
-    const data = await resend.emails.send({
+    const response = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
       subject: `Report Attività Disponibile: ${monthName} - ${companyName}`,
@@ -85,7 +91,13 @@ export async function sendReportArchivedEmail({
         </div>
       `
     })
-    return { success: true, data }
+
+    if (response.error) {
+      console.error('Resend API Error:', response.error)
+      return { success: false, error: response.error.message }
+    }
+
+    return { success: true, data: response.data }
   } catch (error) {
     console.error('Email sending failed:', error)
     return { success: false, error }
