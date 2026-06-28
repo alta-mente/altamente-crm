@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { sendLowHoursAlertEmail, sendReportArchivedEmail } from './emails';
 
 export async function toggleTimeTracking(companyId: string, enabled: boolean) {
   const supabase = await createClient();
@@ -55,6 +56,31 @@ export async function addCompanyHours(data: {
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  // Check if we need to send a low hours alert (Monte ore prepagato)
+  try {
+    const { data: comp } = await supabase.from('companies').select('*').eq('id', data.company_id).single();
+    if (comp && comp.time_tracking_enabled && (comp.prepaid_minutes || 0) > 0 && comp.contact_email) {
+      // Calculate remaining
+      const { data: allHours } = await supabase.from('company_hours').select('minutes').eq('company_id', data.company_id);
+      const totalLogged = (allHours || []).reduce((acc, h) => acc + (Number(h.minutes) || 0), 0);
+      
+      const remainingMinutes = comp.prepaid_minutes - totalLogged;
+      const remainingHours = remainingMinutes / 60;
+      const wasAboveThreshold = (remainingMinutes + data.minutes) / 60 > 2; // threshold is 2 hours
+
+      // Only send exactly when it crosses the 2 hours threshold
+      if (wasAboveThreshold && remainingHours <= 2) {
+        await sendLowHoursAlertEmail({
+          to: comp.contact_email,
+          companyName: comp.name,
+          remainingHours
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Error checking monte ore threshold:', err);
   }
 
   revalidatePath('/time-tracking');
@@ -156,4 +182,40 @@ export async function generateReportToken(companyId: string) {
   revalidatePath(`/time-tracking/${companyId}`);
   
   return token;
+}
+
+export async function notifyClientAboutReport(companyId: string, monthName: string) {
+  const supabase = await createClient();
+  
+  // Get company info
+  const { data: comp, error } = await supabase.from('companies').select('*').eq('id', companyId).single();
+  
+  if (error || !comp) {
+    throw new Error('Impossibile recuperare i dati dell\'azienda');
+  }
+
+  if (!comp.contact_email) {
+    throw new Error('Nessuna email di contatto impostata per questa azienda');
+  }
+
+  // Ensure report token exists
+  let token = comp.report_token;
+  if (!token) {
+    token = await generateReportToken(companyId);
+  }
+
+  const reportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/report/${token}`;
+
+  const res = await sendReportArchivedEmail({
+    to: comp.contact_email,
+    companyName: comp.name,
+    reportUrl,
+    monthName
+  });
+
+  if (!res.success) {
+    throw new Error('Errore durante l\'invio dell\'email');
+  }
+
+  return { success: true };
 }

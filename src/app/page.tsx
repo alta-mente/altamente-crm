@@ -24,6 +24,12 @@ export default async function DashboardHome() {
   const { data: invoices } = await supabase.from('invoices').select('*')
   const { data: services } = await supabase.from('services').select('*')
   
+  // Fetch billed time tracking hours
+  const { data: companyHours } = await supabase
+    .from('company_hours')
+    .select('*, companies(hourly_rate)')
+    .eq('billed', true)
+  
   // Fetch active projects for the new list
   const { data: projectsList } = await supabase
     .from('projects')
@@ -44,6 +50,7 @@ export default async function DashboardHome() {
   const safeProjectsList = projectsList || []
   const safeAppointments = appointments || []
   const safeServices = services || []
+  const safeCompanyHours = companyHours || []
   
   // Computations
   const activeDeals = safeDeals.filter(d => d.phase_id !== 'won' && d.phase_id !== 'lost')
@@ -180,7 +187,12 @@ export default async function DashboardHome() {
           </div>
           
           {/* Cash Flow Chart */}
-          <CashFlowChart invoices={invoices || []} projects={safeProjectsAll} services={safeServices} />
+          <CashFlowChart 
+            invoices={invoices || []} 
+            projects={safeProjectsAll} 
+            services={safeServices}
+            companyHours={safeCompanyHours}
+          />
           
         </div>
 

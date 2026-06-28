@@ -19,6 +19,11 @@ export function CompanyModal({ isOpen, onClose, onSaved, company }: CompanyModal
   const [name, setName] = useState('')
   const [vatNumber, setVatNumber] = useState('')
   const [address, setAddress] = useState('')
+  const [timeTrackingEnabled, setTimeTrackingEnabled] = useState(false)
+  const [contactEmail, setContactEmail] = useState('')
+  const [isPrepaid, setIsPrepaid] = useState(false)
+  const [prepaidHours, setPrepaidHours] = useState('')
+  const [hourlyRate, setHourlyRate] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const supabase = createClient()
 
@@ -27,10 +32,20 @@ export function CompanyModal({ isOpen, onClose, onSaved, company }: CompanyModal
       setName(company.name || '')
       setVatNumber(company.vat_number || '')
       setAddress(company.address || '')
+      setTimeTrackingEnabled(company.time_tracking_enabled || false)
+      setContactEmail(company.contact_email || '')
+      setIsPrepaid((company.prepaid_minutes || 0) > 0)
+      setPrepaidHours(company.prepaid_minutes ? String(company.prepaid_minutes / 60).replace('.', ',') : '')
+      setHourlyRate(company.hourly_rate ? String(company.hourly_rate).replace('.', ',') : '')
     } else {
       setName('')
       setVatNumber('')
       setAddress('')
+      setTimeTrackingEnabled(false)
+      setContactEmail('')
+      setIsPrepaid(false)
+      setPrepaidHours('')
+      setHourlyRate('')
     }
   }, [company, isOpen])
 
@@ -42,6 +57,10 @@ export function CompanyModal({ isOpen, onClose, onSaved, company }: CompanyModal
       name,
       vat_number: vatNumber,
       address,
+      time_tracking_enabled: timeTrackingEnabled,
+      contact_email: contactEmail,
+      prepaid_minutes: isPrepaid ? (Math.round(parseFloat(prepaidHours.replace(',','.')) * 60) || 0) : 0,
+      hourly_rate: parseFloat(hourlyRate.replace(',','.')) || 0
     }
 
     let error;
@@ -123,6 +142,69 @@ export function CompanyModal({ isOpen, onClose, onSaved, company }: CompanyModal
                   onChange={e => setAddress(e.target.value)} 
                   placeholder="Via Roma 1, Milano"
                 />
+              </div>
+
+              <div style={{ marginTop: '1.5rem', marginBottom: '1rem', borderTop: '1px solid var(--color-border-dark)', paddingTop: '1.5rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>Gestione Ore (Time Tracking)</h3>
+                
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '1.5rem', fontWeight: 500 }}>
+                  <input 
+                    type="checkbox" 
+                    checked={timeTrackingEnabled} 
+                    onChange={e => setTimeTrackingEnabled(e.target.checked)} 
+                    style={{ width: '18px', height: '18px', accentColor: 'var(--color-primary)' }}
+                  />
+                  Abilita tracciamento ore per questa azienda
+                </label>
+
+                {timeTrackingEnabled && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'rgba(0,0,0,0.02)', padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--color-border-dark)' }}>
+                    <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
+                      <label>Email Referente (per notifiche)</label>
+                      <input 
+                        type="email" 
+                        value={contactEmail} 
+                        onChange={e => setContactEmail(e.target.value)} 
+                        placeholder="cliente@email.com"
+                      />
+                    </div>
+                    
+                    <div className={styles.formGroup}>
+                      <label>Tariffa Oraria (€)</label>
+                      <input 
+                        type="text" 
+                        value={hourlyRate} 
+                        onChange={e => setHourlyRate(e.target.value)} 
+                        placeholder="Es. 50"
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label>Tipologia</label>
+                      <select 
+                        value={isPrepaid ? 'prepaid' : 'postpaid'} 
+                        onChange={e => setIsPrepaid(e.target.value === 'prepaid')}
+                        style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-border-dark)', background: '#fff', fontSize: '0.9rem' }}
+                      >
+                        <option value="postpaid">Consuntivo (Paga a fine mese)</option>
+                        <option value="prepaid">Monte Ore (Prepagato)</option>
+                      </select>
+                    </div>
+
+                    {isPrepaid && (
+                      <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
+                        <label>Ore Prepagate (Residuo Attuale)</label>
+                        <input 
+                          type="text" 
+                          value={prepaidHours} 
+                          onChange={e => setPrepaidHours(e.target.value)} 
+                          placeholder="Es. 20"
+                        />
+                        <span style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>Inserisci le ore totali acquistate dal cliente (es. 20). Verranno scalate inserendo nuove attività.</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className={styles.footer}>

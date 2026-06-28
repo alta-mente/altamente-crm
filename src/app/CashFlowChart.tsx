@@ -11,7 +11,7 @@ interface Invoice {
   paid_date: string | null
 }
 
-export function CashFlowChart({ invoices, projects, services }: { invoices: Invoice[], projects?: any[], services?: any[] }) {
+export function CashFlowChart({ invoices, projects, services, companyHours }: { invoices: Invoice[], projects?: any[], services?: any[], companyHours?: any[] }) {
   // Generate 12 months window: 6 past, current, 5 future
   const months = Array.from({ length: 12 }).map((_, i) => {
     const d = new Date()
@@ -23,7 +23,8 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
       paid: 0,
       expected: 0,
       retainer: 0,
-      renewals: 0
+      renewals: 0,
+      hoursBilled: 0
     }
   })
 
@@ -72,8 +73,26 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
     }
   })
 
+  // Aggregate company hours
+  companyHours?.forEach(h => {
+    if (h.billed) {
+      // Use batch_id date if possible, else h.date
+      let dStr = h.date
+      if (h.batch_id && h.batch_id.length >= 8) {
+        dStr = `${h.batch_id.slice(0,4)}-${h.batch_id.slice(4,6)}-${h.batch_id.slice(6,8)}`
+      }
+      const d = new Date(dStr)
+      const mIndex = months.findIndex(m => m.year === d.getFullYear() && m.month === d.getMonth())
+      
+      if (mIndex !== -1 && h.companies?.hourly_rate) {
+        const cost = (h.minutes / 60) * h.companies.hourly_rate
+        months[mIndex].hoursBilled += cost
+      }
+    }
+  })
+
   // Find max for scaling
-  const maxAmount = Math.max(...months.map(m => m.paid + m.expected + m.retainer + m.renewals), 1000)
+  const maxAmount = Math.max(...months.map(m => m.paid + m.expected + m.retainer + m.renewals + m.hoursBilled), 1000)
   const formatter = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
 
   return (
@@ -98,6 +117,7 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
             const expectedHeight = (m.expected / maxAmount) * 100
             const retainerHeight = (m.retainer / maxAmount) * 100
             const renewalsHeight = (m.renewals / maxAmount) * 100
+            const hoursHeight = (m.hoursBilled / maxAmount) * 100
             
             return (
               <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%', position: 'relative', zIndex: 1 }}>
@@ -118,6 +138,21 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
                   />
                 )}
                 
+                {/* Hours Billed Bar */}
+                {hoursHeight > 0 && (
+                  <div 
+                    title={`Ore Fatturabili: ${formatter.format(m.hoursBilled)}`}
+                    style={{ 
+                      width: '35px', 
+                      height: `${hoursHeight}%`, 
+                      background: 'rgba(59, 130, 246, 0.6)', 
+                      borderBottom: 'none',
+                      borderTopLeftRadius: expectedHeight === 0 ? '4px' : '0',
+                      borderTopRightRadius: expectedHeight === 0 ? '4px' : '0'
+                    }} 
+                  />
+                )}
+                
                 {/* Retainer Bar */}
                 {retainerHeight > 0 && (
                   <div 
@@ -127,8 +162,8 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
                       height: `${retainerHeight}%`, 
                       background: 'rgba(16, 185, 129, 0.6)', 
                       borderBottom: 'none',
-                      borderTopLeftRadius: expectedHeight === 0 ? '6px' : '0',
-                      borderTopRightRadius: expectedHeight === 0 ? '6px' : '0'
+                      borderTopLeftRadius: (expectedHeight === 0 && hoursHeight === 0) ? '4px' : '0',
+                      borderTopRightRadius: (expectedHeight === 0 && hoursHeight === 0) ? '4px' : '0'
                     }} 
                   />
                 )}
@@ -142,8 +177,8 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
                       height: `${renewalsHeight}%`, 
                       background: 'rgba(168, 85, 247, 0.6)', 
                       borderBottom: 'none',
-                      borderTopLeftRadius: (expectedHeight === 0 && retainerHeight === 0) ? '6px' : '0',
-                      borderTopRightRadius: (expectedHeight === 0 && retainerHeight === 0) ? '6px' : '0'
+                      borderTopLeftRadius: (expectedHeight === 0 && hoursHeight === 0 && retainerHeight === 0) ? '4px' : '0',
+                      borderTopRightRadius: (expectedHeight === 0 && hoursHeight === 0 && retainerHeight === 0) ? '4px' : '0'
                     }} 
                   />
                 )}
@@ -155,8 +190,8 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
                     width: '35px', 
                     height: `${paidHeight}%`, 
                     background: 'var(--color-primary)', 
-                    borderTopLeftRadius: (expectedHeight === 0 && retainerHeight === 0 && renewalsHeight === 0) ? '6px' : '0',
-                    borderTopRightRadius: (expectedHeight === 0 && retainerHeight === 0 && renewalsHeight === 0) ? '6px' : '0',
+                    borderTopLeftRadius: (expectedHeight === 0 && hoursHeight === 0 && retainerHeight === 0 && renewalsHeight === 0) ? '4px' : '0',
+                    borderTopRightRadius: (expectedHeight === 0 && hoursHeight === 0 && retainerHeight === 0 && renewalsHeight === 0) ? '4px' : '0',
                     transition: 'height 0.3s ease'
                   }} 
                 />
@@ -195,6 +230,13 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
                      </span>
                    ) : null}
 
+                   {/* Ore Fatturabili */}
+                   {m.hoursBilled > 0 ? (
+                     <span style={{ fontSize: '11px', color: 'rgba(59, 130, 246, 0.9)', fontWeight: 600 }} title="Ore Fatturabili">
+                       +{m.hoursBilled > 1000 ? `${(m.hoursBilled/1000).toFixed(1)}k` : m.hoursBilled}
+                     </span>
+                   ) : null}
+
                    {/* Da Incassare (Expected) */}
                    {m.expected > 0 ? (
                      <span style={{ fontSize: '11px', color: 'var(--color-warning)', fontWeight: 600 }} title="Da Incassare">
@@ -223,6 +265,10 @@ export function CashFlowChart({ invoices, projects, services }: { invoices: Invo
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
              <div style={{ width: '14px', height: '14px', background: 'rgba(255,150,0,0.3)', border: '2px dashed rgba(255,150,0,0.5)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Da Incassare</span>
+           </div>
+           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+             <div style={{ width: '14px', height: '14px', background: 'rgba(59, 130, 246, 0.8)', borderRadius: '3px' }}></div>
+             <span style={{ fontWeight: 500 }}>Ore Fatturabili</span>
            </div>
         </div>
         

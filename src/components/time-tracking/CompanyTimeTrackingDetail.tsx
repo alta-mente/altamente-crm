@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2, Clock } from 'lucide-react'
-import { addCompanyHours, editCompanyHours, deleteCompanyHours, archiveCompanyHours, unarchiveCompanyHourRow, generateReportToken } from '@/app/actions/time-tracking'
+import { addCompanyHours, editCompanyHours, deleteCompanyHours, archiveCompanyHours, unarchiveCompanyHourRow, generateReportToken, notifyClientAboutReport } from '@/app/actions/time-tracking'
 import styles from './TimeTrackingDetail.module.css'
 
 interface Company {
@@ -126,8 +126,16 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
     setIsArchiving(true)
     try {
       await archiveCompanyHours(company.id)
+      
+      // Chiedi se inviare notifica
+      if (confirm('Archiviazione completata. Vuoi inviare un\'email al cliente con il link al report pubblico?')) {
+        const monthName = new Date().toLocaleString('it-IT', { month: 'long', year: 'numeric' });
+        await notifyClientAboutReport(company.id, monthName);
+        alert('Email inviata con successo al cliente!');
+      }
+
     } catch (err) {
-      alert('Errore durante l\'archiviazione')
+      alert('Errore durante l\'archiviazione o l\'invio dell\'email')
     } finally {
       setIsArchiving(false)
     }
