@@ -1,34 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  /* Premium Light Theme Base for Bento Box */
-  --color-bg-base: #f4f4f5; /* Clean light gray */
+  /* Premium Dark Theme Base for Bento Box */
+  --color-bg-base: #09090b; /* True black/dark zinc */
   
-  /* Vibrant Premium Gradients for Cards */
-  --mesh-green: linear-gradient(135deg, #059669 0%, #10b981 100%);
-  --mesh-orange: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
-  --mesh-purple: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-  --mesh-blue: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-  --mesh-dark: linear-gradient(135deg, #18181b 0%, #09090b 100%);
-  --mesh-light: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  /* Vibrant Premium Gradients for Cards (Neon Accents) */
+  --mesh-green: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%);
+  --mesh-orange: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.05) 100%);
+  --mesh-purple: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(99, 102, 241, 0.05) 100%);
+  --mesh-blue: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.05) 100%);
+  --mesh-dark: linear-gradient(135deg, rgba(24, 24, 27, 0.8) 0%, rgba(9, 9, 11, 0.95) 100%);
+  --mesh-light: linear-gradient(135deg, rgba(39, 39, 42, 0.8) 0%, rgba(24, 24, 27, 0.6) 100%);
+
+  /* Borders - Glow effects */
+  --border-green: rgba(16, 185, 129, 0.4);
+  --border-orange: rgba(249, 115, 22, 0.4);
+  --border-purple: rgba(168, 85, 247, 0.4);
+  --border-blue: rgba(59, 130, 246, 0.4);
 
   /* Surfaces */
-  --color-surface: rgba(255, 255, 255, 0.85);
-  --color-surface-solid: #ffffff;
-  --color-surface-hover: rgba(255, 255, 255, 1);
+  --color-surface: rgba(24, 24, 27, 0.6);
+  --color-surface-solid: #18181b;
+  --color-surface-hover: rgba(39, 39, 42, 0.8);
   
   /* Borders */
-  --color-border: rgba(255, 255, 255, 0.4);
-  --color-border-dark: rgba(0, 0, 0, 0.05);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-dark: rgba(0, 0, 0, 0.5);
   
   /* Text */
-  --color-text: #1a1a1a;
-  --color-text-muted: #737373;
+  --color-text: #f4f4f5;
+  --color-text-muted: #a1a1aa;
   --color-text-inverse: #ffffff;
   
   /* Primary */
-  --color-primary: #111111;
-  --color-primary-hover: #333333;
+  --color-primary: #fafafa;
+  --color-primary-hover: #e4e4e7;
 
   /* Status Colors */
   --color-success: #10b981;
@@ -50,9 +56,15 @@
   --font-size-5xl: 4rem;
 
   /* Premium Shadows */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-  --shadow-base: 0 4px 12px rgba(0,0,0,0.05);
-  --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.15);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
+  --shadow-base: 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.8);
+  
+  /* Glow Shadows */
+  --glow-green: 0 0 20px rgba(16, 185, 129, 0.15);
+  --glow-orange: 0 0 20px rgba(249, 115, 22, 0.15);
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.15);
+  --glow-purple: 0 0 20px rgba(168, 85, 247, 0.15);
   
   /* Borders & Radius - Elegant UI */
   --radius-sm: 0.5rem;
@@ -147,11 +159,12 @@ a {
   display: flex;
   flex-direction: column;
   transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .bento-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
 }
 
 .bento-card::before {
@@ -167,39 +180,46 @@ a {
 
 .bento-light {
   background: var(--mesh-light);
-  border: 1px solid rgba(0,0,0,0.04);
+  border: 1px solid var(--color-border);
   box-shadow: var(--shadow-base);
-  color: var(--color-text);
 }
 
 .bento-dark {
   background: var(--mesh-dark);
-  color: var(--color-text-inverse);
+  border: 1px solid var(--color-border);
 }
 
 .bento-green {
   background: var(--mesh-green);
-  color: var(--color-text-inverse);
+  border: 1px solid var(--border-green);
+  box-shadow: var(--glow-green);
 }
+.bento-green:hover { box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
 
 .bento-orange {
   background: var(--mesh-orange);
-  color: var(--color-text-inverse);
+  border: 1px solid var(--border-orange);
+  box-shadow: var(--glow-orange);
 }
+.bento-orange:hover { box-shadow: 0 0 30px rgba(249, 115, 22, 0.3); }
 
 .bento-purple {
   background: var(--mesh-purple);
-  color: var(--color-text-inverse);
+  border: 1px solid var(--border-purple);
+  box-shadow: var(--glow-purple);
 }
+.bento-purple:hover { box-shadow: 0 0 30px rgba(168, 85, 247, 0.3); }
 
 .bento-blue {
   background: var(--mesh-blue);
-  color: var(--color-text-inverse);
+  border: 1px solid var(--border-blue);
+  box-shadow: var(--glow-blue);
 }
+.bento-blue:hover { box-shadow: 0 0 30px rgba(59, 130, 246, 0.3); }
 
-/* All text inside colored bento cards should be white */
+/* All text inside colored bento cards should inherit standard text colors in dark mode, since background is mostly dark */
 .bento-green *, .bento-orange *, .bento-purple *, .bento-blue *, .bento-dark * {
-  color: var(--color-text-inverse) !important;
+  color: var(--color-text-inverse);
 }
 
 .glow-on-hover {
