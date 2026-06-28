@@ -2,20 +2,20 @@
 
 :root {
   /* Premium Light Theme Base for Bento Box */
-  --color-bg-base: #f0f2f5;
+  --color-bg-base: #f4f4f5; /* Clean light gray */
   
-  /* Mesh Gradient Backgrounds for Cards */
-  --mesh-green: linear-gradient(135deg, #a8d5ba 0%, #68b87d 100%);
-  --mesh-orange: linear-gradient(135deg, #ffcba4 0%, #f78d5e 100%);
-  --mesh-purple: linear-gradient(135deg, #d4c4fb 0%, #9e7cf6 100%);
-  --mesh-blue: linear-gradient(135deg, #a7cbfb 0%, #5d9df5 100%);
-  --mesh-dark: linear-gradient(135deg, #2a2a2a 0%, #111111 100%);
-  --mesh-light: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%);
+  /* Vibrant Premium Gradients for Cards */
+  --mesh-green: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  --mesh-orange: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  --mesh-purple: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --mesh-blue: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  --mesh-dark: linear-gradient(135deg, #18181b 0%, #09090b 100%);
+  --mesh-light: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 
   /* Surfaces */
-  --color-surface: rgba(255, 255, 255, 0.7);
+  --color-surface: rgba(255, 255, 255, 0.85);
   --color-surface-solid: #ffffff;
-  --color-surface-hover: rgba(255, 255, 255, 0.9);
+  --color-surface-hover: rgba(255, 255, 255, 1);
   
   /* Borders */
   --color-border: rgba(255, 255, 255, 0.4);
@@ -50,16 +50,16 @@
   --font-size-5xl: 4rem;
 
   /* Premium Shadows */
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-  --shadow-base: 0 8px 24px rgba(0,0,0,0.06);
-  --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-base: 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-lg: 0 20px 40px -10px rgba(0,0,0,0.15);
   
-  /* Borders & Radius - Extreme Bento Style */
+  /* Borders & Radius - Elegant UI */
   --radius-sm: 0.5rem;
-  --radius-base: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
-  --radius-2xl: 2.5rem;
+  --radius-base: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
   --radius-full: 9999px;
   
   /* Transitions */
@@ -142,15 +142,15 @@ a {
 .bento-card {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-2xl);
-  padding: 2rem;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
 }
 
 .bento-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -167,8 +167,8 @@ a {
 
 .bento-light {
   background: var(--mesh-light);
-  border: 1px solid rgba(255,255,255,1);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-base);
   color: var(--color-text);
 }
 

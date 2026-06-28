@@ -1,9 +1,7 @@
 .sidebar {
   width: 280px;
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-right: 1px solid var(--color-border);
+  background: #09090b; /* Pure dark / zinc-950 */
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -11,8 +9,9 @@
   left: 0;
   top: 0;
   z-index: 40;
-  transition: transform var(--transition-base), width var(--transition-base);
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-smooth), width var(--transition-smooth);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+  color: #fafafa;
 }
 
 .header {
@@ -20,15 +19,12 @@
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: var(--font-size-xl);
-  color: var(--color-text);
+  color: #ffffff;
   letter-spacing: -0.02em;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .nav {
@@ -44,26 +40,27 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.875rem 1rem;
-  border-radius: var(--radius-lg);
-  color: var(--color-text-muted);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  color: #a1a1aa; /* zinc-400 */
   font-weight: 500;
-  transition: all var(--transition-base);
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .navItem:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  color: var(--color-text);
+  color: #ffffff;
   transform: translateX(4px);
 }
 
 .navItemActive {
-  background-color: var(--color-primary-subtle);
-  color: var(--color-primary);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
   font-weight: 600;
-  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .navItemActive::before {
@@ -74,9 +71,9 @@
   transform: translateY(-50%);
   height: 60%;
   width: 4px;
-  background-color: var(--color-primary);
+  background-color: #ffffff;
   border-radius: 0 4px 4px 0;
-  box-shadow: 0 0 10px var(--color-primary);
+  box-shadow: 0 0 12px rgba(255,255,255,0.5);
 }
 
 .footer {
