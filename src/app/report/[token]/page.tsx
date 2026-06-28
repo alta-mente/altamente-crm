@@ -22,10 +22,10 @@ export default async function PublicReportPage({
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  // Find company by token
-  const { data: company, error: companyError } = await supabase
-    .from('companies')
-    .select('*')
+  // Find project by token
+  const { data: project, error: projectError } = await supabase
+    .from('projects')
+    .select('*, companies(name)')
     .eq('report_token', resolvedParams.token)
     .single()
 
@@ -36,7 +36,7 @@ export default async function PublicReportPage({
     .eq('id', 1)
     .single()
 
-  if (companyError || !company) {
+  if (projectError || !project) {
     return (
       <div className={styles.container}>
         <div className={styles.reportCard} style={{ padding: '4rem 2rem', textAlign: 'center' }}>
@@ -54,7 +54,7 @@ export default async function PublicReportPage({
   const { data: hours, error: hoursError } = await supabase
     .from('company_hours')
     .select('*')
-    .eq('company_id', company.id)
+    .eq('project_id', project.id)
     .order('date', { ascending: false })
     .order('id', { ascending: false })
 
@@ -86,8 +86,8 @@ export default async function PublicReportPage({
     return `${minutes < 0 ? '-' : ''}${h}h ${m.toString().padStart(2, '0')}m`
   }
 
-  const prepaidMin = company.prepaid_minutes || 0
-  const rate = company.hourly_rate || 0
+  const prepaidMin = project.prepaid_minutes || 0
+  const rate = project.hourly_rate || 0
   
   const usedPercentage = prepaidMin > 0 ? Math.max(0, Math.min(100, (totalActiveMinutes / prepaidMin) * 100)) : 0
   const remainingMin = Math.max(0, prepaidMin - totalActiveMinutes)
@@ -113,7 +113,8 @@ export default async function PublicReportPage({
             <div className={styles.badge} style={{ marginBottom: '1rem', display: 'inline-flex' }}>
               <Activity size={14} /> REPORT ATTIVITÀ
             </div>
-            <h1>{company.name}</h1>
+            <h1>{project.title}</h1>
+            <p style={{ fontSize: '1.2rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem' }}>{project.companies?.name || ''}</p>
             <p>
               <CalendarDays size={18} /> 
               Aggiornato al {new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}

@@ -56,7 +56,10 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
         billing_type: project.billing_type || 'one-off',
         billing_amount: project.billing_amount || 0,
         billing_status: project.billing_status || 'to_invoice',
-        billing_start_date: project.billing_start_date || new Date().toISOString().split('T')[0]
+        billing_start_date: project.billing_start_date || new Date().toISOString().split('T')[0],
+        time_tracking_enabled: project.time_tracking_enabled || false,
+        prepaid_minutes: project.prepaid_minutes || 0,
+        hourly_rate: project.hourly_rate || 0,
       })
       
       if (project.deal_id) {
@@ -113,7 +116,10 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
       billing_type: formData.billing_type,
       billing_amount: formData.billing_amount,
       billing_status: formData.billing_status,
-      billing_start_date: formData.billing_start_date
+      billing_start_date: formData.billing_start_date,
+      time_tracking_enabled: formData.time_tracking_enabled,
+      prepaid_minutes: formData.prepaid_minutes,
+      hourly_rate: formData.hourly_rate
     }).eq('id', project.id)
     
     setIsSubmitting(false)
@@ -281,6 +287,47 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                           <option value="paid">Saldato</option>
                           <option value="late">In Ritardo</option>
                         </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Time Tracking & Consuntivi</h3>
+                    <div className={styles.detailRow}>
+                      <div className={styles.detailText} style={{ width: '100%' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '0.5rem' }}>
+                          <input 
+                            type="checkbox"
+                            checked={formData.time_tracking_enabled}
+                            onChange={e => setFormData({...formData, time_tracking_enabled: e.target.checked})}
+                          />
+                          <span className={styles.detailLabel} style={{ marginBottom: 0 }}>Abilita Time Tracking (Ore e Consuntivi) per questo progetto</span>
+                        </label>
+                        
+                        {formData.time_tracking_enabled && (
+                          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                            <div>
+                              <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Monte Ore Prepagato (Minuti)</span>
+                              <input 
+                                type="number"
+                                className={styles.editInput}
+                                value={formData.prepaid_minutes}
+                                onChange={e => setFormData({...formData, prepaid_minutes: Number(e.target.value)})}
+                                style={{ width: '150px' }}
+                              />
+                            </div>
+                            <div>
+                              <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Tariffa Oraria (A Consuntivo €)</span>
+                              <input 
+                                type="number"
+                                className={styles.editInput}
+                                value={formData.hourly_rate}
+                                onChange={e => setFormData({...formData, hourly_rate: Number(e.target.value)})}
+                                style={{ width: '150px' }}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

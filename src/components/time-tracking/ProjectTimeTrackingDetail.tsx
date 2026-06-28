@@ -9,15 +9,21 @@ import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2, Clo
 import { addCompanyHours, editCompanyHours, deleteCompanyHours, archiveCompanyHours, unarchiveCompanyHourRow, generateReportToken, notifyClientAboutReport } from '@/app/actions/time-tracking'
 import styles from './TimeTrackingDetail.module.css'
 
-interface Company {
+interface Project {
   id: string
-  name: string
+  title: string
   report_token?: string
   hourly_rate?: number
+  company_id: string
+  companies?: {
+    name: string
+    contact_email?: string
+  }
 }
 
 interface CompanyHour {
   id: string
+  project_id: string
   company_id: string
   date: string
   description: string
@@ -27,11 +33,11 @@ interface CompanyHour {
 }
 
 interface Props {
-  company: Company
+  project: Project
   initialHours: CompanyHour[]
 }
 
-export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
+export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
   const router = useRouter()
   const [showArchived, setShowArchived] = useState(false)
   
@@ -51,7 +57,7 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
   const displayHours = showArchived ? initialHours : activeHours
 
   const totalActiveMinutes = activeHours.reduce((acc, curr) => acc + curr.minutes, 0)
-  const rate = company.hourly_rate || 0
+  const rate = project.hourly_rate || 0
 
   const formatTime = (minutes: number) => {
     const h = Math.floor(Math.abs(minutes) / 60)
@@ -72,14 +78,15 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
 
       if (isEditing) {
         await editCompanyHours(editId, {
-          company_id: company.id,
+          project_id: project.id,
           date: formData.date,
           description: formData.description,
           minutes
         })
       } else {
         await addCompanyHours({
-          company_id: company.id,
+          project_id: project.id,
+          company_id: project.company_id, // keep it for backward compatibility if needed
           date: formData.date,
           description: formData.description,
           minutes
@@ -116,9 +123,9 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
   const handleDelete = async (id: string) => {
     if (!confirm('Eliminare questa attività?')) return
     try {
-      await deleteCompanyHours(id, company.id)
+      await deleteCompanyHours(id, project.id)
     } catch (err) {
-      alert('Errore durante l\'eliminazione')
+      alert("Errore durante l'eliminazione")
     }
   }
 
@@ -126,21 +133,21 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
     if (!confirm('Archiviare tutte le ore aperte come fatturate?')) return
     setIsArchiving(true)
     try {
-      await archiveCompanyHours(company.id)
+      await archiveCompanyHours(project.id)
       
       // Chiedi se inviare notifica
-      if (confirm('Archiviazione completata. Vuoi inviare un\'email al cliente con il link al report pubblico?')) {
+      if (confirm("Archiviazione completata. Vuoi inviare un'email al cliente con il link al report pubblico?")) {
         const monthName = new Date().toLocaleString('it-IT', { month: 'long', year: 'numeric' });
-        const res = await notifyClientAboutReport(company.id, monthName);
+        const res = await notifyClientAboutReport(project.id, monthName);
         if (res && !res.success) {
-          alert(res.error || 'Errore durante l\'invio dell\'email');
+          alert(res.error || "Errore durante l'invio dell'email");
         } else {
           alert('Email inviata con successo al cliente!');
         }
       }
 
     } catch (err) {
-      alert('Errore durante l\'archiviazione o l\'invio dell\'email')
+      alert("Errore durante l'archiviazione o l'invio dell'email")
     } finally {
       setIsArchiving(false)
     }
@@ -149,7 +156,7 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
   const handleUnarchive = async (id: string) => {
     if (!confirm('Riportare questa singola riga tra le ore aperte?')) return
     try {
-      await unarchiveCompanyHourRow(id, company.id)
+      await unarchiveCompanyHourRow(id, project.id)
     } catch (err) {
       alert('Errore durante de-archiviazione')
     }
@@ -157,7 +164,7 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
 
   const handleGenerateReportUrl = async () => {
     try {
-      const token = await generateReportToken(company.id)
+      const token = await generateReportToken(project.id)
       const url = `${window.location.origin}/report/${token}`
       window.open(url, '_blank')
     } catch (err) {
@@ -170,14 +177,14 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
     setIsSendingEmail(true)
     try {
       const monthName = new Date().toLocaleString('it-IT', { month: 'long', year: 'numeric' });
-      const res = await notifyClientAboutReport(company.id, monthName);
+      const res = await notifyClientAboutReport(project.id, monthName);
       if (res && !res.success) {
-        alert(res.error || 'Errore durante l\'invio dell\'email');
+        alert(res.error || "Errore durante l'invio dell'email");
       } else {
         alert('Email inviata con successo al cliente!');
       }
     } catch (err: any) {
-      alert(err.message || 'Errore durante l\'invio dell\'email');
+      alert(err.message || "Errore durante l'invio dell'email");
     } finally {
       setIsSendingEmail(false)
     }
@@ -193,7 +200,7 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
 
       <div className={styles.mainCard}>
         <div className={styles.cardHeader}>
-          <h2 className={styles.cardTitle}>{company.name}</h2>
+          <h2 className={styles.cardTitle}>{project.title} ({project.companies?.name || 'Senza Azienda'})</h2>
           <div className={styles.headerButtons}>
             <Button onClick={handleGenerateReportUrl} title="Genera Link Report Pubblico">
               <FileText size={16} style={{ marginRight: '8px' }} /> Visualizza Report
@@ -201,7 +208,7 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
             <Button onClick={handleSendReportEmail} disabled={isSendingEmail} title="Invia Report al Cliente via Email" style={{ background: 'var(--color-primary)', color: '#fff' }}>
               <Send size={16} style={{ marginRight: '8px' }} /> Invia Email
             </Button>
-            <Link href={`/api/export-hours?cid=${company.id}`}>
+            <Link href={`/api/export-hours?pid=${project.id}`}>
               <Button title="Scarica CSV delle ore non archiviate">
                 <Download size={16} style={{ marginRight: '8px' }} /> CSV
               </Button>

@@ -4,52 +4,57 @@ import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { sendLowHoursAlertEmail, sendReportArchivedEmail } from './emails';
 
-export async function toggleTimeTracking(companyId: string, enabled: boolean) {
+export async function toggleTimeTracking(projectId: string, enabled: boolean) {
   const supabase = await createClient();
   const { error } = await supabase
-    .from('companies')
+    .from('projects')
     .update({ time_tracking_enabled: enabled })
-    .eq('id', companyId);
+    .eq('id', projectId);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  revalidatePath('/companies');
+  revalidatePath('/projects');
   revalidatePath('/time-tracking');
 }
 
 export async function updateTimeTrackingSettings(
-  companyId: string,
+  projectId: string,
   settings: {
-    contact_email?: string;
     prepaid_minutes?: number;
     hourly_rate?: number;
   }
 ) {
   const supabase = await createClient();
   const { error } = await supabase
-    .from('companies')
+    .from('projects')
     .update(settings)
-    .eq('id', companyId);
+    .eq('id', projectId);
 
   if (error) {
     throw new Error(error.message);
   }
 
   revalidatePath('/time-tracking');
-  revalidatePath(`/time-tracking/${companyId}`);
+  revalidatePath(`/time-tracking/${projectId}`);
 }
 
 export async function addCompanyHours(data: {
-  company_id: string;
+  project_id: string;
+  company_id: string; // for backward compatibility in table, but mostly we use project_id
   date: string;
   description: string;
   minutes: number;
 }) {
   const supabase = await createClient();
+  
   const { error } = await supabase.from('company_hours').insert({
-    ...data,
+    project_id: data.project_id,
+    company_id: data.company_id,
+    date: data.date,
+    description: data.description,
+    minutes: data.minutes,
     billed: false,
     batch_id: '',
   });
@@ -60,13 +65,18 @@ export async function addCompanyHours(data: {
 
   // Check if we need to send a low hours alert (Monte ore prepagato)
   try {
-    const { data: comp } = await supabase.from('companies').select('*').eq('id', data.company_id).single();
-    if (comp && comp.time_tracking_enabled && (comp.prepaid_minutes || 0) > 0 && comp.contact_email) {
+    const { data: proj } = await supabase
+      .from('projects')
+      .select('*, companies(contact_email, name)')
+      .eq('id', data.project_id)
+      .single();
+      
+    if (proj && proj.time_tracking_enabled && (proj.prepaid_minutes || 0) > 0 && proj.companies?.contact_email) {
       // Calculate remaining
-      const { data: allHours } = await supabase.from('company_hours').select('minutes').eq('company_id', data.company_id);
+      const { data: allHours } = await supabase.from('company_hours').select('minutes').eq('project_id', data.project_id);
       const totalLogged = (allHours || []).reduce((acc, h) => acc + (Number(h.minutes) || 0), 0);
       
-      const remainingMinutes = comp.prepaid_minutes - totalLogged;
+      const remainingMinutes = proj.prepaid_minutes - totalLogged;
       const remainingHours = remainingMinutes / 60;
       const wasAboveThreshold = (remainingMinutes + data.minutes) / 60 > 2; // threshold is 2 hours
 
@@ -74,8 +84,8 @@ export async function addCompanyHours(data: {
       if (wasAboveThreshold && remainingHours <= 2) {
         const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
         await sendLowHoursAlertEmail({
-          to: comp.contact_email,
-          companyName: comp.name,
+          to: proj.companies.contact_email,
+          companyName: `${proj.companies.name} (Progetto: ${proj.title})`,
           remainingHours,
           logoUrl: settings?.logo_url
         });
@@ -86,7 +96,7 @@ export async function addCompanyHours(data: {
   }
 
   revalidatePath('/time-tracking');
-  revalidatePath(`/time-tracking/${data.company_id}`);
+  revalidatePath(`/time-tracking/${data.project_id}`);
 }
 
 export async function editCompanyHours(
@@ -95,7 +105,7 @@ export async function editCompanyHours(
     date: string;
     description: string;
     minutes: number;
-    company_id: string; // for revalidation
+    project_id: string; // for revalidation
   }
 ) {
   const supabase = await createClient();
@@ -113,10 +123,10 @@ export async function editCompanyHours(
   }
 
   revalidatePath('/time-tracking');
-  revalidatePath(`/time-tracking/${data.company_id}`);
+  revalidatePath(`/time-tracking/${data.project_id}`);
 }
 
-export async function deleteCompanyHours(id: string, companyId: string) {
+export async function deleteCompanyHours(id: string, projectId: string) {
   const supabase = await createClient();
   const { error } = await supabase.from('company_hours').delete().eq('id', id);
 
@@ -125,10 +135,10 @@ export async function deleteCompanyHours(id: string, companyId: string) {
   }
 
   revalidatePath('/time-tracking');
-  revalidatePath(`/time-tracking/${companyId}`);
+  revalidatePath(`/time-tracking/${projectId}`);
 }
 
-export async function archiveCompanyHours(companyId: string) {
+export async function archiveCompanyHours(projectId: string) {
   const supabase = await createClient();
   
   // Format batch_id as YYYYMMDD-HHMMSS
@@ -138,7 +148,7 @@ export async function archiveCompanyHours(companyId: string) {
   const { error } = await supabase
     .from('company_hours')
     .update({ billed: true, batch_id: batchId })
-    .eq('company_id', companyId)
+    .eq('project_id', projectId)
     .eq('billed', false);
 
   if (error) {
@@ -146,10 +156,10 @@ export async function archiveCompanyHours(companyId: string) {
   }
 
   revalidatePath('/time-tracking');
-  revalidatePath(`/time-tracking/${companyId}`);
+  revalidatePath(`/time-tracking/${projectId}`);
 }
 
-export async function unarchiveCompanyHourRow(id: string, companyId: string) {
+export async function unarchiveCompanyHourRow(id: string, projectId: string) {
   const supabase = await createClient();
   
   const { error } = await supabase
@@ -162,48 +172,52 @@ export async function unarchiveCompanyHourRow(id: string, companyId: string) {
   }
 
   revalidatePath('/time-tracking');
-  revalidatePath(`/time-tracking/${companyId}`);
+  revalidatePath(`/time-tracking/${projectId}`);
 }
 
-export async function generateReportToken(companyId: string) {
+export async function generateReportToken(projectId: string) {
   const supabase = await createClient();
   
   // Generate a random token
   const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   
   const { error } = await supabase
-    .from('companies')
+    .from('projects')
     .update({ report_token: token })
-    .eq('id', companyId);
+    .eq('id', projectId);
 
   if (error) {
     throw new Error(error.message);
   }
 
   revalidatePath('/time-tracking');
-  revalidatePath(`/time-tracking/${companyId}`);
+  revalidatePath(`/time-tracking/${projectId}`);
   
   return token;
 }
 
-export async function notifyClientAboutReport(companyId: string, monthName: string) {
+export async function notifyClientAboutReport(projectId: string, monthName: string) {
   const supabase = await createClient();
   
-  // Get company info
-  const { data: comp, error } = await supabase.from('companies').select('*').eq('id', companyId).single();
+  // Get project info
+  const { data: proj, error } = await supabase
+    .from('projects')
+    .select('*, companies(contact_email, name)')
+    .eq('id', projectId)
+    .single();
   
-  if (error || !comp) {
-    return { success: false, error: 'Impossibile recuperare i dati dell\'azienda' };
+  if (error || !proj || !proj.companies) {
+    return { success: false, error: 'Impossibile recuperare i dati del progetto' };
   }
 
-  if (!comp.contact_email) {
-    return { success: false, error: 'Nessuna email di contatto impostata per questa azienda' };
+  if (!proj.companies.contact_email) {
+    return { success: false, error: 'Nessuna email di contatto impostata per l\'azienda' };
   }
 
   // Ensure report token exists
-  let token = comp.report_token;
+  let token = proj.report_token;
   if (!token) {
-    token = await generateReportToken(companyId);
+    token = await generateReportToken(projectId);
   }
 
   const reportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/report/${token}`;
@@ -211,8 +225,8 @@ export async function notifyClientAboutReport(companyId: string, monthName: stri
   const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
 
   const res = await sendReportArchivedEmail({
-    to: comp.contact_email,
-    companyName: comp.name,
+    to: proj.companies.contact_email,
+    companyName: `${proj.companies.name} (Progetto: ${proj.title})`,
     reportUrl,
     monthName,
     logoUrl: settings?.logo_url

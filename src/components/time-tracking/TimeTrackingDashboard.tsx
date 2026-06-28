@@ -7,19 +7,23 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Search, Clock, ArrowRight, Package, Euro } from 'lucide-react'
 
-interface Company {
+interface Project {
   id: string;
-  name: string;
+  title: string;
+  company_id: string;
   prepaid_minutes?: number;
   hourly_rate?: number;
+  companies?: {
+    name: string;
+  };
 }
 
 interface TimeTrackingDashboardProps {
-  companies: Company[];
-  unbilledTotals: { company_id: string; minutes: number }[];
+  projects: Project[];
+  unbilledTotals: { project_id: string; minutes: number }[];
 }
 
-export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackingDashboardProps) {
+export function TimeTrackingDashboard({ projects, unbilledTotals }: TimeTrackingDashboardProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
   const formatTime = (minutes: number) => {
@@ -29,12 +33,13 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
   }
 
   const totalsMap = unbilledTotals.reduce((acc, curr) => {
-    acc[curr.company_id] = curr.minutes
+    acc[curr.project_id] = curr.minutes
     return acc
   }, {} as Record<string, number>)
 
-  const filteredCompanies = companies.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProjects = projects.filter(p => 
+    p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    (p.companies?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
@@ -43,14 +48,14 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
         <div className="relative w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <Input 
-            placeholder="Cerca azienda..." 
+            placeholder="Cerca progetto o azienda..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
-        <Link href="/companies">
-          <Button variant="outline">Gestisci Aziende Tracker</Button>
+        <Link href="/projects">
+          <Button variant="outline">Gestisci Progetti Tracker</Button>
         </Link>
       </div>
 
@@ -58,7 +63,7 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
         <table className="w-full text-sm text-left">
           <thead className="uppercase text-xs font-semibold" style={{ backgroundColor: 'rgba(0,0,0,0.2)', color: 'var(--color-text-muted)' }}>
             <tr>
-              <th className="px-6 py-4">Azienda</th>
+              <th className="px-6 py-4">Progetto (Azienda)</th>
               <th className="px-6 py-4">Contratto</th>
               <th className="px-6 py-4">Ore Attuali (da fatturare)</th>
               <th className="px-6 py-4">Stato / Costo</th>
@@ -66,10 +71,10 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
             </tr>
           </thead>
           <tbody style={{ borderTop: '1px solid var(--color-border)' }}>
-            {filteredCompanies.map(company => {
-              const currentMin = totalsMap[company.id] || 0
-              const prepaidMin = company.prepaid_minutes || 0
-              const rate = company.hourly_rate || 0
+            {filteredProjects.map(project => {
+              const currentMin = totalsMap[project.id] || 0
+              const prepaidMin = project.prepaid_minutes || 0
+              const rate = project.hourly_rate || 0
 
               let contractType = <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">📝 Semplice</span>
               if (prepaidMin > 0) {
@@ -88,8 +93,10 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
               }
 
               return (
-                <tr key={company.id} style={{ borderBottom: '1px solid var(--color-border)' }} className="transition-colors hover:bg-white/5">
-                  <td className="px-6 py-4 font-medium" style={{ color: 'var(--color-text-inverse)' }}>{company.name}</td>
+                <tr key={project.id} style={{ borderBottom: '1px solid var(--color-border)' }} className="transition-colors hover:bg-white/5">
+                  <td className="px-6 py-4 font-medium" style={{ color: 'var(--color-text-inverse)' }}>
+                    {project.title} <span style={{ color: 'var(--color-text-muted)', fontWeight: 'normal' }}>({project.companies?.name || 'Senza Azienda'})</span>
+                  </td>
                   <td className="px-6 py-4">{contractType}</td>
                   <td className="px-6 py-4 font-mono font-medium text-base">
                     {currentMin > 0 ? formatTime(currentMin) : '-'}
@@ -98,7 +105,7 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
                     {statusText}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`/time-tracking/${company.id}`}>
+                    <Link href={`/time-tracking/${project.id}`}>
                       <Button size="sm" className="gap-2">
                         <Clock size={16} />
                         Gestisci
@@ -108,10 +115,10 @@ export function TimeTrackingDashboard({ companies, unbilledTotals }: TimeTrackin
                 </tr>
               )
             })}
-            {filteredCompanies.length === 0 && (
+            {filteredProjects.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-6 py-8 text-center" style={{ color: 'var(--color-text-muted)' }}>
-                  Nessuna azienda trovata. Assicurati che l'opzione "Time Tracking" sia abilitata per l'azienda.
+                  Nessun progetto trovato. Assicurati che l'opzione "Time Tracking" sia abilitata per i progetti.
                 </td>
               </tr>
             )}

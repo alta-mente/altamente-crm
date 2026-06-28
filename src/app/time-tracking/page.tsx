@@ -5,37 +5,37 @@ import { TimeTrackingDashboard } from '@/components/time-tracking/TimeTrackingDa
 export default async function TimeTrackingPage() {
   const supabase = await createClient()
 
-  // Fetch all companies with time tracking enabled
-  const { data: companies, error } = await supabase
-    .from('companies')
-    .select('*')
+  // Fetch all projects with time tracking enabled
+  const { data: projects, error } = await supabase
+    .from('projects')
+    .select('*, companies(name)')
     .eq('time_tracking_enabled', true)
-    .order('name')
+    .order('title')
 
   if (error) {
-    console.error('Error fetching companies:', error)
+    console.error('Error fetching projects:', error)
   }
 
-  // Fetch unbilled hours for these companies
-  const companyIds = companies?.map(c => c.id) || []
-  let unbilledHours: { company_id: string, minutes: number }[] = []
+  // Fetch unbilled hours for these projects
+  const projectIds = projects?.map(p => p.id) || []
+  let unbilledHours: { project_id: string, minutes: number }[] = []
   
-  if (companyIds.length > 0) {
+  if (projectIds.length > 0) {
     const { data: hoursData, error: hoursError } = await supabase
       .from('company_hours')
-      .select('company_id, minutes')
-      .in('company_id', companyIds)
+      .select('project_id, minutes')
+      .in('project_id', projectIds)
       .eq('billed', false)
       
     if (!hoursError && hoursData) {
-      // Group by company
+      // Group by project
       const grouped = hoursData.reduce((acc, curr) => {
-        acc[curr.company_id] = (acc[curr.company_id] || 0) + curr.minutes
+        acc[curr.project_id] = (acc[curr.project_id] || 0) + curr.minutes
         return acc
       }, {} as Record<string, number>)
       
-      unbilledHours = Object.entries(grouped).map(([company_id, minutes]) => ({
-        company_id,
+      unbilledHours = Object.entries(grouped).map(([project_id, minutes]) => ({
+        project_id,
         minutes
       }))
     }
@@ -44,7 +44,7 @@ export default async function TimeTrackingPage() {
   return (
     <DashboardLayout title="Ore (Consuntivi)">
       <TimeTrackingDashboard 
-        companies={companies || []} 
+        projects={projects || []} 
         unbilledTotals={unbilledHours} 
       />
     </DashboardLayout>
