@@ -131,8 +131,12 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
       // Chiedi se inviare notifica
       if (confirm('Archiviazione completata. Vuoi inviare un\'email al cliente con il link al report pubblico?')) {
         const monthName = new Date().toLocaleString('it-IT', { month: 'long', year: 'numeric' });
-        await notifyClientAboutReport(company.id, monthName);
-        alert('Email inviata con successo al cliente!');
+        const res = await notifyClientAboutReport(company.id, monthName);
+        if (res && !res.success) {
+          alert(res.error || 'Errore durante l\'invio dell\'email');
+        } else {
+          alert('Email inviata con successo al cliente!');
+        }
       }
 
     } catch (err) {
@@ -166,8 +170,12 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
     setIsSendingEmail(true)
     try {
       const monthName = new Date().toLocaleString('it-IT', { month: 'long', year: 'numeric' });
-      await notifyClientAboutReport(company.id, monthName);
-      alert('Email inviata con successo al cliente!');
+      const res = await notifyClientAboutReport(company.id, monthName);
+      if (res && !res.success) {
+        alert(res.error || 'Errore durante l\'invio dell\'email');
+      } else {
+        alert('Email inviata con successo al cliente!');
+      }
     } catch (err: any) {
       alert(err.message || 'Errore durante l\'invio dell\'email');
     } finally {

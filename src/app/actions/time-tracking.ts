@@ -191,11 +191,11 @@ export async function notifyClientAboutReport(companyId: string, monthName: stri
   const { data: comp, error } = await supabase.from('companies').select('*').eq('id', companyId).single();
   
   if (error || !comp) {
-    throw new Error('Impossibile recuperare i dati dell\'azienda');
+    return { success: false, error: 'Impossibile recuperare i dati dell\'azienda' };
   }
 
   if (!comp.contact_email) {
-    throw new Error('Nessuna email di contatto impostata per questa azienda');
+    return { success: false, error: 'Nessuna email di contatto impostata per questa azienda' };
   }
 
   // Ensure report token exists
@@ -214,7 +214,7 @@ export async function notifyClientAboutReport(companyId: string, monthName: stri
   });
 
   if (!res.success) {
-    throw new Error('Errore durante l\'invio dell\'email');
+    return { success: false, error: res.error || 'Errore durante l\'invio dell\'email' };
   }
 
   return { success: true };
