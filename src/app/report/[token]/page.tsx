@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import { Clock, Euro, CheckCircle2, Package, Archive, CalendarDays, Activity, Folder } from 'lucide-react'
 import styles from '../Report.module.css'
@@ -16,7 +16,10 @@ export default async function PublicReportPage({
     notFound()
   }
 
-  const supabase = await createClient()
+  const supabase = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
   // Find company by token
   const { data: company, error: companyError } = await supabase
