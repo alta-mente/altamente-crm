@@ -10,7 +10,8 @@ const FROM_EMAIL = process.env.NOTIFICATION_EMAIL || 'Altamente CRM <notifiche@a
 export async function sendLowHoursAlertEmail({ 
   to, 
   companyName, 
-  remainingHours 
+  remainingHours,
+  logoUrl
 }: { 
   to: string, 
   companyName: string, 
@@ -59,7 +60,8 @@ export async function sendReportArchivedEmail({
   to, 
   companyName, 
   reportUrl,
-  monthName
+  monthName,
+  logoUrl
 }: { 
   to: string, 
   companyName: string, 
