@@ -28,6 +28,13 @@ export default async function PublicReportPage({
     .eq('report_token', resolvedParams.token)
     .single()
 
+  // Fetch settings for logo
+  const { data: settings } = await supabase
+    .from('workspace_settings')
+    .select('logo_url')
+    .eq('id', 1)
+    .single()
+
   if (companyError || !company) {
     return (
       <div className={styles.container}>
@@ -86,6 +93,17 @@ export default async function PublicReportPage({
 
   return (
     <div className={styles.container}>
+      {settings?.logo_url && (
+        <div style={{ width: '100%', textAlign: 'center', marginBottom: '1rem' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={settings.logo_url} 
+            alt="Logo Azienda" 
+            style={{ maxHeight: '80px', objectFit: 'contain', margin: '0 auto' }} 
+          />
+        </div>
+      )}
+      
       <div className={styles.reportCard}>
         
         {/* Header Area */}
