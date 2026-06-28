@@ -51,7 +51,7 @@ export async function sendLowHoursAlertEmail({
     return { success: true, data: response.data }
   } catch (error) {
     console.error('Email sending failed:', error)
-    return { success: false, error }
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 
@@ -104,6 +104,6 @@ export async function sendReportArchivedEmail({
     return { success: true, data: response.data }
   } catch (error) {
     console.error('Email sending failed:', error)
-    return { success: false, error }
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
