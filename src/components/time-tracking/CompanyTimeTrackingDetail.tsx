@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2 } from 'lucide-react'
@@ -160,9 +159,9 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
         </Button>
       </div>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between bg-gray-50 border-b border-gray-100 pb-4">
-          <CardTitle className="text-xl">{company.name}</CardTitle>
+      <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+        <div className="flex flex-row items-center justify-between bg-gray-50 border-b border-gray-100 p-6">
+          <h2 className="text-xl font-semibold">{company.name}</h2>
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleGenerateReportUrl} className="gap-2" title="Genera Link Report Pubblico">
               <FileText size={16} /> Report
@@ -178,8 +177,8 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
               </Button>
             )}
           </div>
-        </CardHeader>
-        <CardContent className="p-6">
+        </div>
+        <div className="p-6">
           <form onSubmit={handleSubmit} className={`p-4 rounded-lg border mb-8 transition-colors ${isEditing ? 'bg-yellow-50 border-yellow-300' : 'bg-gray-50 border-gray-200'}`}>
             <div className="flex flex-wrap gap-4 items-end">
               <div className="w-40">
@@ -274,8 +273,8 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
               )}
             </tbody>
           </table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
