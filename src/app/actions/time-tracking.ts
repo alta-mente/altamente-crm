@@ -72,10 +72,12 @@ export async function addCompanyHours(data: {
 
       // Only send exactly when it crosses the 2 hours threshold
       if (wasAboveThreshold && remainingHours <= 2) {
+        const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
         await sendLowHoursAlertEmail({
           to: comp.contact_email,
           companyName: comp.name,
-          remainingHours
+          remainingHours,
+          logoUrl: settings?.logo_url
         });
       }
     }
@@ -206,11 +208,14 @@ export async function notifyClientAboutReport(companyId: string, monthName: stri
 
   const reportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/report/${token}`;
 
+  const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
+
   const res = await sendReportArchivedEmail({
     to: comp.contact_email,
     companyName: comp.name,
     reportUrl,
-    monthName
+    monthName,
+    logoUrl: settings?.logo_url
   });
 
   if (!res.success) {

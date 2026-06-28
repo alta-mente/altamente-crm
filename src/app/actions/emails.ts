@@ -14,7 +14,8 @@ export async function sendLowHoursAlertEmail({
 }: { 
   to: string, 
   companyName: string, 
-  remainingHours: number 
+  remainingHours: number,
+  logoUrl?: string
 }) {
   if (!resend) {
     console.log('[SIMULAZIONE EMAIL] Avviso Monte Ore Esaurimento a:', to, 'Residuo:', remainingHours)
@@ -28,6 +29,7 @@ export async function sendLowHoursAlertEmail({
       subject: `Avviso: Monte ore in esaurimento - ${companyName}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          ${logoUrl ? `<div style="text-align: center; margin-bottom: 30px;"><img src="${logoUrl}" alt="Logo" style="max-height: 50px; width: auto;" /></div>` : ''}
           <h2 style="color: #000;">Avviso Monte Ore</h2>
           <p>Ciao,</p>
           <p>Ti informiamo che il monte ore prepagato per <strong>${companyName}</strong> è in esaurimento.</p>
@@ -62,7 +64,8 @@ export async function sendReportArchivedEmail({
   to: string, 
   companyName: string, 
   reportUrl: string,
-  monthName: string
+  monthName: string,
+  logoUrl?: string
 }) {
   if (!resend) {
     console.log('[SIMULAZIONE EMAIL] Report Archiviato a:', to, 'URL:', reportUrl)
@@ -76,6 +79,7 @@ export async function sendReportArchivedEmail({
       subject: `Report Attività Disponibile: ${monthName} - ${companyName}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          ${logoUrl ? `<div style="text-align: center; margin-bottom: 30px;"><img src="${logoUrl}" alt="Logo" style="max-height: 50px; width: auto;" /></div>` : ''}
           <h2 style="color: #000;">Nuovo Report Disponibile</h2>
           <p>Ciao,</p>
           <p>Abbiamo appena consolidato e aggiornato il report delle attività svolte per <strong>${companyName}</strong> nel periodo di <strong>${monthName}</strong>.</p>
