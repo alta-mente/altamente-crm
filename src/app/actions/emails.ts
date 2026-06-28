@@ -5,7 +5,7 @@ import { Resend } from 'resend'
 // Inizializziamo Resend solo se abbiamo la chiave (altrimenti simuliamo l'invio nei log)
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
-const FROM_EMAIL = 'Altamente CRM <notifiche@altamente.ai>' // Assicurati di aver verificato questo dominio su Resend
+const FROM_EMAIL = process.env.NOTIFICATION_EMAIL || 'Altamente CRM <notifiche@altamente.ai>' // Assicurati di aver verificato questo dominio su Resend
 
 export async function sendLowHoursAlertEmail({ 
   to, 
