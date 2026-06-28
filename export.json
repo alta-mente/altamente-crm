@@ -1,0 +1,3441 @@
+{
+    "companies": [
+        {
+            "wp_id": 10125,
+            "name": "AV Consulting",
+            "time_tracking_enabled": true,
+            "contact_email": "valter.valenti@avconsulting.it",
+            "prepaid_minutes": 0,
+            "hourly_rate": 30
+        },
+        {
+            "wp_id": 10099,
+            "name": "Avvocato Valerio Martone",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 10098,
+            "name": "Az.Agr.Alessandri Bruno",
+            "time_tracking_enabled": true,
+            "contact_email": "info@olioalessandri.it",
+            "prepaid_minutes": 300,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 9873,
+            "name": "altamente.it",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 9645,
+            "name": "Azienda Spadoni Marco",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 9345,
+            "name": "Francesco Guardato",
+            "time_tracking_enabled": true,
+            "contact_email": "Francesco.guardato@gmail.com",
+            "prepaid_minutes": 0,
+            "hourly_rate": 40
+        },
+        {
+            "wp_id": 9157,
+            "name": "Larghetti & Partners",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 9154,
+            "name": "Aurales di Federico Benedetti",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 9149,
+            "name": "Fimal SRL",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7678,
+            "name": "Area Immobiliare",
+            "time_tracking_enabled": true,
+            "contact_email": "",
+            "prepaid_minutes": 900,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7669,
+            "name": "Lucia Lucia",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7625,
+            "name": "altamente",
+            "time_tracking_enabled": true,
+            "contact_email": "arocchi@gmail.com",
+            "prepaid_minutes": 0,
+            "hourly_rate": 35
+        },
+        {
+            "wp_id": 7467,
+            "name": "Aptisystem",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7307,
+            "name": "google",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7304,
+            "name": "flli.mancini",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7293,
+            "name": "Movis",
+            "time_tracking_enabled": true,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 50
+        },
+        {
+            "wp_id": 7148,
+            "name": "DISTRETTO RURALE RISO E RANE",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7116,
+            "name": "The White Rose Guild Limited",
+            "time_tracking_enabled": true,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 35
+        },
+        {
+            "wp_id": 7118,
+            "name": "TRASPORTI E SERVIZI AMBIENTALI PER L'IMPRESA S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7120,
+            "name": "Università degli Studi di Urbino Carlo Bo",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7122,
+            "name": "VALENTINI GROUP PAPER SRL",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7124,
+            "name": "VHosting Solution s.r.l.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7125,
+            "name": "VOCALSOUND DI PALAZZI GABRIELE",
+            "time_tracking_enabled": true,
+            "contact_email": "info@vocalsound.it",
+            "prepaid_minutes": 600,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7097,
+            "name": "S.E.C.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7099,
+            "name": "Sant'Andrea B&B di Giuliani Michela",
+            "time_tracking_enabled": true,
+            "contact_email": "",
+            "prepaid_minutes": 300,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7101,
+            "name": "SEMAR S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7102,
+            "name": "SKIN SYSTEM S.R.L..",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7104,
+            "name": "SOCIETA' AGRICOLA RISO E RANE S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7106,
+            "name": "SPAR DESIGN S.R.L.",
+            "time_tracking_enabled": true,
+            "contact_email": "zanni@spar.it",
+            "prepaid_minutes": 0,
+            "hourly_rate": 30
+        },
+        {
+            "wp_id": 7107,
+            "name": "SPINOVATE S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7109,
+            "name": "STUDIO MARINELLI",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7110,
+            "name": "Tecnomarket s.r.l",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7112,
+            "name": "TECNOWAY SRL",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7114,
+            "name": "TESSUTI D'EPOCA DI PRITELLI RAFFAELLA",
+            "time_tracking_enabled": true,
+            "contact_email": "raffaellapritelli@gmail.com",
+            "prepaid_minutes": 0,
+            "hourly_rate": 50
+        },
+        {
+            "wp_id": 7078,
+            "name": "MELETTI MARCO",
+            "time_tracking_enabled": true,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 50
+        },
+        {
+            "wp_id": 7080,
+            "name": "Molecular Modelling Studio di Alessandro Mazzanti",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7082,
+            "name": "MY TEAM LAB SRL",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7084,
+            "name": "NASSIBA SOCIETA' A RESPONSABILITA' LIMITATA SEMPLIFICATA",
+            "time_tracking_enabled": true,
+            "contact_email": "Nassibaleslous@gmail.com",
+            "prepaid_minutes": 0,
+            "hourly_rate": 40
+        },
+        {
+            "wp_id": 7086,
+            "name": "NEW FACES & STARS S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7088,
+            "name": "NUCCI CONSULENZA DEL LAVORO E LEGALE DI BENEDETTI A & I",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7089,
+            "name": "PADA ENGINEERING S.R.L.",
+            "time_tracking_enabled": true,
+            "contact_email": "bfiorani@pada.it",
+            "prepaid_minutes": 0,
+            "hourly_rate": 45
+        },
+        {
+            "wp_id": 7091,
+            "name": "PICENI ART FOR JOB SOCIETA' COOPERATIVA CONSORTILE",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7093,
+            "name": "PIUITALIA S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7095,
+            "name": "PUNTO METAL DI BARTOLINI ORAZIO",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7048,
+            "name": "G.EM.A. MEDICAL SRL",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7049,
+            "name": "GELATERIA TROPICAL DI CERRI FRANCESCA",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7051,
+            "name": "GENERAL S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7053,
+            "name": "GIESSE PLAST S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7055,
+            "name": "Golden Brain ETS Associazione culturale",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7057,
+            "name": "HOLIDAY HOME DI LUCIA DIOMEDE",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7059,
+            "name": "INNOVA GROUP S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7061,
+            "name": "JUNIOR GLASS 2007 S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7063,
+            "name": "Lamicolor",
+            "time_tracking_enabled": true,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 60
+        },
+        {
+            "wp_id": 7065,
+            "name": "Le Nuvole di Maurizio Tombari",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7067,
+            "name": "LE PANIER DI CLAUDIA GATTI",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7069,
+            "name": "LION CONSULTING SRL",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7071,
+            "name": "LOVANIUM SAS DR. FRANK MUSARRA & DR. FEDERICA PRADARELLI",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7073,
+            "name": "Luigi Martinelli",
+            "time_tracking_enabled": true,
+            "contact_email": "martinelli.luigi@hotmail.it",
+            "prepaid_minutes": 0,
+            "hourly_rate": 60
+        },
+        {
+            "wp_id": 7074,
+            "name": "M-M MOTORS S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7076,
+            "name": "MASCHIO GASPARDO S.P.A.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7021,
+            "name": "CASSIANI SOLUTION S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7023,
+            "name": "CHIAMATI BIO SOCIETA AGRICOLA",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7025,
+            "name": "CONSORZIO DI TUTELA E VALORIZZAZIONE DELL'OLIO EXTRAVERGINE D'OLIVA CARTOCETO",
+            "time_tracking_enabled": true,
+            "contact_email": "info@oliocartocetodop.it",
+            "prepaid_minutes": 600,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7027,
+            "name": "DDEXPERIENCE S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7029,
+            "name": "DONZELLI LORENZO",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7031,
+            "name": "DREAMING S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7032,
+            "name": "EDILMAG S.R.L.",
+            "time_tracking_enabled": true,
+            "contact_email": "cri@edilmag.it",
+            "prepaid_minutes": 0,
+            "hourly_rate": 45
+        },
+        {
+            "wp_id": 7034,
+            "name": "ENTE CPT SCUOLA EDILE",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7036,
+            "name": "FACILE.IT RETAIL S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7038,
+            "name": "FALEGNAMERIA TAFANI DI TAFANI GIANCARLO E DANIELE S.N.C.",
+            "time_tracking_enabled": true,
+            "contact_email": "info@tafanisrl.it",
+            "prepaid_minutes": 0,
+            "hourly_rate": 60
+        },
+        {
+            "wp_id": 7040,
+            "name": "FILPLACE S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7042,
+            "name": "FISCOZEN S.P.A.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7044,
+            "name": "FIVE GROUP MONZA S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7046,
+            "name": "FONDAZIONE PESCHERIA CENTRO ARTI VISIVE",
+            "time_tracking_enabled": true,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 52
+        },
+        {
+            "wp_id": 7003,
+            "name": "ADRIATICA COSTRUZIONI S.R.L.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7005,
+            "name": "AGRICOLA 2000 SOCIETA' COOP. PER AZIONI",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7007,
+            "name": "SD ITALY",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7009,
+            "name": "ARENA S.P.A.",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7011,
+            "name": "ATELIER LM INTERIORS SRLS",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7013,
+            "name": "B.S.M. INOX SOCIETA' A RESPONSABILITA' LIMITATA SEMPLIFICATA",
+            "time_tracking_enabled": true,
+            "contact_email": "info@bsminox.it",
+            "prepaid_minutes": 0,
+            "hourly_rate": 55
+        },
+        {
+            "wp_id": 7015,
+            "name": "BAR CAFFETTERIA EDICOLA CARTOLERIA BINDA DI FEDERICI ENRICO",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7017,
+            "name": "BRAND GROUP SRL",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 7019,
+            "name": "Cassa Edile Pesaro",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        },
+        {
+            "wp_id": 6998,
+            "name": "Mood agency",
+            "time_tracking_enabled": false,
+            "contact_email": "",
+            "prepaid_minutes": 0,
+            "hourly_rate": 0
+        }
+    ],
+    "hours": [
+        {
+            "old_id": 2,
+            "company_wp_id": 7025,
+            "date": "2025-10-01 00:00:00",
+            "description": "assistenza rinnovo servizi",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 4,
+            "company_wp_id": 7025,
+            "date": "2025-10-30 00:00:00",
+            "description": "modifiche al sito come da mail di oggi (logo)",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 5,
+            "company_wp_id": 7025,
+            "date": "2025-11-03 00:00:00",
+            "description": "nuova tabella soci produttori",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 6,
+            "company_wp_id": 7025,
+            "date": "2025-11-13 00:00:00",
+            "description": "pubblicazione evento",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 7,
+            "company_wp_id": 7025,
+            "date": "2025-12-21 00:00:00",
+            "description": "inserimento loghi regione e eu",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 11,
+            "company_wp_id": 7078,
+            "date": "2024-11-22 00:00:00",
+            "description": "Creazione campagne facebook e google (cumulativo anche dei giorni precedenti). preparazione degli accoount, metodi di pagamento ecc ecc",
+            "minutes": 240,
+            "billed": true,
+            "batch_id": ""
+        },
+        {
+            "old_id": 12,
+            "company_wp_id": 7078,
+            "date": "2024-11-26 00:00:00",
+            "description": "campagne sistemazione problemi con pagamenti e altra assistenza",
+            "minutes": 180,
+            "billed": true,
+            "batch_id": ""
+        },
+        {
+            "old_id": 13,
+            "company_wp_id": 7078,
+            "date": "2024-12-02 00:00:00",
+            "description": "assistenza campagne",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": ""
+        },
+        {
+            "old_id": 14,
+            "company_wp_id": 7078,
+            "date": "2024-12-13 00:00:00",
+            "description": "assistenza campagne",
+            "minutes": 120,
+            "billed": true,
+            "batch_id": ""
+        },
+        {
+            "old_id": 15,
+            "company_wp_id": 7078,
+            "date": "2024-12-14 00:00:00",
+            "description": "campagna local",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": ""
+        },
+        {
+            "old_id": 16,
+            "company_wp_id": 7078,
+            "date": "2025-01-25 00:00:00",
+            "description": "nuova campagna san valentino",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": ""
+        },
+        {
+            "old_id": 17,
+            "company_wp_id": 7078,
+            "date": "2025-02-07 00:00:00",
+            "description": "ripristino sito marcomeletti.com",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": ""
+        },
+        {
+            "old_id": 21,
+            "company_wp_id": 7078,
+            "date": "2025-10-03 00:00:00",
+            "description": "caricamento prezzi nuovi",
+            "minutes": 180,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 22,
+            "company_wp_id": 7106,
+            "date": "2025-05-01 00:00:00",
+            "description": "forfait mese di maggio 2025",
+            "minutes": 240,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 23,
+            "company_wp_id": 7106,
+            "date": "2025-06-03 00:00:00",
+            "description": "singole campagne locali come da mail di Federica",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 24,
+            "company_wp_id": 7106,
+            "date": "2025-06-04 00:00:00",
+            "description": "singole campagne locali come da mail di Federica",
+            "minutes": 120,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 25,
+            "company_wp_id": 7106,
+            "date": "2025-05-04 00:00:00",
+            "description": "setup tik tok event manager sul sito spar per future ads",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 26,
+            "company_wp_id": 7106,
+            "date": "2025-06-09 00:00:00",
+            "description": "report campagne per federica",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 27,
+            "company_wp_id": 7106,
+            "date": "2025-06-10 00:00:00",
+            "description": "risoluzione problematica register (gestione ticket, migrazione nel nuovo server, ripristino cms)",
+            "minutes": 285,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 28,
+            "company_wp_id": 7106,
+            "date": "2025-06-11 00:00:00",
+            "description": "ripristino CMS",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 29,
+            "company_wp_id": 7106,
+            "date": "2025-06-17 00:00:00",
+            "description": "sistemazione rivenditori + report campagne",
+            "minutes": 135,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 30,
+            "company_wp_id": 7106,
+            "date": "2025-06-13 00:00:00",
+            "description": "caricamento nuovo listino 2025",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 31,
+            "company_wp_id": 7106,
+            "date": "2025-06-25 00:00:00",
+            "description": "caricamenti su tiktok e post sul magazine del sito",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 32,
+            "company_wp_id": 7106,
+            "date": "2025-06-25 00:00:00",
+            "description": "nuove ads campagne locals",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 33,
+            "company_wp_id": 7106,
+            "date": "2025-06-27 00:00:00",
+            "description": "nuove ads campagne locals",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20251210-1358"
+        },
+        {
+            "old_id": 34,
+            "company_wp_id": 7106,
+            "date": "2025-07-10 00:00:00",
+            "description": "caricamento video tik tok (cumulativo piu giorni)",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 35,
+            "company_wp_id": 7106,
+            "date": "2025-07-24 00:00:00",
+            "description": "assistenza tecnica per problemi down del sito",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 36,
+            "company_wp_id": 7106,
+            "date": "2025-08-06 00:00:00",
+            "description": "carciamenti e eliminazioni su cms e sito",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 37,
+            "company_wp_id": 7106,
+            "date": "2025-07-13 00:00:00",
+            "description": "news per rivenditori esteri dubai e panama",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 38,
+            "company_wp_id": 7106,
+            "date": "2025-07-14 00:00:00",
+            "description": "sistemazione invio mail del cerca rivenditore (analisi ricerca soluzione debug del codice)",
+            "minutes": 195,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 39,
+            "company_wp_id": 7106,
+            "date": "2025-07-15 00:00:00",
+            "description": "assistenza facebook verified",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 40,
+            "company_wp_id": 7106,
+            "date": "2025-10-15 00:00:00",
+            "description": "migrazione su server vhosting",
+            "minutes": 300,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 41,
+            "company_wp_id": 7106,
+            "date": "2025-10-15 00:00:00",
+            "description": "nuove campagne local con lead generation",
+            "minutes": 150,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 42,
+            "company_wp_id": 7106,
+            "date": "2025-10-18 00:00:00",
+            "description": "assistenza campagne e altro",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 43,
+            "company_wp_id": 7106,
+            "date": "2025-10-21 00:00:00",
+            "description": "aggioranemnti e debug CMS",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 44,
+            "company_wp_id": 7106,
+            "date": "2025-11-14 00:00:00",
+            "description": "manutenzione campagna leads locali",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 45,
+            "company_wp_id": 7106,
+            "date": "2025-11-29 00:00:00",
+            "description": "aggiornamento prestige notte",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 46,
+            "company_wp_id": 7106,
+            "date": "2025-12-02 00:00:00",
+            "description": "NUOVA AREA RISERVATA (cumulativo di più giorni di sviluppo e testing)",
+            "minutes": 1080,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 47,
+            "company_wp_id": 7106,
+            "date": "2025-12-09 00:00:00",
+            "description": "cancellazione file da area riservata come da mail di federica",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1359"
+        },
+        {
+            "old_id": 48,
+            "company_wp_id": 7063,
+            "date": "2024-09-12 00:00:00",
+            "description": "aggiunta allumini \\\"Line\\\"",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 49,
+            "company_wp_id": 7063,
+            "date": "2024-11-04 00:00:00",
+            "description": "assistenza",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 50,
+            "company_wp_id": 7063,
+            "date": "2024-11-05 00:00:00",
+            "description": "cambio immagine home",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 51,
+            "company_wp_id": 7063,
+            "date": "2025-03-06 00:00:00",
+            "description": "aggiornamento certificazioni ita e ing",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 52,
+            "company_wp_id": 7063,
+            "date": "2025-03-17 00:00:00",
+            "description": "Nuova news camper 2025 ita e ing",
+            "minutes": 135,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 53,
+            "company_wp_id": 7063,
+            "date": "2025-03-19 00:00:00",
+            "description": "modifiche compact exterior",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 54,
+            "company_wp_id": 7063,
+            "date": "2025-05-06 00:00:00",
+            "description": "agiornamenrto certificazioni ita e ing",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 55,
+            "company_wp_id": 7063,
+            "date": "2025-05-22 00:00:00",
+            "description": "aggiornamento marmi e urban ita e ing",
+            "minutes": 135,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 56,
+            "company_wp_id": 7063,
+            "date": "2025-05-28 00:00:00",
+            "description": "aggiornamento News 2025",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 57,
+            "company_wp_id": 7063,
+            "date": "2025-05-30 00:00:00",
+            "description": "aggiornamento News 2025 versione inglese",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1418"
+        },
+        {
+            "old_id": 58,
+            "company_wp_id": 7063,
+            "date": "2025-07-23 00:00:00",
+            "description": "aggiornamenti stone 6119 6123",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 59,
+            "company_wp_id": 7063,
+            "date": "2025-10-27 00:00:00",
+            "description": "aggiornamenti news marmi e legni",
+            "minutes": 165,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 60,
+            "company_wp_id": 7063,
+            "date": "2025-10-28 00:00:00",
+            "description": "aggiunta marmo 6109",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 61,
+            "company_wp_id": 7063,
+            "date": "2025-11-04 00:00:00",
+            "description": "assistenza per immagini sito da fornire a rivenditore inglese",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 62,
+            "company_wp_id": 7046,
+            "date": "2025-04-15 00:00:00",
+            "description": "aggiornamento palazzo ducale pesaromusei.it",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 63,
+            "company_wp_id": 7046,
+            "date": "2025-04-23 00:00:00",
+            "description": "aggiornamento nuovo CDA",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 64,
+            "company_wp_id": 7046,
+            "date": "2025-04-29 00:00:00",
+            "description": "aggiornamento nuovo CDA",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 65,
+            "company_wp_id": 7046,
+            "date": "2025-04-30 00:00:00",
+            "description": "aggiornamento mission",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 66,
+            "company_wp_id": 7046,
+            "date": "2025-05-02 00:00:00",
+            "description": "NUOVI DOCUMENTI DISPONIBILI AL BANDO PER NUOVO DIRETTORE GENERALE 2025",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 67,
+            "company_wp_id": 7046,
+            "date": "2025-05-02 00:00:00",
+            "description": "aggiornamenti vari sul backend",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 68,
+            "company_wp_id": 7046,
+            "date": "2025-05-08 00:00:00",
+            "description": "aggiunta documento ad avvisi pubblici",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 69,
+            "company_wp_id": 7046,
+            "date": "2025-05-12 00:00:00",
+            "description": "assistenza",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 70,
+            "company_wp_id": 7046,
+            "date": "2025-05-20 00:00:00",
+            "description": "Editing di pdf e pubblicazione",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 71,
+            "company_wp_id": 7046,
+            "date": "2025-05-20 00:00:00",
+            "description": "modifica alla tabella Consulenti e collaboratori",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 72,
+            "company_wp_id": 7046,
+            "date": "2025-05-27 00:00:00",
+            "description": "creazione pagina temporanea https:\/\/pesaromusei.it\/summermuseum\/",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 73,
+            "company_wp_id": 7046,
+            "date": "2025-06-04 00:00:00",
+            "description": "caricamento pdf summermuseum con nuovo plugin pageflip",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 74,
+            "company_wp_id": 7046,
+            "date": "2025-07-14 00:00:00",
+            "description": "assistenza per casella email palazzoducale e altro",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 75,
+            "company_wp_id": 7046,
+            "date": "2025-07-31 00:00:00",
+            "description": "assistenza caselle email",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 76,
+            "company_wp_id": 7046,
+            "date": "2025-08-12 00:00:00",
+            "description": "assistenza telefonica",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 77,
+            "company_wp_id": 7046,
+            "date": "2025-08-13 00:00:00",
+            "description": "assistenza per quovai",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 78,
+            "company_wp_id": 7046,
+            "date": "2025-08-19 00:00:00",
+            "description": "aggiornamenti link card mudei",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 79,
+            "company_wp_id": 7046,
+            "date": "2025-08-19 00:00:00",
+            "description": "aggiornamenti tecnici necessari: versione di PHP del server, versione di wordpress.",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1439"
+        },
+        {
+            "old_id": 80,
+            "company_wp_id": 7046,
+            "date": "2025-08-19 00:00:00",
+            "description": "sostituzione mappa google con mappa leaflet",
+            "minutes": 150,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 81,
+            "company_wp_id": 7046,
+            "date": "2025-08-19 00:00:00",
+            "description": "asistenza per analytics",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 82,
+            "company_wp_id": 7046,
+            "date": "2025-09-09 00:00:00",
+            "description": "supporto per recupero tabella collabioratori andata persa",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 83,
+            "company_wp_id": 7046,
+            "date": "2025-10-02 00:00:00",
+            "description": "supporto con nuova casella di posta",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 84,
+            "company_wp_id": 7046,
+            "date": "2025-11-13 00:00:00",
+            "description": "assistenza per editing pdf curriculu,m",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 85,
+            "company_wp_id": 7046,
+            "date": "2025-11-19 00:00:00",
+            "description": "supporto tecnico a qovai per Impostazione DKIM per dominio pesaromusei.it",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 86,
+            "company_wp_id": 7099,
+            "date": "2025-03-25 00:00:00",
+            "description": "modifiche sito come da whatspp di stefano",
+            "minutes": 60,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 87,
+            "company_wp_id": 7099,
+            "date": "2025-05-21 00:00:00",
+            "description": "menu inglese e verifica problema click su email",
+            "minutes": 75,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 88,
+            "company_wp_id": 7099,
+            "date": "2025-08-01 00:00:00",
+            "description": "assistenza telefonica per rinnovo dominio",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 89,
+            "company_wp_id": 7099,
+            "date": "2025-08-13 00:00:00",
+            "description": "cambio dei dati di fatturazione con ticket su aruba",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 90,
+            "company_wp_id": 7114,
+            "date": "2025-08-04 00:00:00",
+            "description": "assistenza su varie cose (cumulativa dei giorni precedenti)",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251210-1824"
+        },
+        {
+            "old_id": 91,
+            "company_wp_id": 7114,
+            "date": "2025-08-04 00:00:00",
+            "description": "aggiornamenti vari sul sito necessari dopo mesi dall\\'ultimo accesso",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20251210-1824"
+        },
+        {
+            "old_id": 92,
+            "company_wp_id": 7114,
+            "date": "2025-08-04 00:00:00",
+            "description": "Caricamento nuovo post sul blog",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1824"
+        },
+        {
+            "old_id": 93,
+            "company_wp_id": 7114,
+            "date": "2025-08-26 00:00:00",
+            "description": "assistenza su codice sconto e altro",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1824"
+        },
+        {
+            "old_id": 94,
+            "company_wp_id": 7114,
+            "date": "2025-10-20 00:00:00",
+            "description": "pubblicazione articolo blog",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251210-1824"
+        },
+        {
+            "old_id": 95,
+            "company_wp_id": 7114,
+            "date": "2025-11-24 00:00:00",
+            "description": "assistenza analytucs",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251210-1824"
+        },
+        {
+            "old_id": 102,
+            "company_wp_id": 7032,
+            "date": "2025-12-11 00:00:00",
+            "description": "inizio lavori su nuovo sito ilink. Nuova veste grafica e nuovi contenuti",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 103,
+            "company_wp_id": 7106,
+            "date": "2025-12-11 00:00:00",
+            "description": "campagna prestige",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 104,
+            "company_wp_id": 7678,
+            "date": "2022-07-05 00:00:00",
+            "description": "eliminazione immobili e aggiornamenti + aggiunta 4 immobili",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 105,
+            "company_wp_id": 7678,
+            "date": "2022-08-31 00:00:00",
+            "description": "aggiornamenoto immobili",
+            "minutes": 60,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 106,
+            "company_wp_id": 7678,
+            "date": "2022-10-10 00:00:00",
+            "description": "caricamento immobili",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 107,
+            "company_wp_id": 7678,
+            "date": "2023-07-28 00:00:00",
+            "description": "aggionamento prezzi ed eliminazione di tutti li annunci tranne 7",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 108,
+            "company_wp_id": 7678,
+            "date": "2023-07-31 00:00:00",
+            "description": "caricamento immobili",
+            "minutes": 210,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 109,
+            "company_wp_id": 7678,
+            "date": "2023-08-01 00:00:00",
+            "description": "caricamento immobili",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 110,
+            "company_wp_id": 7678,
+            "date": "2023-09-25 00:00:00",
+            "description": "caricamento immobili",
+            "minutes": 60,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 111,
+            "company_wp_id": 7678,
+            "date": "2024-02-11 00:00:00",
+            "description": "caricamento immobili",
+            "minutes": 135,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 112,
+            "company_wp_id": 7678,
+            "date": "2024-07-01 00:00:00",
+            "description": "manutenzioine sito in down",
+            "minutes": 60,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 113,
+            "company_wp_id": 7116,
+            "date": "2025-04-22 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1039"
+        },
+        {
+            "old_id": 114,
+            "company_wp_id": 7116,
+            "date": "2025-05-08 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1039"
+        },
+        {
+            "old_id": 115,
+            "company_wp_id": 7116,
+            "date": "2025-05-22 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1039"
+        },
+        {
+            "old_id": 116,
+            "company_wp_id": 7116,
+            "date": "2025-06-04 00:00:00",
+            "description": "aggiornamenti vari e aggiornamento terms and cond",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20251211-1039"
+        },
+        {
+            "old_id": 117,
+            "company_wp_id": 7116,
+            "date": "2025-06-21 00:00:00",
+            "description": "aggiornamenti",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1039"
+        },
+        {
+            "old_id": 118,
+            "company_wp_id": 7116,
+            "date": "2025-07-10 00:00:00",
+            "description": "aggiornamenti",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1039"
+        },
+        {
+            "old_id": 119,
+            "company_wp_id": 7116,
+            "date": "2025-07-28 00:00:00",
+            "description": "aggiornamenti",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251211-1039"
+        },
+        {
+            "old_id": 121,
+            "company_wp_id": 7116,
+            "date": "2025-08-12 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 122,
+            "company_wp_id": 7116,
+            "date": "2025-08-28 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 123,
+            "company_wp_id": 7116,
+            "date": "2025-09-10 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 124,
+            "company_wp_id": 7116,
+            "date": "2025-09-28 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 125,
+            "company_wp_id": 7116,
+            "date": "2025-10-12 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 126,
+            "company_wp_id": 7116,
+            "date": "2025-10-30 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 127,
+            "company_wp_id": 7116,
+            "date": "2025-11-11 00:00:00",
+            "description": "assistenza per connessione dagi usa",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 129,
+            "company_wp_id": 7116,
+            "date": "2025-08-12 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 130,
+            "company_wp_id": 7116,
+            "date": "2025-08-28 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 131,
+            "company_wp_id": 7116,
+            "date": "2025-09-10 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 132,
+            "company_wp_id": 7116,
+            "date": "2025-09-28 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 133,
+            "company_wp_id": 7116,
+            "date": "2025-10-12 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 135,
+            "company_wp_id": 7106,
+            "date": "2025-12-11 00:00:00",
+            "description": "campagna prestige",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 136,
+            "company_wp_id": 7013,
+            "date": "2025-05-09 00:00:00",
+            "description": "Bug invio mail ordini",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251211-1913"
+        },
+        {
+            "old_id": 137,
+            "company_wp_id": 7013,
+            "date": "2025-05-15 00:00:00",
+            "description": "aggiornamento wordpress e plugin",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251211-1913"
+        },
+        {
+            "old_id": 138,
+            "company_wp_id": 7013,
+            "date": "2025-05-16 00:00:00",
+            "description": "assistenza varia e avvio campagne",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251211-1913"
+        },
+        {
+            "old_id": 139,
+            "company_wp_id": 7013,
+            "date": "2025-06-10 00:00:00",
+            "description": "conversion tracking",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251211-1913"
+        },
+        {
+            "old_id": 140,
+            "company_wp_id": 7013,
+            "date": "2025-06-25 00:00:00",
+            "description": "problema invio mail ordini e aggiornamento plugin",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1913"
+        },
+        {
+            "old_id": 141,
+            "company_wp_id": 7013,
+            "date": "2025-07-01 00:00:00",
+            "description": "aggiornamenti spese di spedizione e altro",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251211-1913"
+        },
+        {
+            "old_id": 142,
+            "company_wp_id": 7013,
+            "date": "2025-07-28 00:00:00",
+            "description": "aggiornamento tema",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1913"
+        },
+        {
+            "old_id": 143,
+            "company_wp_id": 7013,
+            "date": "2025-07-03 00:00:00",
+            "description": "banner ferie",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 144,
+            "company_wp_id": 7013,
+            "date": "2025-09-10 00:00:00",
+            "description": "aggiornamento elementor",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 145,
+            "company_wp_id": 7013,
+            "date": "2025-09-30 00:00:00",
+            "description": "aggiornamento tema e elementor e risoluzione bug",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 146,
+            "company_wp_id": 7013,
+            "date": "2025-10-01 00:00:00",
+            "description": "call con amad + modifica a sconto 10% nel checkout",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 147,
+            "company_wp_id": 7293,
+            "date": "2023-02-04 00:00:00",
+            "description": "caricamento post sito+fb cancer day",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 148,
+            "company_wp_id": 7293,
+            "date": "2023-02-13 00:00:00",
+            "description": "post facebook ospedale bellaria bologna",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 149,
+            "company_wp_id": 7293,
+            "date": "2023-02-20 00:00:00",
+            "description": "creazione profilo instagram e set up con pagina facebook",
+            "minutes": 120,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 150,
+            "company_wp_id": 7293,
+            "date": "2023-03-02 00:00:00",
+            "description": "supporto Rita con CV e altro",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 151,
+            "company_wp_id": 7293,
+            "date": "2023-03-13 00:00:00",
+            "description": "post maratona su sito e fb e ig",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 152,
+            "company_wp_id": 7293,
+            "date": "2023-04-06 00:00:00",
+            "description": "5mille su sito golden brain",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 153,
+            "company_wp_id": 7293,
+            "date": "2023-04-20 00:00:00",
+            "description": "pdf calendario eventi",
+            "minutes": 120,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 154,
+            "company_wp_id": 7293,
+            "date": "2023-05-15 00:00:00",
+            "description": "creazione sistema gestione eventi 2023 su sito movis",
+            "minutes": 180,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 155,
+            "company_wp_id": 7293,
+            "date": "2023-06-16 00:00:00",
+            "description": "modifiche varie locandina in vari giorni",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 156,
+            "company_wp_id": 7293,
+            "date": "2023-06-06 00:00:00",
+            "description": "creazione loccandina per jazz",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 157,
+            "company_wp_id": 7293,
+            "date": "2023-06-26 00:00:00",
+            "description": "modifiche varie sito movis e altro",
+            "minutes": 120,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 158,
+            "company_wp_id": 7293,
+            "date": "2023-07-24 00:00:00",
+            "description": "aggiunta logo fab",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 159,
+            "company_wp_id": 7293,
+            "date": "2023-07-27 00:00:00",
+            "description": "locandina flamiania rosa e altro",
+            "minutes": 120,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 160,
+            "company_wp_id": 7293,
+            "date": "2023-07-31 00:00:00",
+            "description": "locandina flamiania rosa e altro",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 161,
+            "company_wp_id": 7293,
+            "date": "2023-08-23 00:00:00",
+            "description": "varie flaminia rosa",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 162,
+            "company_wp_id": 7293,
+            "date": "2023-09-25 00:00:00",
+            "description": "varie flaminia rosa mese di settembre",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 163,
+            "company_wp_id": 7293,
+            "date": "2023-10-06 00:00:00",
+            "description": "locandina visite al palazzo ducale piu altro",
+            "minutes": 120,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 164,
+            "company_wp_id": 7293,
+            "date": "2023-10-17 00:00:00",
+            "description": "sistema prenotazione visite  palzzo più altro vari giorni",
+            "minutes": 180,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 165,
+            "company_wp_id": 7293,
+            "date": "2023-11-20 00:00:00",
+            "description": "locandina dieta mediterranea",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 166,
+            "company_wp_id": 7293,
+            "date": "2024-03-22 00:00:00",
+            "description": "pagina rita emili su movis",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20251211-1916"
+        },
+        {
+            "old_id": 167,
+            "company_wp_id": 7293,
+            "date": "2025-01-28 00:00:00",
+            "description": "inserimenti eventi passati per elena",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 168,
+            "company_wp_id": 7293,
+            "date": "2025-01-31 00:00:00",
+            "description": "inserimenti eventi passati per elena",
+            "minutes": 75,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 169,
+            "company_wp_id": 7293,
+            "date": "2025-02-03 00:00:00",
+            "description": "inserimenti eventi passati per elena",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 170,
+            "company_wp_id": 7293,
+            "date": "2025-02-05 00:00:00",
+            "description": "vari interventi tra movis e golden brain",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 171,
+            "company_wp_id": 7293,
+            "date": "2025-02-05 00:00:00",
+            "description": "caricmanto evento maratona rosa (vari giorni)",
+            "minutes": 180,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 172,
+            "company_wp_id": 7625,
+            "date": "2025-12-12 00:00:00",
+            "description": "assistenza per connessione dagi usa",
+            "minutes": 60,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 174,
+            "company_wp_id": 7032,
+            "date": "2025-12-05 00:00:00",
+            "description": "prima riunione avvio lavori presso OCM",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 175,
+            "company_wp_id": 7106,
+            "date": "2025-12-16 00:00:00",
+            "description": "Campagna Isola, penisola o cucina lineare?",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 176,
+            "company_wp_id": 7032,
+            "date": "2025-12-18 00:00:00",
+            "description": "trasferimento sito su nuovo server",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 177,
+            "company_wp_id": 7032,
+            "date": "2025-12-19 00:00:00",
+            "description": "configurazione posta",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 178,
+            "company_wp_id": 7114,
+            "date": "2025-12-19 00:00:00",
+            "description": "creazione coupon e altro",
+            "minutes": 15,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 180,
+            "company_wp_id": 7032,
+            "date": "2025-12-22 00:00:00",
+            "description": "predisposizione nuovo sito ilink (cumulativo di più giorni: creazione ambiente di staging + setup nuova veste grafica)",
+            "minutes": 480,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 182,
+            "company_wp_id": 7032,
+            "date": "2025-12-15 00:00:00",
+            "description": "call industria 4.0",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 183,
+            "company_wp_id": 7625,
+            "date": "2025-12-22 00:00:00",
+            "description": "sacac",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 189,
+            "company_wp_id": 7032,
+            "date": "2025-12-30 00:00:00",
+            "description": "avanzamento sito nuovo ilink",
+            "minutes": 180,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 190,
+            "company_wp_id": 7032,
+            "date": "2026-01-02 00:00:00",
+            "description": "avanzamento ilink con setup plugin lingue e altro",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 191,
+            "company_wp_id": 9345,
+            "date": "2026-01-02 00:00:00",
+            "description": "prime modifiche richieste",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260123-1509"
+        },
+        {
+            "old_id": 192,
+            "company_wp_id": 9345,
+            "date": "2026-01-02 00:00:00",
+            "description": "prima bozza bozza pagina kids",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260123-1509"
+        },
+        {
+            "old_id": 193,
+            "company_wp_id": 7063,
+            "date": "2026-01-07 00:00:00",
+            "description": "inserimento campioni uniti",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 194,
+            "company_wp_id": 7032,
+            "date": "2026-01-08 00:00:00",
+            "description": "caricamento pagina iperammortamento",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 195,
+            "company_wp_id": 7032,
+            "date": "2026-01-08 00:00:00",
+            "description": "affinamenti a iperammortamento",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 196,
+            "company_wp_id": 9345,
+            "date": "2026-01-09 00:00:00",
+            "description": "avanzamento pagina kids",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260123-1509"
+        },
+        {
+            "old_id": 197,
+            "company_wp_id": 7032,
+            "date": "2026-01-09 00:00:00",
+            "description": "bozza pagina software",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 198,
+            "company_wp_id": 7063,
+            "date": "2026-01-12 00:00:00",
+            "description": "sostituzione certifcati iso",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 199,
+            "company_wp_id": 7073,
+            "date": "2026-01-12 00:00:00",
+            "description": "assistenza per ripristino mail e sito",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 200,
+            "company_wp_id": 7114,
+            "date": "2026-01-12 00:00:00",
+            "description": "assistenza per sito superati limiti sia disco che database",
+            "minutes": 120,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 201,
+            "company_wp_id": 7013,
+            "date": "2026-01-12 00:00:00",
+            "description": "assistenza per pagamento non andato a buon fine con carta di credito di james morales",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 202,
+            "company_wp_id": 9345,
+            "date": "2026-01-12 00:00:00",
+            "description": "aggiornamento, versione mobile",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20260123-1509"
+        },
+        {
+            "old_id": 203,
+            "company_wp_id": 7032,
+            "date": "2026-01-12 00:00:00",
+            "description": "creazione pagine cookie privacy contatti faq",
+            "minutes": 180,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 205,
+            "company_wp_id": 7032,
+            "date": "2026-01-13 00:00:00",
+            "description": "affinamenti vari e avanzamento lavori",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 206,
+            "company_wp_id": 7106,
+            "date": "2026-01-15 00:00:00",
+            "description": "post sul blog apertura spar point palermo",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 207,
+            "company_wp_id": 7106,
+            "date": "2026-01-15 00:00:00",
+            "description": "campagna sky living",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 208,
+            "company_wp_id": 7125,
+            "date": "2024-05-27 00:00:00",
+            "description": "primi interventi id manutenzione richiesti da Martina",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 209,
+            "company_wp_id": 7125,
+            "date": "2024-05-28 00:00:00",
+            "description": "assitenza varia",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 210,
+            "company_wp_id": 7125,
+            "date": "2024-05-29 00:00:00",
+            "description": "altri interventi della lista",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 211,
+            "company_wp_id": 7125,
+            "date": "2024-06-03 00:00:00",
+            "description": "interventi ripristino sito",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 212,
+            "company_wp_id": 7125,
+            "date": "2024-06-05 00:00:00",
+            "description": "traduzione di alcune parti del sito e email",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 213,
+            "company_wp_id": 7125,
+            "date": "2024-07-12 00:00:00",
+            "description": "errore in ricerca segnalato da martina",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 214,
+            "company_wp_id": 7125,
+            "date": "2024-10-18 00:00:00",
+            "description": "asistenza",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 215,
+            "company_wp_id": 7125,
+            "date": "2024-11-06 00:00:00",
+            "description": "asistenza a martina",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 216,
+            "company_wp_id": 7125,
+            "date": "2025-01-22 00:00:00",
+            "description": "asistenza a martina",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 217,
+            "company_wp_id": 7125,
+            "date": "2025-08-01 00:00:00",
+            "description": "asistenza a martina su api Brevo",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 218,
+            "company_wp_id": 7125,
+            "date": "2026-01-16 00:00:00",
+            "description": "assistenza martina via whataspp per malfunzionamento sito",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 219,
+            "company_wp_id": 7025,
+            "date": "2026-01-16 00:00:00",
+            "description": "aggiornamento su indicazioni di monia via whatsapp",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 220,
+            "company_wp_id": 7073,
+            "date": "2026-01-19 00:00:00",
+            "description": "assistenza con animazione dello slideshow in home page dove scomparivano le scitrte dopo la prima slide",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 221,
+            "company_wp_id": 7025,
+            "date": "2026-01-20 00:00:00",
+            "description": "assistenza immagine coperta da copyright",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 222,
+            "company_wp_id": 7125,
+            "date": "2026-01-20 00:00:00",
+            "description": "tentativo di risoluzione problematiche sito",
+            "minutes": 195,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 223,
+            "company_wp_id": 7032,
+            "date": "2026-01-21 00:00:00",
+            "description": "nuovo dominio ilinksystem.com settaggi e migrazioni",
+            "minutes": 165,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 224,
+            "company_wp_id": 7032,
+            "date": "2026-01-22 00:00:00",
+            "description": "cal con fede e con paolo",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 225,
+            "company_wp_id": 7063,
+            "date": "2026-01-23 00:00:00",
+            "description": "campioni Lamicolor da inserire in ordine numerico crescente nel link News 2025 (con bollino verde) e nel link Collezioni - Urban (senza bollino). ITA E ING",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 226,
+            "company_wp_id": 9345,
+            "date": "2026-01-13 00:00:00",
+            "description": "aggiunta call to action",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260123-1513"
+        },
+        {
+            "old_id": 238,
+            "company_wp_id": 7032,
+            "date": "2026-01-23 00:00:00",
+            "description": "avanzamento sito nuovo ilink",
+            "minutes": 300,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 239,
+            "company_wp_id": 7063,
+            "date": "2026-01-26 00:00:00",
+            "description": "generazione di 3 qrcode",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 240,
+            "company_wp_id": 7013,
+            "date": "2026-01-26 00:00:00",
+            "description": "assistenza per pagamento non andato a buon fine con carta di credito di james morales",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 241,
+            "company_wp_id": 7032,
+            "date": "2026-01-26 00:00:00",
+            "description": "avanzamento sito",
+            "minutes": 240,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 242,
+            "company_wp_id": 7046,
+            "date": "2026-01-27 00:00:00",
+            "description": "assistenza per down sito web pesaromusei. Analisi e riprisitno",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 243,
+            "company_wp_id": 7125,
+            "date": "2026-01-28 00:00:00",
+            "description": "ripristino backup e disabilitazione degli aggiornamenti automatici che riprentavano il problema",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260203-1015"
+        },
+        {
+            "old_id": 244,
+            "company_wp_id": 7106,
+            "date": "2026-01-28 00:00:00",
+            "description": "riunione, finalizzazione area cataloghi e listini, recensioni avvio progetto",
+            "minutes": 240,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 245,
+            "company_wp_id": 7046,
+            "date": "2026-01-29 00:00:00",
+            "description": "sostituizione del plugin \\\"accessibilità\\\" che causava la visualizzazione sballata del sito. Analisi delle soluzioni alternative testing carimencto e configurazione.",
+            "minutes": 195,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 246,
+            "company_wp_id": 7032,
+            "date": "2026-01-29 00:00:00",
+            "description": "avanzamento",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 247,
+            "company_wp_id": 7063,
+            "date": "2026-02-02 00:00:00",
+            "description": "generazione del 4 qrcode e fix dei precedenti",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 248,
+            "company_wp_id": 7032,
+            "date": "2026-02-02 00:00:00",
+            "description": "call e prime modifiche dopo call",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 249,
+            "company_wp_id": 7032,
+            "date": "2026-02-03 00:00:00",
+            "description": "avanzamento dopo call di ieri",
+            "minutes": 300,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 250,
+            "company_wp_id": 7032,
+            "date": "2026-02-04 00:00:00",
+            "description": "modifiche come da mail di Paolo",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 251,
+            "company_wp_id": 7084,
+            "date": "2026-02-06 00:00:00",
+            "description": "menu san valentino",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 252,
+            "company_wp_id": 7032,
+            "date": "2026-02-05 00:00:00",
+            "description": "modifiche cheiste da paolo",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 253,
+            "company_wp_id": 7032,
+            "date": "2026-02-06 00:00:00",
+            "description": "modifiche come d mail di di cri e paolo",
+            "minutes": 270,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 254,
+            "company_wp_id": 7032,
+            "date": "2026-02-09 00:00:00",
+            "description": "affinamenti",
+            "minutes": 150,
+            "billed": true,
+            "batch_id": "20260209-1054"
+        },
+        {
+            "old_id": 255,
+            "company_wp_id": 7063,
+            "date": "2026-02-11 00:00:00",
+            "description": "aggiornamento carvan 26 27",
+            "minutes": 135,
+            "billed": true,
+            "batch_id": "20260211-0900"
+        },
+        {
+            "old_id": 257,
+            "company_wp_id": 7106,
+            "date": "2026-02-12 00:00:00",
+            "description": "manutenzione sito sui segnalazione di barbara. alcune collezioni non erano raggiungibili dopo l\\'ultimo aggiornamento di wordpress a causa della riscrittura di alcuni url",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 258,
+            "company_wp_id": 7125,
+            "date": "2026-02-16 00:00:00",
+            "description": "risoluzione problema upload (totale 45min ma contabilizzo solo 30min perchè c\\'era un residuo di 15 minuti dal precedente monte ore)",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 259,
+            "company_wp_id": 7106,
+            "date": "2026-02-17 00:00:00",
+            "description": "assistenza campagne: riattivazione prestige",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 260,
+            "company_wp_id": 7106,
+            "date": "2026-02-18 00:00:00",
+            "description": "caricamento del nuovo modello Sky Kitchen",
+            "minutes": 255,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 261,
+            "company_wp_id": 7106,
+            "date": "2026-02-18 00:00:00",
+            "description": "rimozione Tresor luxory da sito da vecchio cms e da nuovo cms",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 262,
+            "company_wp_id": 7032,
+            "date": "2026-02-19 00:00:00",
+            "description": "modifiche post incontro rete vendita (come da mail di paolo)",
+            "minutes": 135,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 264,
+            "company_wp_id": 7106,
+            "date": "2026-02-19 00:00:00",
+            "description": "modifiche sito come accordi con federica",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 265,
+            "company_wp_id": 7116,
+            "date": "2026-02-19 00:00:00",
+            "description": "assistenza per recuproaccount mailchimp",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 267,
+            "company_wp_id": 7116,
+            "date": "2025-12-01 00:00:00",
+            "description": "maintenance",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 268,
+            "company_wp_id": 7116,
+            "date": "2026-01-12 00:00:00",
+            "description": "maintenance",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 269,
+            "company_wp_id": 7116,
+            "date": "2026-02-09 00:00:00",
+            "description": "maintenance",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260525-072428"
+        },
+        {
+            "old_id": 270,
+            "company_wp_id": 7032,
+            "date": "2026-02-20 00:00:00",
+            "description": "versione mobile",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 271,
+            "company_wp_id": 7032,
+            "date": "2026-02-21 00:00:00",
+            "description": "supporto per versione mobile e traduzioni",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 272,
+            "company_wp_id": 7032,
+            "date": "2026-02-25 00:00:00",
+            "description": "aggiornamenti come da mail di Paolo di questa mattina",
+            "minutes": 225,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 273,
+            "company_wp_id": 7046,
+            "date": "2026-02-26 00:00:00",
+            "description": "assistenza posta e altro",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260226-0842"
+        },
+        {
+            "old_id": 274,
+            "company_wp_id": 7032,
+            "date": "2026-02-27 00:00:00",
+            "description": "aggiornamenti vari",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 275,
+            "company_wp_id": 7106,
+            "date": "2026-02-27 00:00:00",
+            "description": "sky kitchens pubblicazione menu altro",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 276,
+            "company_wp_id": 7032,
+            "date": "2026-03-02 00:00:00",
+            "description": "pubblicazione + versione inglese",
+            "minutes": 390,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 277,
+            "company_wp_id": 7032,
+            "date": "2026-03-02 00:00:00",
+            "description": "modifiche mail di paolo",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 278,
+            "company_wp_id": 7032,
+            "date": "2026-03-04 00:00:00",
+            "description": "varie",
+            "minutes": 60,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 279,
+            "company_wp_id": 7032,
+            "date": "2026-03-09 00:00:00",
+            "description": "varie",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 280,
+            "company_wp_id": 7032,
+            "date": "2026-03-20 00:00:00",
+            "description": "applicazione modifiche richieste (varie in vari giorni)",
+            "minutes": 165,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 281,
+            "company_wp_id": 7046,
+            "date": "2026-03-20 00:00:00",
+            "description": "assistenza con modifiche alle caselle email (vari giorni)",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 282,
+            "company_wp_id": 7114,
+            "date": "2026-03-20 00:00:00",
+            "description": "assistenza con pagine eliminate",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 283,
+            "company_wp_id": 7106,
+            "date": "2026-03-18 00:00:00",
+            "description": "assistenza per email automatiche dello store locator",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 284,
+            "company_wp_id": 7046,
+            "date": "2026-03-20 00:00:00",
+            "description": "assistenza per cambio password caselle email",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 285,
+            "company_wp_id": 7032,
+            "date": "2026-03-21 00:00:00",
+            "description": "call + interventi emersi",
+            "minutes": 225,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 286,
+            "company_wp_id": 7032,
+            "date": "2026-03-23 00:00:00",
+            "description": "modifiche di cri",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 287,
+            "company_wp_id": 7106,
+            "date": "2026-03-25 00:00:00",
+            "description": "riunione presso spar, prime modifiche a campagne, modifiche alla gestione dei listini come da indicazioni della mattina",
+            "minutes": 240,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 288,
+            "company_wp_id": 7032,
+            "date": "2026-03-24 00:00:00",
+            "description": "affinamenti vari",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 289,
+            "company_wp_id": 7013,
+            "date": "2026-03-26 00:00:00",
+            "description": "maintenance, assistenza per ordini spam, aggiornamenti vari",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 290,
+            "company_wp_id": 7106,
+            "date": "2026-03-26 00:00:00",
+            "description": "campagne e modifiche al sito come da riunione di ieri",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 291,
+            "company_wp_id": 7106,
+            "date": "2026-03-27 00:00:00",
+            "description": "pubblicazione nuova area riservata",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 292,
+            "company_wp_id": 7106,
+            "date": "2026-03-28 00:00:00",
+            "description": "cms",
+            "minutes": 210,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 293,
+            "company_wp_id": 7106,
+            "date": "2026-03-30 00:00:00",
+            "description": "strumento cerca rivenditori cumulativo di piu giorni",
+            "minutes": 315,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 294,
+            "company_wp_id": 7063,
+            "date": "2026-03-31 00:00:00",
+            "description": "sostituzione certificato ambiente en pdf e immagine",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 295,
+            "company_wp_id": 7106,
+            "date": "2026-03-31 00:00:00",
+            "description": "modifiche e correzioni area CMS",
+            "minutes": 135,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 296,
+            "company_wp_id": 7106,
+            "date": "2026-04-01 00:00:00",
+            "description": "affinamenti al cms",
+            "minutes": 150,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 297,
+            "company_wp_id": 7038,
+            "date": "2026-04-01 00:00:00",
+            "description": "assistenza per problema email",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 298,
+            "company_wp_id": 7032,
+            "date": "2026-04-02 00:00:00",
+            "description": "piccole sistemazioni e modifiche",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 299,
+            "company_wp_id": 7114,
+            "date": "2026-04-03 00:00:00",
+            "description": "ripristino iscriziopne alla newsletter dopo disattivazione di movyla",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 300,
+            "company_wp_id": 7025,
+            "date": "2026-04-11 00:00:00",
+            "description": "inizio lavoro per sezione Karl Hoffmann",
+            "minutes": 90,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 301,
+            "company_wp_id": 7106,
+            "date": "2026-04-13 00:00:00",
+            "description": "riunione con federica e modifche al cms",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 302,
+            "company_wp_id": 7032,
+            "date": "2026-04-14 00:00:00",
+            "description": "migrazione sito da vecchio dominio a ilinksystem.com verifica che tutto funzioni correttamente",
+            "minutes": 105,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 303,
+            "company_wp_id": 7025,
+            "date": "2026-04-14 00:00:00",
+            "description": "avanzamento pagina trees for peace",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 304,
+            "company_wp_id": 7106,
+            "date": "2026-04-15 00:00:00",
+            "description": "assistenza CMS",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 305,
+            "company_wp_id": 7046,
+            "date": "2026-04-15 00:00:00",
+            "description": "assistenza lydia con alcune modifiche al sito pesaromuei",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 306,
+            "company_wp_id": 7046,
+            "date": "2026-04-16 00:00:00",
+            "description": "assistenza lydia",
+            "minutes": 15,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 307,
+            "company_wp_id": 7032,
+            "date": "2026-04-21 00:00:00",
+            "description": "assistenza casella email per sito e brevo",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 308,
+            "company_wp_id": 10098,
+            "date": "2026-04-23 00:00:00",
+            "description": "avvio assitenza. apertura ticket con Shellrent per down del server e accesso al filemanager",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260508-1030"
+        },
+        {
+            "old_id": 309,
+            "company_wp_id": 7025,
+            "date": "2026-04-23 00:00:00",
+            "description": "aggiornamento pagina tree for peace come richiesta d amail di karl",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 310,
+            "company_wp_id": 7106,
+            "date": "2026-04-23 00:00:00",
+            "description": "report province regioni punti vendita",
+            "minutes": 180,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 311,
+            "company_wp_id": 10098,
+            "date": "2026-05-04 00:00:00",
+            "description": "assistenza a migrazione servizi da localweb a sherlerent",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260508-1030"
+        },
+        {
+            "old_id": 312,
+            "company_wp_id": 7106,
+            "date": "2026-05-07 00:00:00",
+            "description": "aggiornamenti con federica per richieste rivenditore e eliminazione agenti",
+            "minutes": 75,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 313,
+            "company_wp_id": 10098,
+            "date": "2026-05-07 00:00:00",
+            "description": "attività di trasferimento del sito da localweb a shelrent, risoluzione di problemi legati al tema JupiterX, ripristino funzionalità ecommerce (cumulativo di più giorni di intervento)",
+            "minutes": 360,
+            "billed": true,
+            "batch_id": "20260508-1030"
+        },
+        {
+            "old_id": 314,
+            "company_wp_id": 10125,
+            "date": "2026-05-07 00:00:00",
+            "description": "assistenza sito e email cumulativo di piu interventi nei giorni\/settimane scorsi",
+            "minutes": 180,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 315,
+            "company_wp_id": 7032,
+            "date": "2026-05-08 00:00:00",
+            "description": "assistenza Luzi per condicvisione social e aggiunta icone nel footer per i 4 social",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260513-0645"
+        },
+        {
+            "old_id": 316,
+            "company_wp_id": 10098,
+            "date": "2026-05-08 00:00:00",
+            "description": "(eccedenza già fatturata)",
+            "minutes": 0,
+            "billed": true,
+            "batch_id": "20260508-1030"
+        },
+        {
+            "old_id": 317,
+            "company_wp_id": 7025,
+            "date": "2026-05-08 00:00:00",
+            "description": "creazione news servizio Rai",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 318,
+            "company_wp_id": 7106,
+            "date": "2026-05-13 00:00:00",
+            "description": "assistenza cms",
+            "minutes": 15,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 319,
+            "company_wp_id": 7046,
+            "date": "2026-05-13 00:00:00",
+            "description": "assistenza lydia",
+            "minutes": 15,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 320,
+            "company_wp_id": 7046,
+            "date": "2026-05-15 00:00:00",
+            "description": "assistenza per caselle di posta",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 321,
+            "company_wp_id": 7106,
+            "date": "2026-05-15 00:00:00",
+            "description": "risoluzione problema di mobilveneto",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 322,
+            "company_wp_id": 7032,
+            "date": "2026-05-16 00:00:00",
+            "description": "modifiche al sito",
+            "minutes": 105,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 323,
+            "company_wp_id": 7032,
+            "date": "2026-05-18 00:00:00",
+            "description": "modifiche come da mail di Paolo",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 324,
+            "company_wp_id": 7025,
+            "date": "2026-05-20 00:00:00",
+            "description": "pubblicazione news ulivi della pace",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 325,
+            "company_wp_id": 7032,
+            "date": "2026-05-21 00:00:00",
+            "description": "call allinememento",
+            "minutes": 75,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 326,
+            "company_wp_id": 7032,
+            "date": "2026-05-22 00:00:00",
+            "description": "configurazione Brevo per invii nwsletter",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 327,
+            "company_wp_id": 7089,
+            "date": "2026-05-22 00:00:00",
+            "description": "sistemazione contatti\/lavora con noi ita e ing",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 328,
+            "company_wp_id": 7025,
+            "date": "2026-05-24 00:00:00",
+            "description": "inserimento video tg3 in three for peace",
+            "minutes": 45,
+            "billed": true,
+            "batch_id": "20260609-074728"
+        },
+        {
+            "old_id": 329,
+            "company_wp_id": 7116,
+            "date": "2026-03-02 00:00:00",
+            "description": "maintenance",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 330,
+            "company_wp_id": 7116,
+            "date": "2026-03-25 00:00:00",
+            "description": "maintenance",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 331,
+            "company_wp_id": 7116,
+            "date": "2026-04-13 00:00:00",
+            "description": "maintenance",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 332,
+            "company_wp_id": 7116,
+            "date": "2026-05-04 00:00:00",
+            "description": "maintenance",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 333,
+            "company_wp_id": 7116,
+            "date": "2026-05-25 00:00:00",
+            "description": "maintenance",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 334,
+            "company_wp_id": 7032,
+            "date": "2026-05-26 00:00:00",
+            "description": "newsletter: import contatti e prima nl di 3",
+            "minutes": 180,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 335,
+            "company_wp_id": 7032,
+            "date": "2026-05-27 00:00:00",
+            "description": "modifiche e invio nl",
+            "minutes": 75,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 336,
+            "company_wp_id": 7032,
+            "date": "2026-06-03 00:00:00",
+            "description": "assistenza invioo prima newsletter",
+            "minutes": 75,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 337,
+            "company_wp_id": 7046,
+            "date": "2026-06-09 00:00:00",
+            "description": "intervento su pesaromusei.it per nuova bigliettazione. piu aggiornamento plugin e wordpress core",
+            "minutes": 90,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 338,
+            "company_wp_id": 7106,
+            "date": "2026-06-09 00:00:00",
+            "description": "modifica per visualizzare log azioni degli utenti",
+            "minutes": 30,
+            "billed": true,
+            "batch_id": "20260611-080411"
+        },
+        {
+            "old_id": 339,
+            "company_wp_id": 7106,
+            "date": "2026-06-11 00:00:00",
+            "description": "Ci siamo accordati oggi per saldo delle precedenti ore a 1.200 € invece di € 1.342,50",
+            "minutes": 0,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 340,
+            "company_wp_id": 7032,
+            "date": "2026-06-11 00:00:00",
+            "description": "newsletter rivenditori",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 341,
+            "company_wp_id": 7013,
+            "date": "2026-06-12 00:00:00",
+            "description": "assistenza b2b",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 342,
+            "company_wp_id": 7063,
+            "date": "2026-06-12 00:00:00",
+            "description": "news 2026 e creazione archivio: sia ita e ing",
+            "minutes": 225,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 343,
+            "company_wp_id": 7013,
+            "date": "2026-06-13 00:00:00",
+            "description": "assistenza per ordine joseph hu",
+            "minutes": 30,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 344,
+            "company_wp_id": 7032,
+            "date": "2026-06-15 00:00:00",
+            "description": "caricmaneto pdf",
+            "minutes": 15,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 345,
+            "company_wp_id": 7106,
+            "date": "2026-06-17 00:00:00",
+            "description": "casa sky: meccanismo di invio coupon",
+            "minutes": 240,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 346,
+            "company_wp_id": 7063,
+            "date": "2026-06-23 00:00:00",
+            "description": "inserimento re-lieve",
+            "minutes": 135,
+            "billed": false,
+            "batch_id": ""
+        },
+        {
+            "old_id": 347,
+            "company_wp_id": 7114,
+            "date": "2026-06-25 00:00:00",
+            "description": "assistenza per ordini fake",
+            "minutes": 45,
+            "billed": false,
+            "batch_id": ""
+        }
+    ]
+}

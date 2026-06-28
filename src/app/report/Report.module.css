@@ -1,0 +1,258 @@
+.container {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.reportCard {
+  width: 100%;
+  max-width: 1000px;
+  background: var(--color-surface);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,1));
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.companyInfo h1 {
+  font-size: var(--font-size-5xl);
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+
+.companyInfo p {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statBlock {
+  composes: bento-card from global;
+  padding: 2.5rem;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  position: relative;
+  overflow: hidden;
+}
+
+.statBlockIcon {
+  position: absolute;
+  left: -20px;
+  bottom: -20px;
+  opacity: 0.15;
+  transform: rotate(-15deg);
+  transition: transform 0.5s ease;
+}
+
+.statBlock:hover .statBlockIcon {
+  transform: rotate(0deg) scale(1.1);
+}
+
+.statLabel {
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 1;
+}
+
+.statValue {
+  font-size: 3.5rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1;
+  z-index: 1;
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: var(--radius-full);
+  margin-top: 2rem;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.75rem;
+  font-size: var(--font-size-xs);
+  opacity: 0.9;
+  z-index: 1;
+}
+
+.section {
+  padding: 3rem;
+  border-top: 1px solid var(--color-border-dark);
+  background: #ffffff;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-2xl);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.iconWrapper.active {
+  background: var(--mesh-blue);
+}
+
+.iconWrapper.archived {
+  background: var(--color-border-dark);
+  color: var(--color-text-muted);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 1rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-border-dark);
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: 1px;
+}
+
+.table th.right {
+  text-align: right;
+}
+
+.table td {
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid var(--color-border-dark);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.table tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tr:hover td {
+  background: rgba(0,0,0,0.015);
+}
+
+.table td.right {
+  text-align: right;
+  font-family: monospace;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.table td.date {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  width: 200px;
+}
+
+.totalRow td {
+  font-weight: 700;
+  border-bottom: none;
+  padding-top: 2rem;
+}
+
+.totalLabel {
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-muted);
+}
+
+.totalValue {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border-dark);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-text-muted);
+  margin-right: 0.75rem;
+}
+
+.archivedSection {
+  background: var(--color-bg-base);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
