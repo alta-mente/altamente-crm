@@ -44,6 +44,7 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isArchiving, setIsArchiving] = useState(false)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
 
   const activeHours = initialHours.filter(h => !h.billed)
   const archivedHours = initialHours.filter(h => h.billed)
@@ -160,6 +161,20 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
     }
   }
 
+  const handleSendReportEmail = async () => {
+    if (!confirm('Vuoi inviare il report aggiornato via email al cliente?')) return
+    setIsSendingEmail(true)
+    try {
+      const monthName = new Date().toLocaleString('it-IT', { month: 'long', year: 'numeric' });
+      await notifyClientAboutReport(company.id, monthName);
+      alert('Email inviata con successo al cliente!');
+    } catch (err: any) {
+      alert(err.message || 'Errore durante l\'invio dell\'email');
+    } finally {
+      setIsSendingEmail(false)
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.headerActions}>
@@ -173,7 +188,10 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
           <h2 className={styles.cardTitle}>{company.name}</h2>
           <div className={styles.headerButtons}>
             <Button onClick={handleGenerateReportUrl} title="Genera Link Report Pubblico">
-              <FileText size={16} style={{ marginRight: '8px' }} /> Report
+              <FileText size={16} style={{ marginRight: '8px' }} /> Visualizza Report
+            </Button>
+            <Button onClick={handleSendReportEmail} disabled={isSendingEmail} title="Invia Report al Cliente via Email" style={{ background: 'var(--color-primary)', color: '#fff' }}>
+              <Send size={16} style={{ marginRight: '8px' }} /> Invia Email
             </Button>
             <Link href={`/api/export-hours?cid=${company.id}`}>
               <Button title="Scarica CSV delle ore non archiviate">
