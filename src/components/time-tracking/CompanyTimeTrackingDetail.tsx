@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2 } from 'lucide-react'
+import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2, Clock } from 'lucide-react'
 import { addCompanyHours, editCompanyHours, deleteCompanyHours, archiveCompanyHours, unarchiveCompanyHourRow, generateReportToken } from '@/app/actions/time-tracking'
+import styles from './TimeTrackingDetail.module.css'
 
 interface Company {
   id: string
@@ -152,71 +153,84 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Button variant="outline" onClick={() => router.push('/time-tracking')} className="gap-2">
-          <ArrowLeft size={16} /> Torna alla lista
+    <div className={styles.container}>
+      <div className={styles.headerActions}>
+        <Button onClick={() => router.push('/time-tracking')}>
+          <ArrowLeft size={16} style={{ marginRight: '8px' }} /> Torna alla lista
         </Button>
       </div>
 
-      <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-        <div className="flex flex-row items-center justify-between bg-gray-50 border-b border-gray-100 p-6">
-          <h2 className="text-xl font-semibold">{company.name}</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleGenerateReportUrl} className="gap-2" title="Genera Link Report Pubblico">
-              <FileText size={16} /> Report
+      <div className={styles.mainCard}>
+        <div className={styles.cardHeader}>
+          <h2 className={styles.cardTitle}>{company.name}</h2>
+          <div className={styles.headerButtons}>
+            <Button onClick={handleGenerateReportUrl} title="Genera Link Report Pubblico">
+              <FileText size={16} style={{ marginRight: '8px' }} /> Report
             </Button>
             <Link href={`/api/export-hours?cid=${company.id}`}>
-              <Button variant="outline" className="gap-2" title="Scarica CSV delle ore non archiviate">
-                <Download size={16} /> CSV
+              <Button title="Scarica CSV delle ore non archiviate">
+                <Download size={16} style={{ marginRight: '8px' }} /> CSV
               </Button>
             </Link>
             {activeHours.length > 0 && (
-              <Button variant="destructive" onClick={handleArchive} disabled={isArchiving} className="gap-2 bg-red-600 hover:bg-red-700 text-white">
-                <Archive size={16} /> Archivia
+              <Button onClick={handleArchive} disabled={isArchiving} style={{ background: '#ef4444', color: '#fff' }}>
+                <Archive size={16} style={{ marginRight: '8px' }} /> Archivia
               </Button>
             )}
           </div>
         </div>
-        <div className="p-6">
-          <form onSubmit={handleSubmit} className={`p-4 rounded-lg border mb-8 transition-colors ${isEditing ? 'bg-yellow-50 border-yellow-300' : 'bg-gray-50 border-gray-200'}`}>
-            <div className="flex flex-wrap gap-4 items-end">
-              <div className="w-40">
-                <label className="block text-xs font-semibold text-gray-600 mb-1">DATA</label>
+        
+        <div className={styles.cardContent}>
+          <form onSubmit={handleSubmit} className={`${styles.form} ${isEditing ? styles.formEditing : ''}`}>
+            <div className={styles.formGrid}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Data</label>
                 <Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} required />
               </div>
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-xs font-semibold text-gray-600 mb-1">DESCRIZIONE ATTIVITÀ</label>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Descrizione Attività</label>
                 <Input type="text" placeholder="Es. Aggiornamento plugin..." value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required />
               </div>
-              <div className="w-24">
-                <label className="block text-xs font-semibold text-gray-600 mb-1">ORE</label>
-                <Input type="text" placeholder="1,5" value={formData.hoursStr} onChange={e => setFormData({...formData, hoursStr: e.target.value})} required className="text-center" />
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Ore</label>
+                <Input type="text" placeholder="1,5" value={formData.hoursStr} onChange={e => setFormData({...formData, hoursStr: e.target.value})} required style={{ textAlign: 'center' }} />
               </div>
-              <div className="flex gap-2">
-                <Button type="submit" disabled={isSubmitting}>{isEditing ? 'Aggiorna' : 'Salva'}</Button>
-                {isEditing && (
-                  <Button type="button" variant="outline" onClick={() => { setIsEditing(false); setEditId(''); setFormData({ date: new Date().toISOString().split('T')[0], description: '', hoursStr: '' })}}>
-                    Annulla
-                  </Button>
-                )}
+              <div className={styles.formGroup} style={{ justifyContent: 'flex-end' }}>
+                <div className={styles.formButtons}>
+                  <Button type="submit" disabled={isSubmitting} style={{ width: '100%' }}>{isEditing ? 'Aggiorna' : 'Salva'}</Button>
+                  {isEditing && (
+                    <Button type="button" onClick={() => { setIsEditing(false); setEditId(''); setFormData({ date: new Date().toISOString().split('T')[0], description: '', hoursStr: '' })}} style={{ background: '#f87171', color: 'white', padding: '0 12px' }} title="Annulla Modifica">
+                      &times;
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </form>
 
-          <div className="flex justify-between items-center mb-4 pb-2 border-b">
-            <h4 className="font-semibold text-gray-800">📝 Storico Attività</h4>
-            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-              <input type="checkbox" checked={showArchived} onChange={e => setShowArchived(e.target.checked)} className="rounded text-blue-600" />
+          <div className={styles.historyHeader}>
+            <div className={styles.historyTitle}>
+              <Clock size={20} /> Storico Attività
+            </div>
+            <label className={styles.checkboxLabel}>
+              <input type="checkbox" checked={showArchived} onChange={e => setShowArchived(e.target.checked)} />
               Mostra anche archiviati
             </label>
           </div>
 
-          <table className="w-full text-sm">
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrizione</th>
+                <th className={styles.right}>Ore</th>
+                <th></th>
+              </tr>
+            </thead>
             <tbody>
               {displayHours.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-gray-500">Nessuna attività trovata.</td>
+                  <td colSpan={4} className={styles.emptyState}>Nessuna attività trovata.</td>
                 </tr>
               )}
               {displayHours.map(row => {
@@ -225,19 +239,19 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
                 let costDisplay = null
                 if (isArchived && rate > 0) {
                   const cost = (row.minutes / 60) * rate
-                  costDisplay = <div className="text-xs text-green-700 font-medium mt-0.5">€ {cost.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                  costDisplay = <div className={styles.costDisplay}>€ {cost.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                 }
 
                 return (
-                  <tr key={row.id} className={`border-b border-gray-100 ${isArchived ? 'text-gray-400 bg-gray-50/50' : 'text-gray-800'}`}>
-                    <td className="py-3 px-2 w-20">
+                  <tr key={row.id} className={isArchived ? styles.archivedRow : ''}>
+                    <td className={styles.date}>
                       {new Date(row.date).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' })}
                     </td>
-                    <td className="py-3 px-2">
+                    <td>
                       {isArchived && (
                         <span 
                           onClick={() => handleUnarchive(row.id)}
-                          className="inline-flex items-center text-[10px] uppercase font-bold tracking-wider bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded mr-2 cursor-pointer hover:bg-gray-300"
+                          className={styles.badge}
                           title="Clicca per de-archiviare SOLO questa riga"
                         >
                           📦 {row.batch_id ? new Date(row.batch_id.slice(0,4) + '-' + row.batch_id.slice(4,6) + '-' + row.batch_id.slice(6,8)).toLocaleDateString('it-IT') : 'Pregresso'}
@@ -245,17 +259,17 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
                       )}
                       {row.description}
                     </td>
-                    <td className="py-3 px-2 text-right w-32 font-mono">
+                    <td className={styles.right}>
                       {formatTime(row.minutes)}
                       {costDisplay}
                     </td>
-                    <td className="py-3 px-2 text-right w-24">
+                    <td className={styles.actions}>
                       {!isArchived && (
                         <>
-                          <button onClick={() => handleEdit(row)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded" title="Modifica">
+                          <button onClick={() => handleEdit(row)} className={`${styles.actionButton} ${styles.editHover}`} title="Modifica">
                             <Edit2 size={16} />
                           </button>
-                          <button onClick={() => handleDelete(row.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded" title="Elimina">
+                          <button onClick={() => handleDelete(row.id)} className={`${styles.actionButton} ${styles.deleteHover}`} title="Elimina">
                             <Trash2 size={16} />
                           </button>
                         </>
@@ -265,9 +279,9 @@ export function CompanyTimeTrackingDetail({ company, initialHours }: Props) {
                 )
               })}
               {!showArchived && totalActiveMinutes > 0 && (
-                <tr className="bg-green-50 border-t-2 border-green-200 text-green-800 font-semibold">
-                  <td colSpan={2} className="py-3 px-4 text-right">TOTALE SELEZIONATO:</td>
-                  <td className="py-3 px-2 text-right font-mono text-base">{formatTime(totalActiveMinutes)}</td>
+                <tr className={styles.totalRow}>
+                  <td colSpan={2} style={{ textAlign: 'right' }}>TOTALE SELEZIONATO:</td>
+                  <td className={styles.right}>{formatTime(totalActiveMinutes)}</td>
                   <td></td>
                 </tr>
               )}
