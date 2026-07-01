@@ -2,7 +2,15 @@
   "crons": [
     {
       "path": "/api/cron/daily-recap",
-      "schedule": "0 7 * * *"
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/monthly-consuntivi",
+      "schedule": "0 8 1 * *"
+    },
+    {
+      "path": "/api/cron/aruba-sync",
+      "schedule": "0 2 * * *"
     }
   ]
 }

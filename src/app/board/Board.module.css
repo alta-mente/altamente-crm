@@ -88,9 +88,10 @@
   cursor: grabbing;
 }
 
-.cardSourceCorsidia { border-left-color: var(--color-danger); }
+.cardSourcePassaparola { border-left-color: var(--color-success); }
+.cardSourceSocial { border-left-color: #3b82f6; }
+.cardSourceOutbound { border-left-color: var(--color-warning); }
 .cardSourceWeb { border-left-color: var(--color-primary); }
-.cardSourcePiuitalia { border-left-color: var(--color-success); }
 
 .cardHeader {
   display: flex;
@@ -114,9 +115,10 @@
   border-radius: var(--radius-full);
 }
 
-.sourceCorsidiaBadge { background-color: var(--color-danger-subtle); color: var(--color-danger); }
+.sourcePassaparolaBadge { background-color: var(--color-success-subtle); color: var(--color-success); }
+.sourceSocialBadge { background-color: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.sourceOutboundBadge { background-color: var(--color-warning-subtle); color: var(--color-warning); }
 .sourceWebBadge { background-color: var(--color-primary-subtle); color: var(--color-primary); }
-.sourcePiuitaliaBadge { background-color: var(--color-success-subtle); color: var(--color-success); }
 
 .cardMeta {
   display: flex;
@@ -205,4 +207,27 @@
 .collapseButton:hover {
   background: var(--color-surface-hover);
   color: var(--color-text);
+}
+
+.archiveButton {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  opacity: 0;
+}
+
+.card:hover .archiveButton {
+  opacity: 1;
+}
+
+.archiveButton:hover {
+  background: var(--color-surface-hover);
+  color: #ef4444;
 }

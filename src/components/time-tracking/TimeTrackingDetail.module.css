@@ -20,8 +20,8 @@
 
 .cardHeader {
   padding: 1.5rem 2rem;
-  background: rgba(0,0,0,0.015);
-  border-bottom: 1px solid var(--color-border-dark);
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -53,16 +53,16 @@
 
 .form {
   padding: 1.5rem;
-  background: rgba(0,0,0,0.015);
-  border: 1px solid var(--color-border-dark);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   margin-bottom: 2.5rem;
   transition: all 0.2s ease;
 }
 
 .formEditing {
-  background: #fffbeb;
-  border-color: #fde68a;
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.5);
 }
 
 .formGrid {
@@ -103,7 +103,7 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border-dark);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .historyTitle {
@@ -138,17 +138,17 @@
   font-weight: 600;
   text-transform: uppercase;
   font-size: var(--font-size-xs);
-  border-bottom: 1px solid var(--color-border-dark);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .table td {
   padding: 1rem 0.5rem;
-  border-bottom: 1px solid var(--color-border-dark);
+  border-bottom: 1px solid var(--color-border);
   color: var(--color-text);
 }
 
 .table tr:hover td {
-  background: rgba(0,0,0,0.015);
+  background: rgba(255,255,255,0.03);
 }
 
 .table td.date {
@@ -181,26 +181,26 @@
 }
 
 .actionButton.editHover:hover {
-  background: #e0f2fe;
-  color: #0284c7;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
 }
 
 .actionButton.deleteHover:hover {
-  background: #fee2e2;
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
 }
 
 .archivedRow td {
   color: var(--color-text-muted);
-  background: rgba(0,0,0,0.01);
+  background: rgba(255,255,255,0.02);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  background: #fff;
-  border: 1px solid var(--color-border-dark);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-size: 0.7em;
@@ -211,20 +211,19 @@
   margin-right: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .badge:hover {
-  background: var(--color-bg-base);
-  color: var(--color-text);
-  border-color: var(--color-text-muted);
+  background: var(--color-primary);
+  color: var(--color-bg-base);
+  border-color: var(--color-primary);
 }
 
 .totalRow td {
   font-weight: 700;
   color: var(--color-success);
-  background: #f0fdf4 !important;
-  border-top: 2px solid #bbf7d0;
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-top: 1px solid rgba(16, 185, 129, 0.3);
   border-bottom: none;
 }
 

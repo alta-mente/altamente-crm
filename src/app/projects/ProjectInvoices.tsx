@@ -158,7 +158,7 @@ export function ProjectInvoices({ project }: { project: Project }) {
                 value={amount}
                 onChange={e => setAmount(Number(e.target.value))}
                 placeholder="0.00"
-                style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', background: 'var(--color-bg-primary)' }}
+                style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)',  }}
               />
             </div>
             <div style={{ flex: 1 }}>
@@ -166,7 +166,7 @@ export function ProjectInvoices({ project }: { project: Project }) {
               <select 
                 value={status}
                 onChange={e => setStatus(e.target.value as any)}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', background: 'var(--color-bg-primary)' }}
+                style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)',  }}
               >
                 <option value="pending">Da Incassare / Fatturata</option>
                 <option value="paid">Pagato / Incassato</option>
@@ -182,7 +182,7 @@ export function ProjectInvoices({ project }: { project: Project }) {
                 type="date"
                 value={issueDate}
                 onChange={e => setIssueDate(e.target.value)}
-                style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', background: 'var(--color-bg-primary)' }}
+                style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)',  }}
               />
             </div>
             {status === 'paid' && (
@@ -192,7 +192,7 @@ export function ProjectInvoices({ project }: { project: Project }) {
                   type="date"
                   value={paidDate}
                   onChange={e => setPaidDate(e.target.value)}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', background: 'var(--color-bg-primary)' }}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)',  }}
                 />
               </div>
             )}
@@ -205,7 +205,7 @@ export function ProjectInvoices({ project }: { project: Project }) {
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="es. Acconto 30% o Saldo finale"
-              style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', background: 'var(--color-bg-primary)' }}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)',  }}
             />
           </div>
 

@@ -21,11 +21,10 @@ export default async function DashboardHome() {
   const { data: invoices } = await supabase.from('invoices').select('*')
   const { data: services } = await supabase.from('services').select('*')
   
-  // Fetch billed time tracking hours
+  // Fetch time tracking hours
   const { data: companyHours } = await supabase
     .from('company_hours')
-    .select('*, companies(hourly_rate)')
-    .eq('billed', true)
+    .select('*, projects(title, hourly_rate, prepaid_minutes, companies(name))')
   
   // Fetch upcoming appointments
   const { data: appointments } = await supabase
@@ -42,16 +41,49 @@ export default async function DashboardHome() {
   const safeCompanyHours = companyHours || []
   
   // Computations
-  const activeDeals = safeDeals.filter(d => d.phase_id !== 'won' && d.phase_id !== 'lost')
+  const activeDeals = safeDeals.filter(d => 
+    d.phase_id !== 'won' && 
+    d.phase_id !== 'lost' && 
+    d.phase_id !== 'archiviato' && 
+    d.phase_id !== 'archived'
+  )
   const pipelineValue = activeDeals.reduce((sum, d) => sum + (Number(d.value) || 0), 0)
+  
+  const currentYear = new Date().getFullYear()
+  const wonDealsValue = safeDeals
+    .filter(d => d.phase_id === 'won' && new Date(d.created_at).getFullYear() === currentYear)
+    .reduce((sum, d) => sum + (Number(d.value) || 0), 0)
   
   const mrrValue = safeProjectsAll
     .filter(p => p.billing_type === 'retainer_monthly')
     .reduce((sum, p) => sum + (Number(p.billing_amount) || 0), 0)
     
-  const daIncassare = safeProjectsAll
-    .filter(p => p.billing_status === 'to_invoice' || p.billing_status === 'late')
+  const arrValue = safeProjectsAll
+    .filter(p => p.billing_type === 'retainer_yearly')
     .reduce((sum, p) => sum + (Number(p.billing_amount) || 0), 0)
+    
+  const safeInvoices = invoices || []
+  const daIncassare = safeProjectsAll
+    .filter(p => p.billing_type === 'one-off' && (p.billing_status === 'to_invoice' || p.billing_status === 'late'))
+    .reduce((sum, p) => {
+      const projectTotal = Number(p.billing_amount) || 0
+      const paidIntermediate = safeInvoices
+        .filter(i => i.project_id === p.id && i.status === 'paid')
+        .reduce((invSum, i) => invSum + (Number(i.amount) || 0), 0)
+      
+      const remaining = projectTotal - paidIntermediate
+      return sum + (remaining > 0 ? remaining : 0)
+    }, 0)
+
+  const unbilledConsuntiviHours = safeCompanyHours
+    .filter(h => !h.billed && (!h.projects?.prepaid_minutes || h.projects.prepaid_minutes === 0))
+  
+  const oreDaFatturareValue = unbilledConsuntiviHours
+    .reduce((sum, h) => sum + ((h.minutes / 60) * (h.projects?.hourly_rate || 0)), 0)
+    
+  const oreDaFatturareMin = unbilledConsuntiviHours
+    .reduce((sum, h) => sum + h.minutes, 0)
+  const oreDaFatturareText = `${Math.floor(oreDaFatturareMin / 60)}h ${(oreDaFatturareMin % 60).toString().padStart(2, '0')}m`
   
   return (
     <DashboardLayout title="Dashboard Analytics">
@@ -62,8 +94,12 @@ export default async function DashboardHome() {
             contactsCount: contactsCount || 0,
             companiesCount: companiesCount || 0,
             mrrValue,
+            arrValue,
             daIncassare,
-            pipelineValue
+            pipelineValue,
+            wonDealsValue,
+            oreDaFatturareValue,
+            oreDaFatturareText
           }}
           appointments={safeAppointments}
           invoices={invoices || []}

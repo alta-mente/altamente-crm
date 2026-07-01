@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import clsx from 'clsx'
 import { Menu, Bell, Search, Calendar } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { AgendaSidebar } from './AgendaSidebar'
@@ -14,28 +15,37 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children, title = 'Dashboard' }: DashboardLayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false)
   const [isAgendaOpen, setIsAgendaOpen] = useState(false)
+
+  const toggleSidebar = () => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setIsMobileOpen(true)
+    } else {
+      setIsDesktopCollapsed(!isDesktopCollapsed)
+    }
+  }
 
   return (
     <div className={styles.layout}>
-      <Sidebar isOpen={isSidebarOpen} />
+      <Sidebar isOpen={isMobileOpen} isCollapsed={isDesktopCollapsed} onClose={() => setIsMobileOpen(false)} />
       <NotificationManager />
       
       {/* Overlay for mobile */}
-      {isSidebarOpen && (
+      {isMobileOpen && (
         <div 
           className={styles.overlay}
-          onClick={() => setIsSidebarOpen(false)}
+          onClick={() => setIsMobileOpen(false)}
         />
       )}
 
-      <main className={styles.main}>
+      <main className={clsx(styles.main, isDesktopCollapsed && styles.mainCollapsed)}>
         <header className={styles.header}>
           <div className={styles.headerLeft}>
             <button 
               className={styles.menuButton}
-              onClick={() => setIsSidebarOpen(true)}
+              onClick={toggleSidebar}
             >
               <Menu size={24} />
             </button>
@@ -53,9 +63,9 @@ export function DashboardLayout({ children, title = 'Dashboard' }: DashboardLayo
             <button 
               className={styles.iconButton} 
               onClick={() => setIsAgendaOpen(true)}
-              title="Agenda"
+              title="Task & Memo"
             >
-              <Calendar size={20} />
+              <Bell size={20} />
             </button>
           </div>
         </header>

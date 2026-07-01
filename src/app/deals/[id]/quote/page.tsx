@@ -62,8 +62,12 @@ export default function QuotePage() {
       </button>
 
       <div className={styles.document}>
-        
-        <div className={styles.header}>
+        <table className={styles.documentTable}>
+          <thead><tr><td></td></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <div className={styles.header}>
           <div className={styles.logo}>
             {settings?.logo_url ? (
               <img src={settings.logo_url} alt="Logo" style={{ maxHeight: '60px', maxWidth: '200px' }} />
@@ -137,21 +141,30 @@ export default function QuotePage() {
           Documento generato da Altamente CRM. Il presente preventivo ha validità di 30 giorni dall'emissione.
           Tutti gli importi si intendono al netto dell'IVA e di eventuali oneri di legge.
         </div>
-
-        {/* Questo elemento compare SOLO in fase di stampa, fisso a fine di OGNI pagina */}
-        <div className={styles.pageFooter}>
-          <div className={styles.pageFooterLogo}>
-            {settings?.logo_url ? (
-              <img src={settings.logo_url} alt="Logo" />
-            ) : (
-              <strong>{settings?.company_name || 'ALTAMENTE'}</strong>
-            )}
-          </div>
-          <div className={styles.pageFooterText}>
-            {settings?.company_name} | {settings?.vat_number && `P.IVA ${settings.vat_number}`} <br/>
-            {settings?.email} | {settings?.address}
-          </div>
-        </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                {/* Questo elemento compare SOLO in fase di stampa, ripetuto a fine di OGNI pagina */}
+                <div className={styles.pageFooter}>
+                  <div className={styles.pageFooterLogo}>
+                    {settings?.logo_url ? (
+                      <img src={settings.logo_url} alt="Logo" />
+                    ) : (
+                      <strong>{settings?.company_name || 'ALTAMENTE'}</strong>
+                    )}
+                  </div>
+                  <div className={styles.pageFooterText}>
+                    {settings?.company_name} | {settings?.vat_number && `P.IVA ${settings.vat_number}`} <br/>
+                    {settings?.email} | {settings?.address}
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
 
       </div>
     </div>

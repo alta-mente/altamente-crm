@@ -42,7 +42,7 @@ export default function SettingsPage() {
                   borderRadius: 'var(--radius-md)',
                   border: 'none',
                   background: isActive ? 'var(--color-primary)' : 'transparent',
-                  color: isActive ? 'white' : 'var(--color-text-muted)',
+                  color: isActive ? 'var(--color-bg-base)' : 'var(--color-text-muted)',
                   fontWeight: isActive ? 600 : 500,
                   cursor: 'pointer',
                   textAlign: 'left',

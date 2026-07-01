@@ -35,9 +35,11 @@ interface CompanyHour {
 interface Props {
   project: Project
   initialHours: CompanyHour[]
+  isEmbedded?: boolean
+  onHoursUpdated?: () => void
 }
 
-export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
+export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, onHoursUpdated }: Props) {
   const router = useRouter()
   const [showArchived, setShowArchived] = useState(false)
   
@@ -101,6 +103,8 @@ export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
       setIsEditing(false)
       setEditId('')
       
+      if (onHoursUpdated) onHoursUpdated()
+      
     } catch (err) {
       alert('Errore durante il salvataggio')
       console.error(err)
@@ -124,6 +128,7 @@ export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
     if (!confirm('Eliminare questa attività?')) return
     try {
       await deleteCompanyHours(id, project.id)
+      if (onHoursUpdated) onHoursUpdated()
     } catch (err) {
       alert("Errore durante l'eliminazione")
     }
@@ -150,6 +155,7 @@ export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
       alert("Errore durante l'archiviazione o l'invio dell'email")
     } finally {
       setIsArchiving(false)
+      if (onHoursUpdated) onHoursUpdated()
     }
   }
 
@@ -157,6 +163,7 @@ export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
     if (!confirm('Riportare questa singola riga tra le ore aperte?')) return
     try {
       await unarchiveCompanyHourRow(id, project.id)
+      if (onHoursUpdated) onHoursUpdated()
     } catch (err) {
       alert('Errore durante de-archiviazione')
     }
@@ -191,21 +198,23 @@ export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.headerActions}>
-        <Button onClick={() => router.push('/time-tracking')}>
-          <ArrowLeft size={16} style={{ marginRight: '8px' }} /> Torna alla lista
-        </Button>
-      </div>
+    <div className={styles.container} style={isEmbedded ? { padding: 0 } : undefined}>
+      {!isEmbedded && (
+        <div className={styles.headerActions}>
+          <Button onClick={() => router.push('/time-tracking')}>
+            <ArrowLeft size={16} style={{ marginRight: '8px' }} /> Torna alla lista
+          </Button>
+        </div>
+      )}
 
-      <div className={styles.mainCard}>
+      <div className={styles.mainCard} style={isEmbedded ? { border: 'none', boxShadow: 'none' } : undefined}>
         <div className={styles.cardHeader}>
-          <h2 className={styles.cardTitle}>{project.title} ({project.companies?.name || 'Senza Azienda'})</h2>
+          <h2 className={styles.cardTitle}>{project.title} {!isEmbedded && <span style={{fontWeight: 'normal', color: 'var(--color-text-muted)'}}>({project.companies?.name || 'Senza Azienda'})</span>}</h2>
           <div className={styles.headerButtons}>
             <Button onClick={handleGenerateReportUrl} title="Genera Link Report Pubblico">
               <FileText size={16} style={{ marginRight: '8px' }} /> Visualizza Report
             </Button>
-            <Button onClick={handleSendReportEmail} disabled={isSendingEmail} title="Invia Report al Cliente via Email" style={{ background: 'var(--color-primary)', color: '#fff' }}>
+            <Button onClick={handleSendReportEmail} disabled={isSendingEmail} title="Invia Report al Cliente via Email" variant="primary">
               <Send size={16} style={{ marginRight: '8px' }} /> Invia Email
             </Button>
             <Link href={`/api/export-hours?pid=${project.id}`}>
@@ -214,7 +223,7 @@ export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
               </Button>
             </Link>
             {activeHours.length > 0 && (
-              <Button onClick={handleArchive} disabled={isArchiving} style={{ background: '#ef4444', color: '#fff' }}>
+              <Button onClick={handleArchive} disabled={isArchiving} variant="danger">
                 <Archive size={16} style={{ marginRight: '8px' }} /> Archivia
               </Button>
             )}
@@ -238,9 +247,9 @@ export function ProjectTimeTrackingDetail({ project, initialHours }: Props) {
               </div>
               <div className={styles.formGroup} style={{ justifyContent: 'flex-end' }}>
                 <div className={styles.formButtons}>
-                  <Button type="submit" disabled={isSubmitting} style={{ width: '100%' }}>{isEditing ? 'Aggiorna' : 'Salva'}</Button>
+                  <Button type="submit" disabled={isSubmitting} variant="primary" style={{ width: '100%' }}>{isEditing ? 'Aggiorna' : 'Salva'}</Button>
                   {isEditing && (
-                    <Button type="button" onClick={() => { setIsEditing(false); setEditId(''); setFormData({ date: new Date().toISOString().split('T')[0], description: '', hoursStr: '' })}} style={{ background: '#f87171', color: 'white', padding: '0 12px' }} title="Annulla Modifica">
+                    <Button type="button" onClick={() => { setIsEditing(false); setEditId(''); setFormData({ date: new Date().toISOString().split('T')[0], description: '', hoursStr: '' })}} variant="danger" style={{ padding: '0 12px' }} title="Annulla Modifica">
                       &times;
                     </Button>
                   )}

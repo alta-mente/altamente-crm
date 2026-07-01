@@ -5,10 +5,14 @@ export const metadata = {
   title: 'Progetti | Altamente CRM',
 }
 
+import { Suspense } from 'react'
+
 export default function ProjectsPage() {
   return (
     <DashboardLayout title="Produzione & Progetti">
-      <ProjectBoard />
+      <Suspense fallback={<div style={{ padding: '2rem' }}>Caricamento...</div>}>
+        <ProjectBoard />
+      </Suspense>
     </DashboardLayout>
   )
 }

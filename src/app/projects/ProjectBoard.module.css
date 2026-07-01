@@ -206,3 +206,26 @@
   background: var(--color-surface-hover);
   color: var(--color-text);
 }
+
+.archiveButton {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  opacity: 0;
+}
+
+.card:hover .archiveButton {
+  opacity: 1;
+}
+
+.archiveButton:hover {
+  background: var(--color-surface-hover);
+  color: #ef4444;
+}

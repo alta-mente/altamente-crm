@@ -62,7 +62,7 @@ export async function GET(request: Request) {
   if (hasAppointments) {
     htmlContent += `<h3>📅 ${appointments.length} Attività di Oggi</h3><ul>`
     appointments.forEach(appt => {
-      const timeStr = new Date(appt.scheduled_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+      const timeStr = new Date(appt.scheduled_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome' })
       const dealStr = appt.deals?.title ? ` (in <b>${appt.deals.title}</b>)` : ''
       htmlContent += `<li><strong>${timeStr}</strong>: ${appt.title}${dealStr}</li>`
     })
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
   if (hasExpiring) {
     htmlContent += `<h3>⚠️ ${expiringServices.length} Servizi in scadenza</h3><ul>`
     expiringServices.forEach(srv => {
-      const dateStr = new Date(srv.expiry_date).toLocaleDateString('it-IT')
+      const dateStr = new Date(srv.expiry_date).toLocaleDateString('it-IT', { timeZone: 'Europe/Rome' })
       htmlContent += `<li><strong>${dateStr}</strong>: ${srv.title} (€${srv.cost})</li>`
     })
     htmlContent += `</ul>`
@@ -91,8 +91,11 @@ export async function GET(request: Request) {
     if (hasAppointments) subject.push(`${appointments.length} attività`)
     if (hasExpiring) subject.push(`${expiringServices.length} scadenze`)
     
+    const rawEmail = NOTIFICATION_EMAIL
+    const FROM_EMAIL = rawEmail.includes('<') ? rawEmail : `Altamente CRM <${rawEmail}>`
+
     await resend.emails.send({
-      from: 'CRM Altamente <onboarding@resend.dev>',
+      from: FROM_EMAIL,
       to: NOTIFICATION_EMAIL,
       subject: `Riepilogo: ${subject.join(', ')} 📅`,
       html: htmlContent

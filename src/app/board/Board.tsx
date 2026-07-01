@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
-import { Building, BookOpen, Clock, Minimize2, Maximize2, ZoomIn, ZoomOut, Briefcase, User } from 'lucide-react'
+import { Building, BookOpen, Clock, Minimize2, Maximize2, ZoomIn, ZoomOut, Briefcase, User, Archive } from 'lucide-react'
 import clsx from 'clsx'
 import { toast } from 'sonner'
 import styles from './Board.module.css'
@@ -12,7 +12,7 @@ import { DealDrawer } from './DealDrawer'
 import { createClient } from '@/utils/supabase/client'
 
 // Data Types based on DB
-type Source = 'corsidia' | 'web' | 'piuitalia'
+type Source = 'web' | 'passaparola' | 'social' | 'outbound'
 
 interface Deal {
   id: string
@@ -26,6 +26,7 @@ interface Deal {
   projects?: { id: string }[]
   companies?: { name: string } | null
   contacts?: { first_name: string; last_name: string } | null
+  sort_order?: number
 }
 
 interface Phase {
@@ -101,6 +102,7 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
     const { data: dealsData } = await supabase
       .from('deals')
       .select('*, projects(id), companies(name), contacts(first_name, last_name)')
+      .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
       
     if (dealsData) setDeals(dealsData as Deal[])
@@ -112,49 +114,89 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
     if (!destination) return
     if (destination.droppableId === source.droppableId && destination.index === source.index) return
 
+    // Calculate new column deals list
+    const destDeals = Array.from(deals.filter(d => d.phase_id === destination.droppableId).sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0)))
+    const movedDeal = deals.find(d => d.id === draggableId)
+    if (!movedDeal) return
+
+    if (source.droppableId === destination.droppableId) {
+      destDeals.splice(source.index, 1)
+      destDeals.splice(destination.index, 0, movedDeal)
+    } else {
+      destDeals.splice(destination.index, 0, { ...movedDeal, phase_id: destination.droppableId })
+    }
+
     // Optimistic UI update
     const previousDeals = [...deals]
     setDeals(prevDeals => {
-      const newDeals = [...prevDeals]
-      const dealIndex = newDeals.findIndex(d => d.id === draggableId)
-      if (dealIndex > -1) {
-        newDeals[dealIndex] = { ...newDeals[dealIndex], phase_id: destination.droppableId }
-      }
+      let newDeals = [...prevDeals]
+      
+      // Update the modified deals with new phase and sort_order
+      destDeals.forEach((deal, idx) => {
+        const dealIndex = newDeals.findIndex(d => d.id === deal.id)
+        if (dealIndex > -1) {
+          newDeals[dealIndex] = { ...newDeals[dealIndex], phase_id: destination.droppableId, sort_order: idx }
+        }
+      })
       return newDeals
     })
 
     // DB Update
-    const { error } = await supabase
-      .from('deals')
-      .update({ phase_id: destination.droppableId })
-      .eq('id', draggableId)
+    try {
+      const updates = destDeals.map((deal, idx) => 
+        supabase.from('deals').update({ phase_id: destination.droppableId, sort_order: idx }).eq('id', deal.id)
+      )
+      await Promise.all(updates)
 
-    if (error) {
-      console.error('Error updating deal phase:', error)
-      toast.error('Errore durante lo spostamento del deal')
-      // Revert optimistic update on error
+      if (source.droppableId !== destination.droppableId) {
+        const phaseTitle = phases.find(p => p.id === destination.droppableId)?.title || destination.droppableId
+        toast.success(`Deal spostato in ${phaseTitle}`, {
+          description: 'La dashboard è stata aggiornata.',
+        })
+      }
+    } catch (error) {
+      console.error('Error updating deals:', error)
+      toast.error('Errore durante lo spostamento')
       setDeals(previousDeals)
-    } else {
-      const phaseTitle = phases.find(p => p.id === destination.droppableId)?.title || destination.droppableId
-      toast.success(`Deal spostato in ${phaseTitle}`, {
-        description: 'La dashboard è stata aggiornata.',
-      })
     }
   }
 
   const getSourceBadgeClass = (source: Source) => {
     switch (source) {
-      case 'corsidia': return styles.sourceCorsidiaBadge
-      case 'piuitalia': return styles.sourcePiuitaliaBadge
-      case 'web': return styles.sourceWebBadge
+      case 'passaparola': return styles.sourcePassaparolaBadge
+      case 'social': return styles.sourceSocialBadge
+      case 'outbound': return styles.sourceOutboundBadge
+      case 'web':
+      default: return styles.sourceWebBadge
     }
   }
 
   const getCardSourceClass = (source: Source) => {
     switch (source) {
-      case 'corsidia': return styles.cardSourceCorsidia
-      case 'piuitalia': return styles.cardSourcePiuitalia
-      case 'web': return styles.cardSourceWeb
+      case 'passaparola': return styles.cardSourcePassaparola
+      case 'social': return styles.cardSourceSocial
+      case 'outbound': return styles.cardSourceOutbound
+      case 'web':
+      default: return styles.cardSourceWeb
+    }
+  }
+
+  const handleArchiveDeal = async (e: React.MouseEvent, deal: Deal) => {
+    e.stopPropagation()
+    if (!confirm(`Sei sicuro di voler archiviare il deal "${deal.title}"?`)) return
+    
+    const archivePhase = phases.find(p => p.id.toLowerCase() === 'archiviato' || p.id.toLowerCase() === 'archived')
+    if (!archivePhase) {
+      toast.error('Fase "Archiviato" non trovata')
+      return
+    }
+    
+    try {
+      await supabase.from('deals').update({ phase_id: archivePhase.id }).eq('id', deal.id)
+      setDeals(prev => prev.map(d => d.id === deal.id ? { ...d, phase_id: archivePhase.id } : d))
+      toast.success('Deal archiviato')
+    } catch (error) {
+      toast.error("Errore durante l'archiviazione")
     }
   }
 
@@ -239,8 +281,12 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
         style={{ cursor: 'grab', '--zoom-factor': zoomLevel } as React.CSSProperties}
       >
         {phases.map(phase => {
-          const columnDeals = deals.filter(d => d.phase_id === phase.id)
+          const columnDeals = deals.filter(d => d.phase_id === phase.id).sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0))
           const isCollapsed = collapsedPhases[phase.id]
+          const isTerminal = ['won', 'lost', 'archiviato', 'archived'].includes(phase.id.toLowerCase())
+          const MAX_VISIBLE = 30
+          const visibleDeals = isTerminal ? columnDeals.slice(0, MAX_VISIBLE) : columnDeals
+          const hiddenCount = columnDeals.length - visibleDeals.length
 
           return (
             <div key={phase.id} className={clsx(styles.column, isCollapsed && styles.columnCollapsed)}>
@@ -266,7 +312,7 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
                       {...provided.droppableProps}
                       className={clsx(styles.cardList, snapshot.isDraggingOver && styles.cardListDraggingOver)}
                     >
-                    {columnDeals.map((deal, index) => (
+                    {visibleDeals.map((deal, index) => (
                       <Draggable key={deal.id} draggableId={deal.id} index={index}>
                         {(provided, snapshot) => (
                           <div
@@ -283,9 +329,20 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
                           >
                             <div className={styles.cardHeader}>
                               <div className={styles.cardTitle}>{deal.title}</div>
-                              <span className={clsx(styles.sourceBadge, getSourceBadgeClass(deal.source))}>
-                                {deal.source}
-                              </span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                <span className={clsx(styles.sourceBadge, getSourceBadgeClass(deal.source))}>
+                                  {deal.source}
+                                </span>
+                                {deal.phase_id !== 'archiviato' && deal.phase_id !== 'archived' && (
+                                  <button 
+                                    className={styles.archiveButton} 
+                                    onClick={(e) => handleArchiveDeal(e, deal)}
+                                    title="Archivia"
+                                  >
+                                    <Archive size={14} />
+                                  </button>
+                                )}
+                              </div>
                             </div>
 
                             {(deal.companies || deal.contacts) && (
@@ -304,9 +361,11 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
                             )}
 
                             <div className={styles.cardFooter}>
-                              <div className={styles.cardValue}>
-                                €{deal.value.toLocaleString('it-IT')}
-                              </div>
+                              {deal.value > 0 ? (
+                                <div className={styles.cardValue}>
+                                  €{deal.value.toLocaleString('it-IT')}
+                                </div>
+                              ) : <div />}
                               {deal.phase_id === 'won' && deal.projects && deal.projects.length > 0 && (
                                 <div style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center' }} title="Progetto Associato">
                                   <Briefcase size={14} />
@@ -318,6 +377,11 @@ export function Board({ isModalOpen, setIsModalOpen }: BoardProps) {
                       </Draggable>
                     ))}
                     {provided.placeholder}
+                    {hiddenCount > 0 && (
+                      <div style={{ padding: '0.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-text-muted)', background: 'var(--color-surface-solid)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)', marginTop: '0.5rem' }}>
+                        + altri {hiddenCount} deal meno recenti
+                      </div>
+                    )}
                   </div>
                 )}
               </Droppable>

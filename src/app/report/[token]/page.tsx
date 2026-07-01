@@ -1,6 +1,7 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import { Clock, Euro, CheckCircle2, Package, Archive, CalendarDays, Activity, Folder } from 'lucide-react'
+import { RequestInvoiceButton } from './RequestInvoiceButton'
 import styles from '../Report.module.css'
 
 export const dynamic = 'force-dynamic'
@@ -25,7 +26,7 @@ export default async function PublicReportPage({
   // Find project by token
   const { data: project, error: projectError } = await supabase
     .from('projects')
-    .select('*, companies(name)')
+    .select('*, companies(name, contact_email)')
     .eq('report_token', resolvedParams.token)
     .single()
 
@@ -158,9 +159,19 @@ export default async function PublicReportPage({
                 <div className={styles.statValue}>
                   € {((totalActiveMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
-                <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)' }}>
+                <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem' }}>
                   {formatTime(totalActiveMinutes)} ore in attesa
                 </div>
+                {totalActiveMinutes > 0 && (
+                  <RequestInvoiceButton 
+                    projectName={project.title} 
+                    companyName={project.companies?.name || 'Azienda non specificata'} 
+                    totalAmount={(totalActiveMinutes / 60) * rate}
+                    reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
+                    logoUrl={settings?.logo_url || undefined}
+                    clientEmail={project.companies?.contact_email || undefined}
+                  />
+                )}
               </>
             ) : (
               <>

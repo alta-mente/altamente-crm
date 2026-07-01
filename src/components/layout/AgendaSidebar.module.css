@@ -129,3 +129,91 @@
     right: -100%;
   }
 }
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.itemActions {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.item:hover .itemActions {
+  opacity: 1;
+}
+
+.actionButton {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+}
+
+.actionButton.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
+}
+
+.quickAddForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--color-background);
+  padding: 1rem;
+  border-radius: var(--radius-base);
+  border: 1px solid var(--color-border);
+  margin-bottom: 0.5rem;
+}
+
+.quickAddInput {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-solid);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+}
+
+.quickAddDate {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-solid);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+}
+
+.quickAddButton {
+  background: var(--color-primary);
+  color: var(--color-bg-base);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--transition-fast);
+}
+
+.quickAddButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

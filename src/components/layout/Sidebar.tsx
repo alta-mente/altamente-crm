@@ -11,9 +11,11 @@ import { Button } from '../ui/Button'
 
 interface SidebarProps {
   isOpen: boolean
+  isCollapsed?: boolean
+  onClose?: () => void
 }
 
-export function Sidebar({ isOpen }: SidebarProps) {
+export function Sidebar({ isOpen, isCollapsed, onClose }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -28,7 +30,6 @@ export function Sidebar({ isOpen }: SidebarProps) {
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Vendite (Deal)', href: '/board', icon: Briefcase },
     { name: 'Progetti', href: '/projects', icon: BookOpen },
-    { name: 'Scadenze', href: '/services', icon: CalendarIcon },
     { name: 'Ore (Consuntivi)', href: '/time-tracking', icon: Clock },
     { name: 'Contatti', href: '/contacts', icon: Users },
     { name: 'Aziende', href: '/companies', icon: Building },
@@ -36,7 +37,7 @@ export function Sidebar({ isOpen }: SidebarProps) {
   ]
 
   return (
-    <aside className={clsx(styles.sidebar, isOpen && styles.sidebarOpen)}>
+    <aside className={clsx(styles.sidebar, isOpen && styles.sidebarOpen, isCollapsed && styles.sidebarCollapsedDesktop)}>
       <div className={styles.header}>
         altamente CRM
       </div>

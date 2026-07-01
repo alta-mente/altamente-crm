@@ -16,6 +16,7 @@ export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalP
   const [companyId, setCompanyId] = useState('')
   const [contactId, setContactId] = useState('')
   const [value, setValue] = useState('')
+  const [source, setSource] = useState('web')
   const [loading, setLoading] = useState(false)
   
   const [companies, setCompanies] = useState<any[]>([])
@@ -48,7 +49,7 @@ export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalP
       company_id: companyId || null,
       contact_id: contactId || null,
       value: Number(value) || 0,
-      source: 'web', // Default
+      source: source,
       phase_id: 'unassigned'
     }
 
@@ -74,6 +75,7 @@ export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalP
     setCompanyId('')
     setContactId('')
     setValue('')
+    setSource('web')
   }
 
   return (
@@ -114,13 +116,29 @@ export function QuickAddDealModal({ isOpen, onClose, onAdd }: QuickAddDealModalP
         </div>
         
         <div className={styles.row}>
-          <Input 
-            label="Valore (€)" 
-            type="number" 
-            placeholder="es. 5000" 
-            value={value}
-            onChange={e => setValue(e.target.value)}
-          />
+          <div style={{ flex: 1 }}>
+            <Input 
+              label="Valore (€)" 
+              type="number" 
+              placeholder="es. 5000" 
+              value={value}
+              onChange={e => setValue(e.target.value)}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>Sorgente Lead</label>
+            <select 
+              value={source}
+              onChange={e => setSource(e.target.value)}
+              style={{ padding: '0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: 'var(--color-surface)', color: 'var(--color-text)', height: '42px' }}
+            >
+              <option value="web">Web / Sito</option>
+              <option value="passaparola">Passaparola</option>
+              <option value="social">Social Media</option>
+              <option value="outbound">Outbound / Ricerca diretta</option>
+            </select>
+          </div>
         </div>
 
         <div className={styles.actions}>

@@ -10,6 +10,7 @@ import styles from './ProjectDrawer.module.css'
 import type { Project, ProjectPhase, ProjectType } from './ProjectBoard'
 import { ActivityLog } from '@/components/ActivityLog'
 import { ProjectInvoices } from './ProjectInvoices'
+import { TimeTrackingTab } from '@/components/time-tracking/TimeTrackingTab'
 
 interface ProjectDrawerProps {
   isOpen: boolean
@@ -19,7 +20,7 @@ interface ProjectDrawerProps {
 }
 
 export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDrawerProps) {
-  const [activeTab, setActiveTab] = useState<'diary' | 'admin' | 'links' | 'deal' | 'invoices'>('diary')
+  const [activeTab, setActiveTab] = useState<'diary' | 'admin' | 'links' | 'deal' | 'invoices' | 'time_tracking'>('diary')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState<any>({})
   const [associatedDeal, setAssociatedDeal] = useState<any>(null)
@@ -220,6 +221,15 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                 >
                   Fatture & Incassi
                 </button>
+                {formData.time_tracking_enabled && (
+                  <button 
+                    className={`${styles.tab} ${activeTab === 'time_tracking' ? styles.activeTab : ''}`}
+                    onClick={() => setActiveTab('time_tracking')}
+                    style={{ color: 'var(--color-primary)', fontWeight: 600 }}
+                  >
+                    Ore & Consuntivi
+                  </button>
+                )}
               </div>
 
               {activeTab === 'diary' && (
@@ -462,6 +472,12 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
               {activeTab === 'invoices' && (
                 <div className={styles.section} style={{ flex: 1, borderBottom: 'none' }}>
                   <ProjectInvoices project={project} />
+                </div>
+              )}
+
+              {activeTab === 'time_tracking' && (
+                <div className={styles.section} style={{ flex: 1, borderBottom: 'none' }}>
+                  <TimeTrackingTab project={project} />
                 </div>
               )}
 

@@ -1,12 +1,14 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
-import { Minimize2, Maximize2, ZoomIn, ZoomOut, Briefcase } from 'lucide-react'
+import { Minimize2, Maximize2, ZoomIn, ZoomOut, Briefcase, Clock, Plus, Archive, Building, BookOpen } from 'lucide-react'
 import clsx from 'clsx'
 import { toast } from 'sonner'
 import styles from './ProjectBoard.module.css'
 import { ProjectDrawer } from './ProjectDrawer'
+import { QuickAddProjectModal } from './QuickAddProjectModal'
 
 import { createClient } from '@/utils/supabase/client'
 
@@ -18,6 +20,7 @@ export interface Project {
   id: string
   title: string
   company_id: string | null
+  companies?: { name: string } | null
   deal_id: string | null
   type_id: string
   phase_id: string
@@ -28,6 +31,10 @@ export interface Project {
   billing_amount: number
   billing_status: BillingStatus
   created_at: string
+  sort_order?: number
+  time_tracking_enabled?: boolean
+  prepaid_minutes?: number
+  hourly_rate?: number
 }
 
 export interface ProjectPhase {
@@ -48,14 +55,25 @@ interface ProjectBoardProps {
 }
 
 export function ProjectBoard({}: ProjectBoardProps) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const tabParam = searchParams.get('tab')
+  const projectParam = searchParams.get('project')
+
   const [isBrowser, setIsBrowser] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [phases, setPhases] = useState<ProjectPhase[]>([])
   const [projectTypes, setProjectTypes] = useState<ProjectType[]>([])
-  const [activeTab, setActiveTab] = useState<string>('web')
+  const [activeTab, setActiveTab] = useState<string>(tabParam || 'web')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [collapsedPhases, setCollapsedPhases] = useState<Record<string, boolean>>({})
   const [zoomLevel, setZoomLevel] = useState<number>(1)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [unbilledHours, setUnbilledHours] = useState<Record<string, number>>({})
+  
+  const [projectPaidAmounts, setProjectPaidAmounts] = useState<Record<string, number>>({})
   
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDown = useRef(false)
@@ -84,6 +102,32 @@ export function ProjectBoard({}: ProjectBoardProps) {
     }
   }, [])
 
+  // Sync selected project from URL when projects are loaded
+  useEffect(() => {
+    if (projectParam && projects.length > 0 && !selectedProject) {
+      const p = projects.find(p => p.id === projectParam)
+      if (p) setSelectedProject(p)
+    }
+  }, [projectParam, projects, selectedProject])
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('tab', tabId)
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
+  const handleProjectClick = (project: Project | null) => {
+    setSelectedProject(project)
+    const params = new URLSearchParams(searchParams.toString())
+    if (project) {
+      params.set('project', project.id)
+    } else {
+      params.delete('project')
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
   const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value)
     setZoomLevel(val)
@@ -109,7 +153,7 @@ export function ProjectBoard({}: ProjectBoardProps) {
       setProjectTypes(typesData)
       // Se l'activeTab non esiste tra i tipi caricati, imposta il primo
       if (typesData.length > 0 && !typesData.find(t => t.id === activeTab)) {
-        setActiveTab(typesData[0].id)
+        handleTabChange(typesData[0].id)
       }
     }
 
@@ -124,10 +168,39 @@ export function ProjectBoard({}: ProjectBoardProps) {
     // Fetch projects
     const { data: projectsData } = await supabase
       .from('projects')
-      .select('*')
+      .select('*, companies(name)')
+      .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
       
     if (projectsData) setProjects(projectsData as Project[])
+
+    // Fetch unbilled hours
+    const { data: hoursData } = await supabase
+      .from('company_hours')
+      .select('project_id, minutes')
+      .eq('billed', false)
+      
+    if (hoursData) {
+      const map: Record<string, number> = {}
+      hoursData.forEach(h => {
+        map[h.project_id] = (map[h.project_id] || 0) + h.minutes
+      })
+      setUnbilledHours(map)
+    }
+
+    // Fetch paid invoices
+    const { data: invoicesData } = await supabase
+      .from('invoices')
+      .select('project_id, amount, status')
+      .eq('status', 'paid')
+      
+    if (invoicesData) {
+      const paidMap: Record<string, number> = {}
+      invoicesData.forEach(inv => {
+        paidMap[inv.project_id] = (paidMap[inv.project_id] || 0) + Number(inv.amount)
+      })
+      setProjectPaidAmounts(paidMap)
+    }
   }
 
   const onDragEnd = async (result: DropResult) => {
@@ -136,32 +209,74 @@ export function ProjectBoard({}: ProjectBoardProps) {
     if (!destination) return
     if (destination.droppableId === source.droppableId && destination.index === source.index) return
 
+    // Calculate new column projects list
+    const destProjects = Array.from(projects.filter(p => p.phase_id === destination.droppableId).sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0)))
+    const movedProject = projects.find(p => p.id === draggableId)
+    if (!movedProject) return
+
+    if (source.droppableId === destination.droppableId) {
+      destProjects.splice(source.index, 1)
+      destProjects.splice(destination.index, 0, movedProject)
+    } else {
+      destProjects.splice(destination.index, 0, { ...movedProject, phase_id: destination.droppableId })
+    }
+
     // Optimistic UI update
     const previousProjects = [...projects]
     setProjects(prevProjects => {
-      const newProjects = [...prevProjects]
-      const index = newProjects.findIndex(p => p.id === draggableId)
-      if (index > -1) {
-        newProjects[index] = { ...newProjects[index], phase_id: destination.droppableId }
-      }
+      let newProjects = [...prevProjects]
+      
+      // Update the modified projects with new phase and sort_order
+      destProjects.forEach((proj, idx) => {
+        const projIndex = newProjects.findIndex(p => p.id === proj.id)
+        if (projIndex > -1) {
+          newProjects[projIndex] = { ...newProjects[projIndex], phase_id: destination.droppableId, sort_order: idx }
+        }
+      })
       return newProjects
     })
 
     // DB Update
-    const { error } = await supabase
-      .from('projects')
-      .update({ phase_id: destination.droppableId })
-      .eq('id', draggableId)
+    try {
+      const updates = destProjects.map((proj, idx) => 
+        supabase.from('projects').update({ phase_id: destination.droppableId, sort_order: idx }).eq('id', proj.id)
+      )
+      await Promise.all(updates)
 
-    if (error) {
+      if (source.droppableId !== destination.droppableId) {
+        const phaseTitle = phases.find(p => p.id === destination.droppableId)?.title || destination.droppableId
+        toast.success(`Progetto spostato in ${phaseTitle}`, {
+          description: 'La dashboard è stata aggiornata.',
+        })
+      }
+    } catch (error) {
       console.error('Error updating project phase:', error)
       toast.error('Errore durante lo spostamento del progetto')
-      // Revert optimistic update on error
       setProjects(previousProjects)
-    } else {
-      const phaseTitle = phases.find(p => p.id === destination.droppableId)?.title || destination.droppableId
-      toast.success(`Progetto spostato in ${phaseTitle}`)
     }
+  }
+
+  const handleArchiveProject = async (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation()
+    if (!confirm(`Sei sicuro di voler archiviare il progetto "${project.title}"?`)) return
+    
+    const archivePhase = phases.find(p => (p.id.toLowerCase() === 'archiviato' || p.id.toLowerCase() === 'archived') && p.project_type_id === activeTab)
+    if (!archivePhase) {
+      toast.error('Fase "Archiviato" non trovata per questo tipo di progetto')
+      return
+    }
+    
+    try {
+      await supabase.from('projects').update({ phase_id: archivePhase.id }).eq('id', project.id)
+      setProjects(prev => prev.map(p => p.id === project.id ? { ...p, phase_id: archivePhase.id } : p))
+      toast.success('Progetto archiviato')
+    } catch (error) {
+      toast.error("Errore durante l'archiviazione")
+    }
+  }
+
+  const handleAddProject = (newProject: Project) => {
+    setProjects(prev => [newProject, ...prev])
   }
 
   if (!isBrowser) return null // Prevent hydration errors with drag and drop
@@ -198,9 +313,17 @@ export function ProjectBoard({}: ProjectBoardProps) {
 
   return (
     <>
+      <QuickAddProjectModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+        onAdd={handleAddProject} 
+        activeTab={activeTab}
+        phases={phases}
+      />
+      
       <ProjectDrawer
         isOpen={selectedProject !== null}
-        onClose={() => setSelectedProject(null)}
+        onClose={() => handleProjectClick(null)}
         project={selectedProject}
         onSaved={fetchData}
       />
@@ -209,25 +332,33 @@ export function ProjectBoard({}: ProjectBoardProps) {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
         
         {/* Project Type Tabs */}
-        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--color-surface-solid)', padding: '0.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
-          {projectTypes.map(type => (
-            <button
-              key={type.id}
-              onClick={() => setActiveTab(type.id)}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: 'var(--radius-sm)',
-                border: 'none',
-                background: activeTab === type.id ? 'var(--color-primary)' : 'transparent',
-                color: activeTab === type.id ? 'white' : 'var(--color-text-muted)',
-                fontWeight: activeTab === type.id ? 600 : 400,
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              {type.name}
-            </button>
-          ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--color-surface-solid)', padding: '0.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+            {projectTypes.map(type => (
+              <button
+                key={type.id}
+                onClick={() => handleTabChange(type.id)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: 'var(--radius-sm)',
+                  border: 'none',
+                  background: activeTab === type.id ? 'var(--color-primary)' : 'transparent',
+                  color: activeTab === type.id ? 'var(--color-bg-base)' : 'var(--color-text-muted)',
+                  fontWeight: activeTab === type.id ? 600 : 400,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {type.name}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-primary)', color: 'var(--color-bg-base)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', fontWeight: 500 }}
+          >
+            <Plus size={16} /> Nuovo Progetto
+          </button>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-surface-solid)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', border: '1px solid var(--color-border)' }}>
@@ -259,8 +390,12 @@ export function ProjectBoard({}: ProjectBoardProps) {
         style={{ cursor: 'grab', '--zoom-factor': zoomLevel } as React.CSSProperties}
       >
         {phases.filter(p => p.project_type_id === activeTab).map(phase => {
-          const columnProjects = projects.filter(p => p.phase_id === phase.id && p.type_id === activeTab)
+          const columnProjects = projects.filter(p => p.phase_id === phase.id && p.type_id === activeTab).sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0))
           const isCollapsed = collapsedPhases[phase.id]
+          const isTerminal = ['won', 'lost', 'archiviato', 'archived', 'completato', 'chiuso'].includes(phase.id.toLowerCase())
+          const MAX_VISIBLE = 30
+          const visibleProjects = isTerminal ? columnProjects.slice(0, MAX_VISIBLE) : columnProjects
+          const hiddenCount = columnProjects.length - visibleProjects.length
 
           return (
             <div key={phase.id} className={clsx(styles.column, isCollapsed && styles.columnCollapsed)}>
@@ -286,7 +421,7 @@ export function ProjectBoard({}: ProjectBoardProps) {
                       {...provided.droppableProps}
                       className={clsx(styles.cardList, snapshot.isDraggingOver && styles.cardListDraggingOver)}
                     >
-                    {columnProjects.map((project, index) => (
+                    {visibleProjects.map((project, index) => (
                       <Draggable key={project.id} draggableId={project.id} index={index}>
                         {(provided, snapshot) => (
                           <div
@@ -298,26 +433,72 @@ export function ProjectBoard({}: ProjectBoardProps) {
                               styles.card,
                               snapshot.isDragging && styles.cardDragging
                             )}
-                            onClick={() => setSelectedProject(project)}
+                            onClick={() => handleProjectClick(project)}
                           >
                             <div className={styles.cardHeader}>
-                              <div className={styles.cardTitle}>{project.title}</div>
+                              <div className={styles.cardTitle} style={{ flex: 1 }}>{project.title}</div>
+                              {project.phase_id !== 'archiviato' && project.phase_id !== 'archived' && (
+                                <button 
+                                  className={styles.archiveButton} 
+                                  onClick={(e) => handleArchiveProject(e, project)}
+                                  title="Archivia"
+                                >
+                                  <Archive size={14} />
+                                </button>
+                              )}
                             </div>
+
+                            {(project.time_tracking_enabled && (unbilledHours[project.id] > 0 || project.prepaid_minutes! > 0 || project.hourly_rate! > 0)) && (
+                              <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                                {project.prepaid_minutes! > 0 && (
+                                  <span style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(34, 197, 94, 0.15)', color: '#4ade80', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                    <Clock size={10} /> 
+                                    Rimaste: {Math.floor((project.prepaid_minutes! - (unbilledHours[project.id] || 0)) / 60)}h {Math.abs((project.prepaid_minutes! - (unbilledHours[project.id] || 0)) % 60)}m
+                                  </span>
+                                )}
+                                {(project.hourly_rate! > 0 && !project.prepaid_minutes) && (
+                                  <span style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                    <Clock size={10} /> 
+                                    Consuntivo: €{(((unbilledHours[project.id] || 0) / 60) * project.hourly_rate!).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  </span>
+                                )}
+                                {(!project.hourly_rate && !project.prepaid_minutes && unbilledHours[project.id] > 0) && (
+                                  <span style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.1)', color: 'var(--color-text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                    <Clock size={10} /> 
+                                    Ore: {Math.floor(unbilledHours[project.id] / 60)}h {unbilledHours[project.id] % 60}m
+                                  </span>
+                                )}
+                              </div>
+                            )}
 
                             <div className={styles.cardFooter}>
                               <div className={styles.cardValue} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem' }}>
                                 <Briefcase size={12} />
                                 {project.billing_type === 'one-off' ? 'Una Tantum' : 'Retainer'}
                               </div>
-                              <div className={styles.cardValue} style={{ fontWeight: 'bold' }}>
-                                €{project.billing_amount.toLocaleString('it-IT')}
-                              </div>
+                              {project.billing_amount > 0 && (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                                  <div className={styles.cardValue} style={{ fontWeight: 'bold' }}>
+                                    €{project.billing_amount.toLocaleString('it-IT')}
+                                  </div>
+                                  {(projectPaidAmounts[project.id] > 0) && (
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--color-success)', opacity: 0.9 }}>
+                                      Incassato: €{projectPaidAmounts[project.id].toLocaleString('it-IT')}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}
                       </Draggable>
                     ))}
                     {provided.placeholder}
+                    {hiddenCount > 0 && (
+                      <div style={{ padding: '0.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-text-muted)', background: 'var(--color-surface-solid)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)', marginTop: '0.5rem' }}>
+                        + altri {hiddenCount} progetti meno recenti
+                      </div>
+                    )}
                   </div>
                 )}
               </Droppable>

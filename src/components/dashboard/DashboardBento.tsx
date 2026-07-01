@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import CountUp from 'react-countup'
-import { TrendingUp, Users, Briefcase, Award, Calendar, ChevronRight } from 'lucide-react'
+import { TrendingUp, Users, Briefcase, Award, Calendar, ChevronRight, Clock, Info } from 'lucide-react'
 import Link from 'next/link'
 import styles from '@/app/Dashboard.module.css'
 import { CashFlowChart } from './CashFlowChart'
@@ -14,8 +14,12 @@ interface DashboardBentoProps {
     contactsCount: number
     companiesCount: number
     mrrValue: number
+    arrValue: number
     daIncassare: number
     pipelineValue: number
+    wonDealsValue: number
+    oreDaFatturareValue: number
+    oreDaFatturareText: string
   }
   appointments: any[]
   invoices: any[]
@@ -90,7 +94,9 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       <motion.div variants={itemVariants} className={`bento-card bento-green ${styles.bentoTall}`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
-            <span className={styles.cardLabel}>Entrate Mensili (MRR)</span>
+            <span className={styles.cardLabel} title="Valore totale dei contratti ricorrenti mensili attivi (MRR)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              MRR <Info size={12} opacity={0.6}/>
+            </span>
             <TrendingUp size={16} className={styles.cardIcon}/>
           </div>
           <div>
@@ -113,11 +119,31 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
         </div>
       </motion.div>
 
+      {/* ARR Card */}
+      <motion.div variants={itemVariants} className={`bento-card bento-primary ${styles.bentoSmall}`}>
+        <div className={styles.cardContent}>
+          <div className={styles.cardTop}>
+            <span className={styles.cardLabel} title="Valore totale dei contratti ricorrenti annuali attivi (ARR)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              ARR <Info size={12} opacity={0.6}/>
+            </span>
+            <TrendingUp size={16} className={styles.cardIcon}/>
+          </div>
+          <div>
+            <div className={styles.cardValue}>
+              <CountUp end={metrics.arrValue} duration={2} separator="." decimal="," prefix="€ " />
+            </div>
+            <div className={styles.cardSub}>Retainer annuali</div>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Da Incassare */}
       <motion.div variants={itemVariants} className={`bento-card bento-orange ${styles.bentoSmall}`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
-            <span className={styles.cardLabel}>Da Incassare</span>
+            <span className={styles.cardLabel} title="Valore dei progetti 'Da Fatturare' o 'In Ritardo', sottraendo eventuali fatture/incassi già registrati nel progetto." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Da Incassare <Info size={12} opacity={0.6}/>
+            </span>
             <Award size={16} className={styles.cardIcon}/>
           </div>
           <div>
@@ -132,13 +158,52 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       <motion.div variants={itemVariants} className={`bento-card bento-blue ${styles.bentoSmall}`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
-            <span className={styles.cardLabel}>Valore Pipeline</span>
+            <span className={styles.cardLabel} title="Valore totale stimato di tutti i Deal attualmente aperti (non persi, non vinti, non archiviati)." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Valore Pipeline <Info size={12} opacity={0.6}/>
+            </span>
             <Briefcase size={16} className={styles.cardIcon}/>
           </div>
           <div>
             <div className={styles.cardValue}>
                <CountUp end={metrics.pipelineValue} duration={2} separator="." decimal="," prefix="€ " />
             </div>
+            <div className={styles.cardSub}>In trattativa</div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Venduto YTD */}
+      <motion.div variants={itemVariants} className={`bento-card bento-purple ${styles.bentoSmall}`}>
+        <div className={styles.cardContent}>
+          <div className={styles.cardTop}>
+            <span className={styles.cardLabel} title="Valore totale dei Deal vinti nell'anno corrente." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Venduto YTD <Info size={12} opacity={0.6}/>
+            </span>
+            <Award size={16} className={styles.cardIcon}/>
+          </div>
+          <div>
+            <div className={styles.cardValue}>
+               <CountUp end={metrics.wonDealsValue} duration={2} separator="." decimal="," prefix="€ " />
+            </div>
+            <div className={styles.cardSub}>Deal vinti nell'anno</div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Ore da Fatturare (Consuntivi) */}
+      <motion.div variants={itemVariants} className={`bento-card bento-dark ${styles.bentoSmall}`}>
+        <div className={styles.cardContent}>
+          <div className={styles.cardTop}>
+            <span className={styles.cardLabel} title="Valore delle ore lavorate a consuntivo non ancora fatturate (esclude le ore in pre-pagato)." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Ore (Da fatturare) <Info size={12} opacity={0.6}/>
+            </span>
+            <Clock size={16} className={styles.cardIcon} style={{ color: 'rgba(59, 130, 246, 0.9)' }}/>
+          </div>
+          <div>
+            <div className={styles.cardValue}>
+               <CountUp end={metrics.oreDaFatturareValue} duration={2} separator="." decimal="," prefix="€ " />
+            </div>
+            <div className={styles.cardSub}>{metrics.oreDaFatturareText} accumulate</div>
           </div>
         </div>
       </motion.div>

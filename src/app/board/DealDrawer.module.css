@@ -58,9 +58,10 @@
   letter-spacing: 0.5px;
 }
 
-.badge[data-source="corsidia"] { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-.badge[data-source="piuitalia"] { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-.badge[data-source="web"] { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.badge[data-source="passaparola"] { background: var(--color-success-subtle); color: var(--color-success); }
+.badge[data-source="social"] { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.badge[data-source="outbound"] { background: var(--color-warning-subtle); color: var(--color-warning); }
+.badge[data-source="web"] { background: var(--color-primary-subtle); color: var(--color-primary); }
 
 .badgePhase {
   background: var(--color-surface);
