@@ -11,6 +11,8 @@ import type { Project, ProjectPhase, ProjectType } from './ProjectBoard'
 import { ActivityLog } from '@/components/ActivityLog'
 import { ProjectInvoices } from './ProjectInvoices'
 import { TimeTrackingTab } from '@/components/time-tracking/TimeTrackingTab'
+import { notifyClientAboutReport } from '@/app/actions/time-tracking'
+import { Send } from 'lucide-react'
 
 interface ProjectDrawerProps {
   isOpen: boolean
@@ -22,6 +24,7 @@ interface ProjectDrawerProps {
 export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDrawerProps) {
   const [activeTab, setActiveTab] = useState<'diary' | 'admin' | 'links' | 'deal' | 'invoices' | 'time_tracking'>('diary')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
   const [formData, setFormData] = useState<any>({})
   const [associatedDeal, setAssociatedDeal] = useState<any>(null)
   
@@ -131,6 +134,25 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
     } else {
       toast.success('Progetto aggiornato con successo')
       onSaved()
+    }
+  }
+
+  const handleSendReportNow = async () => {
+    if (!project) return
+    if (!window.confirm('Vuoi inviare ora il report mensile al cliente via email?')) return
+    setIsSendingEmail(true)
+    try {
+      const monthName = new Date().toLocaleString('it-IT', { month: 'long', year: 'numeric' })
+      const res = await notifyClientAboutReport(project.id, monthName)
+      if (res && !res.success) {
+        toast.error(res.error || "Errore durante l'invio dell'email")
+      } else {
+        toast.success('Email inviata con successo!')
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Errore durante l'invio dell'email")
+    } finally {
+      setIsSendingEmail(false)
     }
   }
 
@@ -305,14 +327,25 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                     <div className={styles.detailRow}>
                       <FileText size={16} className={styles.detailIcon} />
                       <div className={styles.detailText} style={{ width: '100%' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '0.5rem' }}>
-                          <input 
-                            type="checkbox"
-                            checked={formData.always_send_report}
-                            onChange={e => setFormData({...formData, always_send_report: e.target.checked})}
-                          />
-                          <span className={styles.detailLabel} style={{ marginBottom: 0 }}>Invia sempre report mensile via email (anche senza ore a consuntivo / canoni da fatturare)</span>
-                        </label>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.5rem' }}>
+                          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                            <input 
+                              type="checkbox"
+                              checked={formData.always_send_report}
+                              onChange={e => setFormData({...formData, always_send_report: e.target.checked})}
+                            />
+                            <span className={styles.detailLabel} style={{ marginBottom: 0 }}>Invia sempre report mensile via email (anche senza ore a consuntivo / canoni da fatturare)</span>
+                          </label>
+                          <Button 
+                            variant="primary" 
+                            onClick={handleSendReportNow} 
+                            disabled={isSendingEmail} 
+                            style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                            title="Invia subito il report aggiornato via email"
+                          >
+                            <Send size={14} style={{ marginRight: '4px' }} /> {isSendingEmail ? 'Invio...' : 'Invia Ora'}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
