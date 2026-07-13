@@ -260,8 +260,53 @@ export default async function PublicReportPage({
           </div>
         </div>
 
-        {/* Pending Invoices Section */}
-        {pendingInvoices.length > 0 && (
+        {/* Storico Canoni Section (Retainer Only) */}
+        {project.billing_type === 'retainer_monthly' && allInvoices && allInvoices.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>
+              <div className={`${styles.iconWrapper}`} style={{ background: 'var(--color-primary)', color: '#fff' }}>
+                <CalendarDays size={24} />
+              </div>
+              Storico Canoni
+            </div>
+            
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Data / Mese</th>
+                  <th>Descrizione</th>
+                  <th>Stato</th>
+                  <th className={styles.right}>Importo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allInvoices.map(inv => (
+                  <tr key={inv.id}>
+                    <td className={styles.date}>
+                      {new Date(inv.issue_date).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}
+                    </td>
+                    <td>{inv.notes || 'Canone Mensile'}</td>
+                    <td>
+                      {inv.status === 'paid' ? (
+                        <span style={{ fontSize: '0.75rem', background: 'rgba(0,255,0,0.1)', color: 'var(--color-success)', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>Saldato</span>
+                      ) : inv.status === 'late' ? (
+                        <span style={{ fontSize: '0.75rem', background: 'var(--color-danger)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>In Ritardo</span>
+                      ) : (
+                        <span style={{ fontSize: '0.75rem', background: 'rgba(255,150,0,0.1)', color: 'var(--color-warning)', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>In Attesa</span>
+                      )}
+                    </td>
+                    <td className={styles.right} style={{ fontWeight: 600, color: inv.status === 'paid' ? 'var(--color-success)' : 'inherit' }}>
+                      € {Number(inv.amount).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pending Invoices Section (Non-Retainer) */}
+        {project.billing_type !== 'retainer_monthly' && pendingInvoices.length > 0 && (
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <div className={`${styles.iconWrapper} ${styles.active}`} style={{ background: 'var(--color-warning)', color: '#fff' }}>
@@ -303,8 +348,8 @@ export default async function PublicReportPage({
           </div>
         )}
 
-        {/* Paid Invoices Section */}
-        {paidInvoices.length > 0 && (
+        {/* Paid Invoices Section (Non-Retainer) */}
+        {project.billing_type !== 'retainer_monthly' && paidInvoices.length > 0 && (
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <div className={`${styles.iconWrapper}`} style={{ background: 'var(--color-success)', color: '#fff' }}>
