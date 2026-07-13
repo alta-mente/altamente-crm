@@ -59,6 +59,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
         billing_status: project.billing_status || 'to_invoice',
         billing_start_date: project.billing_start_date || new Date().toISOString().split('T')[0],
         time_tracking_enabled: project.time_tracking_enabled || false,
+        always_send_report: project.always_send_report || false,
         prepaid_minutes: project.prepaid_minutes || 0,
         hourly_rate: project.hourly_rate || 0,
       })
@@ -119,6 +120,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
       billing_status: formData.billing_status,
       billing_start_date: formData.billing_start_date,
       time_tracking_enabled: formData.time_tracking_enabled,
+      always_send_report: formData.always_send_report,
       prepaid_minutes: formData.prepaid_minutes,
       hourly_rate: formData.hourly_rate
     }).eq('id', project.id)
@@ -297,6 +299,20 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                           <option value="paid">Saldato</option>
                           <option value="late">In Ritardo</option>
                         </select>
+                      </div>
+                    </div>
+
+                    <div className={styles.detailRow}>
+                      <FileText size={16} className={styles.detailIcon} />
+                      <div className={styles.detailText} style={{ width: '100%' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '0.5rem' }}>
+                          <input 
+                            type="checkbox"
+                            checked={formData.always_send_report}
+                            onChange={e => setFormData({...formData, always_send_report: e.target.checked})}
+                          />
+                          <span className={styles.detailLabel} style={{ marginBottom: 0 }}>Invia sempre report mensile via email (anche senza ore a consuntivo / canoni da fatturare)</span>
+                        </label>
                       </div>
                     </div>
                   </div>
