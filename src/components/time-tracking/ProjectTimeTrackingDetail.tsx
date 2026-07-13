@@ -30,6 +30,10 @@ interface CompanyHour {
   minutes: number
   billed: boolean
   batch_id: string
+  invoice_id?: string
+  invoices?: {
+    status: string
+  }
 }
 
 interface Props {
@@ -302,9 +306,13 @@ export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, o
                         <span 
                           onClick={() => handleUnarchive(row.id)}
                           className={styles.badge}
+                          style={{
+                            background: row.invoices?.status === 'paid' ? 'rgba(0,255,0,0.1)' : 'rgba(255,150,0,0.1)',
+                            color: row.invoices?.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)'
+                          }}
                           title="Clicca per de-archiviare SOLO questa riga"
                         >
-                          📦 {row.batch_id ? new Date(row.batch_id.slice(0,4) + '-' + row.batch_id.slice(4,6) + '-' + row.batch_id.slice(6,8)).toLocaleDateString('it-IT') : 'Pregresso'}
+                          {row.invoices?.status === 'paid' ? '✅ Incassato' : (row.invoices ? '⏳ Fatturato' : '📦 Archiviato')} ({row.batch_id ? new Date(row.batch_id.slice(0,4) + '-' + row.batch_id.slice(4,6) + '-' + row.batch_id.slice(6,8)).toLocaleDateString('it-IT') : 'Pregresso'})
                         </span>
                       )}
                       {row.description}

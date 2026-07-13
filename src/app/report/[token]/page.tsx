@@ -63,6 +63,23 @@ export default async function PublicReportPage({
     console.error('Error fetching hours:', hoursError)
   }
 
+  // Fetch all invoices
+  const { data: invoices, error: invoicesError } = await supabase
+    .from('invoices')
+    .select('*')
+    .eq('project_id', project.id)
+    .order('issue_date', { ascending: false })
+    
+  if (invoicesError) {
+    console.error('Error fetching invoices:', invoicesError)
+  }
+
+  const allInvoices = invoices || []
+  const pendingInvoices = allInvoices.filter(i => i.status === 'pending' || i.status === 'late')
+  const paidInvoices = allInvoices.filter(i => i.status === 'paid')
+  const totalPendingAmount = pendingInvoices.reduce((sum, inv) => sum + Number(inv.amount), 0)
+  const totalPaidAmount = paidInvoices.reduce((sum, inv) => sum + Number(inv.amount), 0)
+
   const allHours = hours || []
   const activeHours = allHours.filter(h => !h.billed)
   const archivedHours = allHours.filter(h => h.billed)
@@ -157,16 +174,16 @@ export default async function PublicReportPage({
                   <Euro size={16} /> Totale Maturato
                 </div>
                 <div className={styles.statValue}>
-                  € {((totalActiveMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  € {(((totalActiveMinutes / 60) * rate) + totalPendingAmount).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
                 <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem' }}>
-                  {formatTime(totalActiveMinutes)} ore in attesa
+                  {formatTime(totalActiveMinutes)} ore in attesa {totalPendingAmount > 0 ? ` + canoni` : ''}
                 </div>
-                {totalActiveMinutes > 0 && (
+                {(totalActiveMinutes > 0 || totalPendingAmount > 0) && (
                   <RequestInvoiceButton 
                     projectName={project.title} 
                     companyName={project.companies?.name || 'Azienda non specificata'} 
-                    totalAmount={(totalActiveMinutes / 60) * rate}
+                    totalAmount={((totalActiveMinutes / 60) * rate) + totalPendingAmount}
                     reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
                     logoUrl={settings?.logo_url || undefined}
                     clientEmail={project.companies?.contact_email || undefined}
@@ -188,6 +205,92 @@ export default async function PublicReportPage({
             )}
           </div>
         </div>
+
+        {/* Pending Invoices Section */}
+        {pendingInvoices.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>
+              <div className={`${styles.iconWrapper} ${styles.active}`} style={{ background: 'var(--color-warning)', color: '#fff' }}>
+                <Euro size={24} />
+              </div>
+              Da Saldare / Fatturato
+            </div>
+            
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Data Emissione</th>
+                  <th>Descrizione</th>
+                  <th className={styles.right}>Importo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingInvoices.map(inv => (
+                  <tr key={inv.id}>
+                    <td className={styles.date}>
+                      {new Date(inv.issue_date).toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' })}
+                    </td>
+                    <td>{inv.notes || 'Fattura / Addebito'}</td>
+                    <td className={styles.right} style={{ fontWeight: 600 }}>
+                      € {Number(inv.amount).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </td>
+                  </tr>
+                ))}
+                <tr className={styles.totalRow}>
+                  <td colSpan={2} className={`${styles.right} ${styles.totalLabel}`}>
+                    Totale Fatturato da Saldare
+                  </td>
+                  <td className={`${styles.right} ${styles.totalValue}`} style={{ color: 'var(--color-warning)' }}>
+                    € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Paid Invoices Section */}
+        {paidInvoices.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>
+              <div className={`${styles.iconWrapper}`} style={{ background: 'var(--color-success)', color: '#fff' }}>
+                <CheckCircle2 size={24} />
+              </div>
+              Già Saldato / Incassato
+            </div>
+            
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Data Incasso</th>
+                  <th>Descrizione</th>
+                  <th className={styles.right}>Importo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paidInvoices.map(inv => (
+                  <tr key={inv.id}>
+                    <td className={styles.date}>
+                      {inv.paid_date ? new Date(inv.paid_date).toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' }) : new Date(inv.issue_date).toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' })}
+                    </td>
+                    <td>{inv.notes || 'Fattura / Addebito'}</td>
+                    <td className={styles.right} style={{ fontWeight: 600, color: 'var(--color-success)' }}>
+                      € {Number(inv.amount).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </td>
+                  </tr>
+                ))}
+                <tr className={styles.totalRow}>
+                  <td colSpan={2} className={`${styles.right} ${styles.totalLabel}`}>
+                    Totale Incassato Storico
+                  </td>
+                  <td className={`${styles.right} ${styles.totalValue}`} style={{ color: 'var(--color-success)' }}>
+                    € {totalPaidAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Active Hours Section */}
         <div className={styles.section}>

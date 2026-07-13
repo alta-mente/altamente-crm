@@ -25,7 +25,7 @@ export default async function ProjectTimeTrackingPage({
   // Fetch hours for the project
   const { data: hours, error: hoursError } = await supabase
     .from('company_hours')
-    .select('*')
+    .select('*, invoices(status)')
     .eq('project_id', resolvedParams.projectId)
     .order('date', { ascending: false })
     .order('id', { ascending: false })

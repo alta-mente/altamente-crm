@@ -75,6 +75,12 @@ export default async function DashboardHome() {
       return sum + (remaining > 0 ? remaining : 0)
     }, 0)
 
+  const competenzaValue = safeInvoices.reduce((sum, i) => sum + (Number(i.amount) || 0), 0)
+  const cassaValue = safeInvoices
+    .filter(i => i.status === 'paid')
+    .reduce((sum, i) => sum + (Number(i.amount) || 0), 0)
+
+
   const unbilledConsuntiviHours = safeCompanyHours
     .filter(h => !h.billed && (!h.projects?.prepaid_minutes || h.projects.prepaid_minutes === 0))
   
@@ -96,6 +102,8 @@ export default async function DashboardHome() {
             mrrValue,
             arrValue,
             daIncassare,
+            competenzaValue,
+            cassaValue,
             pipelineValue,
             wonDealsValue,
             oreDaFatturareValue,

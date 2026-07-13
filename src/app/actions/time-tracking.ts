@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
-import { sendLowHoursAlertEmail, sendReportArchivedEmail } from './emails';
+import { sendLowHoursAlertEmail, sendMonthlyConsuntiviEmail } from './emails';
 
 export async function toggleTimeTracking(projectId: string, enabled: boolean) {
   const supabase = await createClient();
@@ -141,15 +141,54 @@ export async function deleteCompanyHours(id: string, projectId: string) {
 export async function archiveCompanyHours(projectId: string) {
   const supabase = await createClient();
   
+  // Fetch unbilled hours
+  const { data: unbilledHours } = await supabase
+    .from('company_hours')
+    .select('id, minutes')
+    .eq('project_id', projectId)
+    .eq('billed', false);
+
+  if (!unbilledHours || unbilledHours.length === 0) {
+    return;
+  }
+
+  // Get project rate
+  const { data: proj } = await supabase.from('projects').select('hourly_rate').eq('id', projectId).single();
+  const rate = proj?.hourly_rate || 0;
+  
+  const totalMinutes = unbilledHours.reduce((acc, h) => acc + h.minutes, 0);
+  const amount = (totalMinutes / 60) * rate;
+
   // Format batch_id as YYYYMMDD-HHMMSS
   const now = new Date();
   const batchId = now.toISOString().replace(/[-:T]/g, '').slice(0, 14);
 
+  // Create invoice
+  const noteStr = `Fatturazione ore a consuntivo (Batch ${batchId})`;
+  let invoiceId = null;
+
+  if (amount > 0) {
+    const { data: invData, error: invError } = await supabase.from('invoices').insert({
+      project_id: projectId,
+      amount,
+      status: 'pending',
+      notes: noteStr,
+      issue_date: new Date().toISOString().split('T')[0]
+    }).select('id').single();
+
+    if (!invError && invData) {
+      invoiceId = invData.id;
+    }
+  }
+
   const { error } = await supabase
     .from('company_hours')
-    .update({ billed: true, batch_id: batchId })
-    .eq('project_id', projectId)
-    .eq('billed', false);
+    .update({ 
+      billed: true, 
+      batch_id: batchId,
+      ...(invoiceId ? { invoice_id: invoiceId } : {})
+    })
+    .in('id', unbilledHours.map(h => h.id));
 
   if (error) {
     throw new Error(error.message);
@@ -222,13 +261,45 @@ export async function notifyClientAboutReport(projectId: string, monthName: stri
 
   const reportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/report/${token}`;
 
+  // Fetch unbilled hours for consuntivo
+  const { data: unbilledHours } = await supabase
+    .from('company_hours')
+    .select('minutes')
+    .eq('project_id', projectId)
+    .eq('billed', false);
+    
+  let totalMinutes = 0;
+  if (!proj.prepaid_minutes || proj.prepaid_minutes === 0) {
+    totalMinutes = (unbilledHours || []).reduce((acc, h) => acc + h.minutes, 0);
+  }
+  
+  const hourlyRate = proj.hourly_rate || 0;
+  const hourlyAmount = (totalMinutes / 60) * hourlyRate;
+  
+  // Fetch pending invoices (retainers)
+  const { data: pendingInvoices } = await supabase
+    .from('invoices')
+    .select('amount')
+    .eq('project_id', projectId)
+    .eq('status', 'pending');
+    
+  const retainerAmount = (pendingInvoices || []).reduce((acc, inv) => acc + Number(inv.amount), 0);
+
+  const totalAmount = hourlyAmount + retainerAmount;
+  const totalHoursStr = `${Math.floor(totalMinutes / 60)}h ${(totalMinutes % 60).toString().padStart(2, '0')}m`;
+
   const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
 
-  const res = await sendReportArchivedEmail({
+  const res = await sendMonthlyConsuntiviEmail({
     to: proj.companies.contact_email,
-    companyName: `${proj.companies.name} (Progetto: ${proj.title})`,
+    companyName: proj.companies.name,
+    projectName: proj.title,
+    hourlyRate,
+    hourlyAmount,
+    retainerAmount,
+    totalAmount,
+    totalHoursStr,
     reportUrl,
-    monthName,
     logoUrl: settings?.logo_url
   });
 

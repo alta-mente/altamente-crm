@@ -16,6 +16,8 @@ interface DashboardBentoProps {
     mrrValue: number
     arrValue: number
     daIncassare: number
+    competenzaValue: number
+    cassaValue: number
     pipelineValue: number
     wonDealsValue: number
     oreDaFatturareValue: number
@@ -136,6 +138,43 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           </div>
         </div>
       </motion.div>
+
+      {/* Competenza */}
+      <motion.div variants={itemVariants} className={`bento-card bento-dark ${styles.bentoSmall}`} style={{ border: '1px solid rgba(168, 85, 247, 0.2)' }}>
+        <div className={styles.cardContent}>
+          <div className={styles.cardTop}>
+            <span className={styles.cardLabel} title="Competenza Economica: Totale Fatturato (emesso)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Competenza (Fatturato) <Info size={12} opacity={0.6}/>
+            </span>
+            <TrendingUp size={16} className={styles.cardIcon} style={{ color: '#a855f7' }}/>
+          </div>
+          <div>
+            <div className={styles.cardValue}>
+              <CountUp end={metrics.competenzaValue} duration={2} separator="." decimal="," prefix="€ " />
+            </div>
+            <div className={styles.cardSub}>Valore generato / Emesso</div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Cassa */}
+      <motion.div variants={itemVariants} className={`bento-card bento-green ${styles.bentoSmall}`}>
+        <div className={styles.cardContent}>
+          <div className={styles.cardTop}>
+            <span className={styles.cardLabel} title="Cassa Reale: Totale Incassato (fatture saldate)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Cassa (Incassato) <Info size={12} opacity={0.6}/>
+            </span>
+            <Award size={16} className={styles.cardIcon}/>
+          </div>
+          <div>
+            <div className={styles.cardValue}>
+              <CountUp end={metrics.cassaValue} duration={2} separator="." decimal="," prefix="€ " />
+            </div>
+            <div className={styles.cardSub}>Entrate effettive</div>
+          </div>
+        </div>
+      </motion.div>
+
 
       {/* Da Incassare */}
       <motion.div variants={itemVariants} className={`bento-card bento-orange ${styles.bentoSmall}`}>

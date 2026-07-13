@@ -176,6 +176,9 @@ export async function sendMonthlyConsuntiviEmail({
   to,
   companyName,
   projectName,
+  hourlyRate,
+  hourlyAmount,
+  retainerAmount,
   totalAmount,
   totalHoursStr,
   reportUrl,
@@ -184,6 +187,9 @@ export async function sendMonthlyConsuntiviEmail({
   to: string,
   companyName: string,
   projectName: string,
+  hourlyRate: number,
+  hourlyAmount: number,
+  retainerAmount: number,
   totalAmount: number,
   totalHoursStr: string,
   reportUrl: string,
@@ -198,20 +204,45 @@ export async function sendMonthlyConsuntiviEmail({
     const response = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
-      subject: `Riepilogo Ore Mensile: ${companyName}`,
+      subject: `Riepilogo Mensile: ${companyName}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
           ${logoUrl ? `<div style="text-align: center; margin-bottom: 30px;"><img src="${logoUrl}" alt="Logo" style="max-height: 50px; width: auto;" /></div>` : ''}
-          <h2 style="color: #000;">Riepilogo Attività Consuntivate</h2>
+          <h2 style="color: #000;">Estratto Conto Mensile</h2>
           <p>Ciao,</p>
-          <p>Ti inviamo il riepilogo automatico delle ore di lavoro maturate nel mese precedente per il progetto <strong>${projectName}</strong>.</p>
+          <p>Ti inviamo il riepilogo automatico delle competenze maturate nel mese precedente e/o dei canoni in sospeso per il progetto <strong>${projectName}</strong>.</p>
           
-          <div style="background: #fdf8eb; border: 1px solid #fde68a; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 0 0 10px 0;"><strong>Tempo Totale Accumulato:</strong> <span style="color: #3b82f6;">${totalHoursStr}</span></p>
-            <p style="margin: 0;"><strong>Valore Totale da Fatturare:</strong> <span style="font-size: 1.2em; color: #10b981;">€ ${totalAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+          <div style="background: #fdf8eb; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            ${hourlyAmount > 0 ? `
+              <div style="margin-bottom: 15px; border-bottom: 1px dashed #d1d5db; padding-bottom: 15px;">
+                <p style="margin: 0 0 5px 0; font-size: 0.9em; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px;">Consuntivo Ore</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <strong>Tempo Totale:</strong> <span style="color: #3b82f6;">${totalHoursStr}</span><br/>
+                    <small style="color: #6b7280;">(Costo Orario Concordato: € ${hourlyRate.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/h)</small>
+                  </div>
+                  <strong style="font-size: 1.1em;">€ ${hourlyAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                </div>
+              </div>
+            ` : ''}
+
+            ${retainerAmount > 0 ? `
+              <div style="margin-bottom: 15px; ${hourlyAmount === 0 ? 'border-bottom: 1px dashed #d1d5db; padding-bottom: 15px;' : ''}">
+                <p style="margin: 0 0 5px 0; font-size: 0.9em; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px;">Addebiti Fissi / Canoni in sospeso</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>Canoni mensili o voci fisse</span>
+                  <strong style="font-size: 1.1em;">€ ${retainerAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                </div>
+              </div>
+            ` : ''}
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: ${hourlyAmount > 0 && retainerAmount > 0 ? '15px' : '0'}; padding-top: ${hourlyAmount > 0 && retainerAmount > 0 ? '15px' : '0'}; border-top: ${hourlyAmount > 0 && retainerAmount > 0 ? '1px solid #d1d5db' : 'none'};">
+              <strong style="font-size: 1.1em;">Valore Totale da Fatturare:</strong>
+              <span style="font-size: 1.4em; color: #10b981; font-weight: bold;">€ ${totalAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </div>
           </div>
 
-          <p>Puoi visionare il dettaglio completo degli interventi cliccando sul bottone qui sotto. All'interno del report troverai anche l'opzione per inviarci automaticamente la conferma per l'emissione della fattura.</p>
+          <p>Puoi visionare il dettaglio completo degli interventi e lo storico cliccando sul bottone qui sotto. All'interno del report troverai anche l'opzione per confermarci l'emissione della fattura.</p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="${reportUrl}" style="display: inline-block; padding: 14px 28px; background-color: #000; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; letter-spacing: 0.5px;">
               Visualizza Report Completo
