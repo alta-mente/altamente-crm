@@ -267,3 +267,70 @@ export async function sendMonthlyConsuntiviEmail({
   }
 }
 
+export async function sendMonthlyRetainerEmail({
+  to,
+  companyName,
+  projectName,
+  billingAmount,
+  reportUrl,
+  logoUrl
+}: {
+  to: string,
+  companyName: string,
+  projectName: string,
+  billingAmount: number,
+  reportUrl: string,
+  logoUrl?: string
+}) {
+  if (!resend) {
+    console.log('[SIMULAZIONE EMAIL] Recap Retainer Mensile a:', to, 'Progetto:', projectName)
+    return { success: true, simulated: true }
+  }
+
+  try {
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [to],
+      subject: `Riepilogo Canone Mensile: ${projectName} - ${companyName}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          ${logoUrl ? `<div style="text-align: center; margin-bottom: 30px;"><img src="${logoUrl}" alt="Logo" style="max-height: 50px; width: auto;" /></div>` : ''}
+          <h2 style="color: #000;">Riepilogo Canone Mensile</h2>
+          <p>Ciao,</p>
+          <p>Ti inviamo il riepilogo relativo al tuo contratto di mantenimento/retainer mensile per il progetto <strong>${projectName}</strong>.</p>
+          
+          <div style="background: #fdf8eb; border: 1px solid #fde68a; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <div style="margin-bottom: 5px;">
+              <p style="margin: 0 0 5px 0; font-size: 0.9em; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px;">Valore Canone Mensile Concordato</p>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Canone Base</span>
+                <strong style="font-size: 1.4em; color: #10b981;">€ ${billingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+              </div>
+            </div>
+          </div>
+
+          <p>Puoi visionare il report completo, l'elenco delle eventuali fatture in sospeso e lo storico dei pagamenti cliccando sul bottone qui sotto.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${reportUrl}" style="display: inline-block; padding: 14px 28px; background-color: #000; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; letter-spacing: 0.5px;">
+              Visualizza Report Completo
+            </a>
+          </div>
+          <p>Per qualsiasi dubbio sull'amministrazione, non esitare a contattarci.</p>
+          <br/>
+          <p style="color: #666; font-size: 0.9em;">Un saluto,<br/>Il team di Altamente</p>
+        </div>
+      `
+    })
+
+    if (response.error) {
+      console.error('Resend API Error:', response.error)
+      return { success: false, error: response.error.message }
+    }
+
+    return { success: true, data: response.data }
+  } catch (error) {
+    console.error('Email sending failed:', error)
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
+  }
+}
+

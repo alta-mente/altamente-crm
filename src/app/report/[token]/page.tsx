@@ -1,6 +1,6 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
-import { Clock, Euro, CheckCircle2, Package, Archive, CalendarDays, Activity, Folder } from 'lucide-react'
+import { Clock, Euro, CheckCircle2, Package, Archive, CalendarDays, Activity, Folder, RefreshCw } from 'lucide-react'
 import { RequestInvoiceButton } from './RequestInvoiceButton'
 import styles from '../Report.module.css'
 
@@ -142,10 +142,38 @@ export default async function PublicReportPage({
           {/* Stat Block */}
           <div className={styles.statBlock}>
             <div className={styles.statBlockIcon}>
-              {prepaidMin > 0 ? <Package size={150} /> : rate > 0 ? <Euro size={150} /> : <Clock size={150} />}
+              {project.billing_type === 'retainer_monthly' ? <RefreshCw size={150} /> : prepaidMin > 0 ? <Package size={150} /> : rate > 0 ? <Euro size={150} /> : <Clock size={150} />}
             </div>
             
-            {project.time_tracking_enabled === false ? (
+            {project.billing_type === 'retainer_monthly' ? (
+              <>
+                <div className={styles.statLabel}>
+                  <RefreshCw size={16} /> Canone Mensile
+                </div>
+                <div className={styles.statValue} style={{ color: 'var(--color-primary)' }}>
+                  € {(project.billing_amount || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                </div>
+                {totalPendingAmount > 0 ? (
+                  <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--color-warning)' }}>
+                      Fatture/Canoni in sospeso: € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </div>
+                    <RequestInvoiceButton 
+                      projectName={project.title} 
+                      companyName={project.companies?.name || 'Azienda non specificata'} 
+                      totalAmount={totalPendingAmount}
+                      reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
+                      logoUrl={settings?.logo_url || undefined}
+                      clientEmail={project.companies?.contact_email || undefined}
+                    />
+                  </div>
+                ) : (
+                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', color: 'var(--color-success)' }}>
+                    Nessun canone in sospeso al momento.
+                  </div>
+                )}
+              </>
+            ) : project.time_tracking_enabled === false ? (
               <>
                 <div className={styles.statLabel}>
                   <Euro size={16} /> Totale da Saldare

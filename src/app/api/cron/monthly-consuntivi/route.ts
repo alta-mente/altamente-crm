@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { sendMonthlyConsuntiviEmail } from '@/app/actions/emails'
+import { sendMonthlyConsuntiviEmail, sendMonthlyRetainerEmail } from '@/app/actions/emails'
 import { generateReportToken } from '@/app/actions/time-tracking'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -126,18 +126,30 @@ export async function GET(request: Request) {
       const totalHoursStr = `${Math.floor(totalMinutes / 60)}h ${(totalMinutes % 60).toString().padStart(2, '0')}m`
       const hourlyRate = project.hourly_rate || 0
 
-      const result = await sendMonthlyConsuntiviEmail({
-        to: clientEmail,
-        companyName: project.companies?.name || 'Azienda',
-        projectName: project.title,
-        hourlyRate,
-        hourlyAmount,
-        retainerAmount,
-        totalAmount: totalToBill,
-        totalHoursStr,
-        reportUrl,
-        logoUrl: settings?.logo_url
-      })
+      let result;
+      if (project.billing_type === 'retainer_monthly') {
+        result = await sendMonthlyRetainerEmail({
+          to: clientEmail,
+          companyName: project.companies?.name || 'Azienda',
+          projectName: project.title,
+          billingAmount: project.billing_amount || 0,
+          reportUrl,
+          logoUrl: settings?.logo_url
+        })
+      } else {
+        result = await sendMonthlyConsuntiviEmail({
+          to: clientEmail,
+          companyName: project.companies?.name || 'Azienda',
+          projectName: project.title,
+          hourlyRate,
+          hourlyAmount,
+          retainerAmount,
+          totalAmount: totalToBill,
+          totalHoursStr,
+          reportUrl,
+          logoUrl: settings?.logo_url
+        })
+      }
       
       results.push({ projectId: projId, email: clientEmail, success: result.success })
       if (result.success) emailsSent++

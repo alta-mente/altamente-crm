@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
-import { sendLowHoursAlertEmail, sendMonthlyConsuntiviEmail } from './emails';
+import { sendLowHoursAlertEmail, sendMonthlyConsuntiviEmail, sendMonthlyRetainerEmail } from './emails';
 
 export async function toggleTimeTracking(projectId: string, enabled: boolean) {
   const supabase = await createClient();
@@ -290,18 +290,30 @@ export async function notifyClientAboutReport(projectId: string, monthName: stri
 
   const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
 
-  const res = await sendMonthlyConsuntiviEmail({
-    to: proj.companies.contact_email,
-    companyName: proj.companies.name,
-    projectName: proj.title,
-    hourlyRate,
-    hourlyAmount,
-    retainerAmount,
-    totalAmount,
-    totalHoursStr,
-    reportUrl,
-    logoUrl: settings?.logo_url
-  });
+  let res;
+  if (proj.billing_type === 'retainer_monthly') {
+    res = await sendMonthlyRetainerEmail({
+      to: proj.companies.contact_email,
+      companyName: proj.companies.name,
+      projectName: proj.title,
+      billingAmount: proj.billing_amount || 0,
+      reportUrl,
+      logoUrl: settings?.logo_url
+    });
+  } else {
+    res = await sendMonthlyConsuntiviEmail({
+      to: proj.companies.contact_email,
+      companyName: proj.companies.name,
+      projectName: proj.title,
+      hourlyRate,
+      hourlyAmount,
+      retainerAmount,
+      totalAmount,
+      totalHoursStr,
+      reportUrl,
+      logoUrl: settings?.logo_url
+    });
+  }
 
   if (!res.success) {
     return { success: false, error: res.error || 'Errore durante l\'invio dell\'email' };
