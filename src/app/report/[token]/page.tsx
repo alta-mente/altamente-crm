@@ -145,7 +145,33 @@ export default async function PublicReportPage({
               {prepaidMin > 0 ? <Package size={150} /> : rate > 0 ? <Euro size={150} /> : <Clock size={150} />}
             </div>
             
-            {prepaidMin > 0 ? (
+            {project.time_tracking_enabled === false ? (
+              <>
+                <div className={styles.statLabel}>
+                  <Euro size={16} /> Totale da Saldare
+                </div>
+                <div className={styles.statValue} style={{ color: totalPendingAmount > 0 ? 'var(--color-warning)' : 'var(--color-success)' }}>
+                  € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                </div>
+                {totalPendingAmount === 0 && (
+                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', color: 'var(--color-success)' }}>
+                    Nessun pagamento in sospeso al momento.
+                  </div>
+                )}
+                {totalPendingAmount > 0 && (
+                  <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+                    <RequestInvoiceButton 
+                      projectName={project.title} 
+                      companyName={project.companies?.name || 'Azienda non specificata'} 
+                      totalAmount={totalPendingAmount}
+                      reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
+                      logoUrl={settings?.logo_url || undefined}
+                      clientEmail={project.companies?.contact_email || undefined}
+                    />
+                  </div>
+                )}
+              </>
+            ) : prepaidMin > 0 ? (
               <>
                 <div className={styles.statLabel}>
                   <Package size={16} /> Credito Residuo
@@ -293,8 +319,9 @@ export default async function PublicReportPage({
         )}
 
         {/* Active Hours Section */}
-        <div className={styles.section}>
-          <div className={styles.sectionTitle}>
+        {project.time_tracking_enabled !== false && (
+          <div className={styles.section}>
+            <div className={styles.sectionTitle}>
             <div className={`${styles.iconWrapper} ${styles.active}`}>
               <CheckCircle2 size={24} />
             </div>
@@ -345,9 +372,10 @@ export default async function PublicReportPage({
             </tbody>
           </table>
         </div>
+        )}
 
         {/* Archived Hours Section */}
-        {archivedHours.length > 0 && (
+        {project.time_tracking_enabled !== false && archivedHours.length > 0 && (
           <div className={`${styles.section} ${styles.archivedSection}`}>
             <div className={styles.sectionTitle}>
               <div className={`${styles.iconWrapper} ${styles.archived}`}>
