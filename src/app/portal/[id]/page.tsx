@@ -101,7 +101,7 @@ export default async function PublicPortalPage({
   const formatTime = (totalMin: number) => {
     const h = Math.floor(totalMin / 60)
     const m = totalMin % 60
-    return \`\${h}h \${m.toString().padStart(2, '0')}m\`
+    return `${h}h ${m.toString().padStart(2, '0')}m`
   }
 
   return (
