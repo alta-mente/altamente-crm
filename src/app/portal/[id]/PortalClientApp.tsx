@@ -115,6 +115,13 @@ export function PortalClientApp({
                   </div>
                 )}
                 
+                {project.billing_type !== 'retainer_monthly' && project.time_tracking_enabled === false && project.billing_amount > 0 && (
+                  <div className={styles.statRow}>
+                    <span>Valore Progetto</span>
+                    <span style={{ color: 'var(--color-primary)' }}>€ {project.billing_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                )}
+                
                 {project.prepaid_minutes > 0 && (
                   <div className={styles.statRow}>
                     <span>Credito Residuo</span>

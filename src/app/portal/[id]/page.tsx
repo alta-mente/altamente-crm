@@ -81,6 +81,12 @@ export default async function PublicPortalPage({
       projectTotalPending += (totalActiveMinutes / 60) * rate
     }
 
+    if (project.billing_type !== 'retainer_monthly' && project.time_tracking_enabled === false && project.billing_amount > 0) {
+      const paidInvoices = (project.invoices || []).filter((i: any) => i.status === 'paid')
+      const totalPaidAmount = paidInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
+      projectTotalPending = Math.max(0, project.billing_amount - totalPaidAmount)
+    }
+
     // Accumulate global
     globalPendingAmount += projectTotalPending
     if (project.billing_type === 'retainer_monthly') {

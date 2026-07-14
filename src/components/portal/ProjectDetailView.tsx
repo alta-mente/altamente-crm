@@ -135,16 +135,24 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                 <div className={styles.statLabel}>
                   <Euro size={16} /> Totale da Saldare
                 </div>
-                <div className={styles.statValue} style={{ color: totalPendingAmount > 0 ? 'var(--color-warning)' : 'var(--color-success)' }}>
-                  € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                <div className={styles.statValue} style={{ color: ((project.billing_amount > 0 ? Math.max(0, project.billing_amount - totalPaidAmount) : totalPendingAmount) > 0) ? 'var(--color-warning)' : 'var(--color-success)' }}>
+                  € {(project.billing_amount > 0 ? Math.max(0, project.billing_amount - totalPaidAmount) : totalPendingAmount).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                 </div>
-                {totalPendingAmount === 0 && (
+                {project.billing_amount > 0 && (
+                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)' }}>
+                    Valore progetto: € {project.billing_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                  </div>
+                )}
+                {totalPendingAmount === 0 && (!project.billing_amount || Math.max(0, project.billing_amount - totalPaidAmount) === 0) && (
                   <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', color: 'var(--color-success)' }}>
                     Nessun pagamento in sospeso al momento.
                   </div>
                 )}
                 {totalPendingAmount > 0 && (
                   <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--color-warning)' }}>
+                      Di cui già fatturati/in attesa: € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </div>
                     <RequestInvoiceButton 
                       projectName={project.title} 
                       companyName={project.companies?.name || 'Azienda non specificata'} 
