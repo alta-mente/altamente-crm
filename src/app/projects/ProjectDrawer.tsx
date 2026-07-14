@@ -65,6 +65,8 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
         always_send_report: project.always_send_report || false,
         prepaid_minutes: project.prepaid_minutes || 0,
         hourly_rate: project.hourly_rate || 0,
+        collaborator_email: project.collaborator_email || '',
+        commission_rate: project.commission_rate || 0,
       })
       
       if (project.deal_id) {
@@ -125,7 +127,9 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
       time_tracking_enabled: formData.time_tracking_enabled,
       always_send_report: formData.always_send_report,
       prepaid_minutes: formData.prepaid_minutes,
-      hourly_rate: formData.hourly_rate
+      hourly_rate: formData.hourly_rate,
+      collaborator_email: formData.collaborator_email || null,
+      commission_rate: formData.commission_rate || 0
     }).eq('id', project.id)
     
     setIsSubmitting(false)
@@ -515,6 +519,33 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                           ) : (
                             <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Nessun preventivo associato al deal.</span>
                           )}
+                        </div>
+                        
+                        <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
+                          <h4 style={{ fontSize: '0.85rem', marginBottom: '0.75rem', color: 'var(--color-text-muted)' }}>Collaboratore / Venditore</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: '0.5rem', alignItems: 'end' }}>
+                            <div>
+                              <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Email Collaboratore</span>
+                              <input 
+                                type="email"
+                                className={styles.editInput}
+                                placeholder="es. marco@azienda.it"
+                                value={formData.collaborator_email || ''}
+                                onChange={e => setFormData({...formData, collaborator_email: e.target.value})}
+                              />
+                            </div>
+                            <div>
+                              <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Commissione (%)</span>
+                              <input 
+                                type="number"
+                                min="0"
+                                max="100"
+                                className={styles.editInput}
+                                value={formData.commission_rate || 0}
+                                onChange={e => setFormData({...formData, commission_rate: Number(e.target.value)})}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
