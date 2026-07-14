@@ -12,7 +12,7 @@ import { ActivityLog } from '@/components/ActivityLog'
 import { ProjectInvoices } from './ProjectInvoices'
 import { TimeTrackingTab } from '@/components/time-tracking/TimeTrackingTab'
 import { notifyClientAboutReport } from '@/app/actions/time-tracking'
-import { Send } from 'lucide-react'
+import { Send, LayoutDashboard } from 'lucide-react'
 
 interface ProjectDrawerProps {
   isOpen: boolean
@@ -336,15 +336,30 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                             />
                             <span className={styles.detailLabel} style={{ marginBottom: 0 }}>Invia sempre report mensile via email (anche senza ore a consuntivo / canoni da fatturare)</span>
                           </label>
-                          <Button 
-                            variant="primary" 
-                            onClick={handleSendReportNow} 
-                            disabled={isSendingEmail} 
-                            style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
-                            title="Invia subito il report aggiornato via email"
-                          >
-                            <Send size={14} style={{ marginRight: '4px' }} /> {isSendingEmail ? 'Invio...' : 'Invia Ora'}
-                          </Button>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            {project?.company_id && (
+                              <Button
+                                variant="secondary"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  window.open(`/portal/${project.company_id}`, '_blank');
+                                }}
+                                style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                                title="Visualizza la Dashboard Aziendale del cliente"
+                              >
+                                <LayoutDashboard size={14} style={{ marginRight: '4px' }} /> Dashboard
+                              </Button>
+                            )}
+                            <Button 
+                              variant="primary" 
+                              onClick={handleSendReportNow} 
+                              disabled={isSendingEmail} 
+                              style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                              title="Invia subito il report aggiornato via email"
+                            >
+                              <Send size={14} style={{ marginRight: '4px' }} /> {isSendingEmail ? 'Invio...' : 'Invia Ora'}
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
