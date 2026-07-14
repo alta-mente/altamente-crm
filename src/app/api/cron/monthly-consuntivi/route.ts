@@ -129,7 +129,7 @@ export async function GET(request: Request) {
   const { sendCompanyPortalEmail } = await import('@/app/actions/emails')
 
   for (const [companyId, companyInfo] of Array.from(companiesToNotify.entries())) {
-    const portalUrl = \`\${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/portal/\${companyId}\`
+    const portalUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/portal/${companyId}`
     
     const result = await sendCompanyPortalEmail({
       to: companyInfo.email,
@@ -143,7 +143,7 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json({ 
-    message: \`Cron job completato. Inviate \${emailsSent} email di riepilogo aziendale al portale.\`,
+    message: `Cron job completato. Inviate ${emailsSent} email di riepilogo aziendale al portale.`,
     results 
   })
 }

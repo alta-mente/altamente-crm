@@ -253,7 +253,7 @@ export async function notifyClientAboutReport(projectId: string, monthName: stri
     return { success: false, error: 'Nessuna email di contatto impostata per l\'azienda' };
   }
 
-  const portalUrl = \`\${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/portal/\${proj.company_id}\`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/portal/${proj.company_id}`;
 
   const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
 
