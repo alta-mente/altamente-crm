@@ -451,6 +451,35 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                       </div>
                     </div>
                   </div>
+                  
+                  <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Collaboratore / Venditore</h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>Imposta le provvigioni spettanti a un venditore/collaboratore su questo progetto.</p>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: '0.5rem', alignItems: 'end' }}>
+                      <div>
+                        <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Email Collaboratore</span>
+                        <input 
+                          type="email"
+                          className={styles.editInput}
+                          placeholder="es. marco@azienda.it"
+                          value={formData.collaborator_email || ''}
+                          onChange={e => setFormData({...formData, collaborator_email: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Commissione (%)</span>
+                        <input 
+                          type="number"
+                          min="0"
+                          max="100"
+                          className={styles.editInput}
+                          value={formData.commission_rate || 0}
+                          onChange={e => setFormData({...formData, commission_rate: Number(e.target.value)})}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </>
               )}
 
@@ -519,33 +548,6 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                           ) : (
                             <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Nessun preventivo associato al deal.</span>
                           )}
-                        </div>
-                        
-                        <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
-                          <h4 style={{ fontSize: '0.85rem', marginBottom: '0.75rem', color: 'var(--color-text-muted)' }}>Collaboratore / Venditore</h4>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: '0.5rem', alignItems: 'end' }}>
-                            <div>
-                              <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Email Collaboratore</span>
-                              <input 
-                                type="email"
-                                className={styles.editInput}
-                                placeholder="es. marco@azienda.it"
-                                value={formData.collaborator_email || ''}
-                                onChange={e => setFormData({...formData, collaborator_email: e.target.value})}
-                              />
-                            </div>
-                            <div>
-                              <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Commissione (%)</span>
-                              <input 
-                                type="number"
-                                min="0"
-                                max="100"
-                                className={styles.editInput}
-                                value={formData.commission_rate || 0}
-                                onChange={e => setFormData({...formData, commission_rate: Number(e.target.value)})}
-                              />
-                            </div>
-                          </div>
                         </div>
                       </div>
 
