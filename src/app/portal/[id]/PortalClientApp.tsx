@@ -46,7 +46,33 @@ export function PortalClientApp({
   const archivedProjects = displayProjects.filter(p => p.phase_id && (p.phase_id.toLowerCase().includes('archiv') || p.phase_id.toLowerCase().includes('completat') || p.phase_id.toLowerCase().includes('chius')))
   const activeProjects = displayProjects.filter(p => !archivedProjects.includes(p))
 
-  const renderProjectCard = (project: any, isArchived: boolean) => (
+  const getNextRenewalDate = (startDate: string, type: string) => {
+    if (!startDate) return null
+    const start = new Date(startDate)
+    if (isNaN(start.getTime())) return null
+    
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    let next = new Date(start.getFullYear(), start.getMonth(), start.getDate())
+    
+    if (type === 'retainer_monthly') {
+      while (next < today) {
+        next.setMonth(next.getMonth() + 1)
+      }
+      return next
+    } else if (type === 'retainer_yearly') {
+      while (next < today) {
+        next.setFullYear(next.getFullYear() + 1)
+      }
+      return next
+    }
+    return null
+  }
+
+  const renderProjectCard = (project: any, isArchived: boolean) => {
+    const nextRenewal = getNextRenewalDate(project.billing_start_date, project.billing_type)
+    
+    return (
     <div
       key={project.id}
       className={styles.projectCard}
@@ -68,6 +94,7 @@ export function PortalClientApp({
           </div>
           <div className={styles.projectType}>
             {project.billing_type === 'retainer_monthly' ? 'Canone Mensile' : 
+             project.billing_type === 'retainer_yearly' ? 'Canone Annuale' :
              project.prepaid_minutes > 0 ? 'Monte Ore' : 
              project.time_tracking_enabled ? 'Consuntivo Ore' : 'Progetto'}
           </div>
@@ -78,14 +105,24 @@ export function PortalClientApp({
       </div>
       
       <div className={styles.projectStats}>
-        {project.billing_type === 'retainer_monthly' && (
-          <div className={styles.statRow}>
-            <span>Valore Canone</span>
-            <span style={{ color: 'var(--color-primary)' }}>€ {(project.billing_amount || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</span>
-          </div>
+        {project.billing_type?.startsWith('retainer') && (
+          <>
+            <div className={styles.statRow}>
+              <span>Valore Canone</span>
+              <span style={{ color: 'var(--color-primary)' }}>€ {(project.billing_amount || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}</span>
+            </div>
+            {nextRenewal && !isArchived && (
+              <div className={styles.statRow}>
+                <span>Prossimo Rinnovo</span>
+                <span style={{ color: 'var(--color-text)' }}>
+                  {nextRenewal.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                </span>
+              </div>
+            )}
+          </>
         )}
         
-        {project.billing_type !== 'retainer_monthly' && project.time_tracking_enabled === false && project.billing_amount > 0 && (
+        {!project.billing_type?.startsWith('retainer') && project.time_tracking_enabled === false && project.billing_amount > 0 && (
           <div className={styles.statRow}>
             <span>Valore Progetto</span>
             <span style={{ color: 'var(--color-primary)' }}>€ {project.billing_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}</span>
@@ -110,7 +147,7 @@ export function PortalClientApp({
           </div>
         )}
 
-        {project.pendingAmount === 0 && project.billing_type !== 'retainer_monthly' && project.prepaid_minutes === 0 && (
+        {project.pendingAmount === 0 && !project.billing_type?.startsWith('retainer') && project.prepaid_minutes === 0 && (
           <div className={styles.statRow}>
             <span>Stato Pagamenti</span>
             <span style={{ color: 'var(--color-success)' }}>Regolare</span>
@@ -118,7 +155,8 @@ export function PortalClientApp({
         )}
       </div>
     </div>
-  )
+    )
+  }
 
   // Otherwise, render the dashboard grid
   return (
