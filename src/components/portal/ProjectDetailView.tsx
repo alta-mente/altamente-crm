@@ -115,14 +115,6 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                     <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--color-warning)' }}>
                       Fatture/Canoni in sospeso: € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                     </div>
-                    <RequestInvoiceButton 
-                      projectName={project.title} 
-                      companyName={project.companies?.name || 'Azienda non specificata'} 
-                      totalAmount={totalPendingAmount}
-                      reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
-                      logoUrl={settings?.logo_url || undefined}
-                      clientEmail={project.companies?.contact_email || undefined}
-                    />
                   </div>
                 ) : (
                   <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', color: 'var(--color-success)' }}>
@@ -153,14 +145,6 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                     <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--color-warning)' }}>
                       Di cui già fatturati/in attesa: € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                     </div>
-                    <RequestInvoiceButton 
-                      projectName={project.title} 
-                      companyName={project.companies?.name || 'Azienda non specificata'} 
-                      totalAmount={totalPendingAmount}
-                      reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
-                      logoUrl={settings?.logo_url || undefined}
-                      clientEmail={project.companies?.contact_email || undefined}
-                    />
                   </div>
                 )}
               </>
