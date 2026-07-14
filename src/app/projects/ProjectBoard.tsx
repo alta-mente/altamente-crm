@@ -3,12 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
-import { Minimize2, Maximize2, ZoomIn, ZoomOut, Briefcase, Clock, Plus, Archive, Building, BookOpen } from 'lucide-react'
+import { Minimize2, Maximize2, ZoomIn, ZoomOut, Briefcase, Clock, Plus, Archive, Building, BookOpen, Mail, Info } from 'lucide-react'
 import clsx from 'clsx'
 import { toast } from 'sonner'
 import styles from './ProjectBoard.module.css'
 import { ProjectDrawer } from './ProjectDrawer'
 import { QuickAddProjectModal } from './QuickAddProjectModal'
+import { Modal } from '@/components/ui/Modal'
 
 import { createClient } from '@/utils/supabase/client'
 
@@ -20,7 +21,7 @@ export interface Project {
   id: string
   title: string
   company_id: string | null
-  companies?: { name: string } | null
+  companies?: { name: string, contact_email: string } | null
   deal_id: string | null
   type_id: string
   phase_id: string
@@ -35,6 +36,7 @@ export interface Project {
   time_tracking_enabled?: boolean
   prepaid_minutes?: number
   hourly_rate?: number
+  always_send_report?: boolean
 }
 
 export interface ProjectPhase {
@@ -71,9 +73,11 @@ export function ProjectBoard({}: ProjectBoardProps) {
   const [collapsedPhases, setCollapsedPhases] = useState<Record<string, boolean>>({})
   const [zoomLevel, setZoomLevel] = useState<number>(1)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [isEmailRulesModalOpen, setIsEmailRulesModalOpen] = useState(false)
   const [unbilledHours, setUnbilledHours] = useState<Record<string, number>>({})
   
   const [projectPaidAmounts, setProjectPaidAmounts] = useState<Record<string, number>>({})
+  const [projectPendingAmounts, setProjectPendingAmounts] = useState<Record<string, number>>({})
   
   const scrollRef = useRef<HTMLDivElement>(null)
   const isDown = useRef(false)
@@ -168,7 +172,7 @@ export function ProjectBoard({}: ProjectBoardProps) {
     // Fetch projects
     const { data: projectsData } = await supabase
       .from('projects')
-      .select('*, companies(name)')
+      .select('*, companies(name, contact_email)')
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: false })
       
@@ -192,14 +196,20 @@ export function ProjectBoard({}: ProjectBoardProps) {
     const { data: invoicesData } = await supabase
       .from('invoices')
       .select('project_id, amount, status')
-      .eq('status', 'paid')
+      .in('status', ['paid', 'pending', 'late'])
       
     if (invoicesData) {
       const paidMap: Record<string, number> = {}
+      const pendingMap: Record<string, number> = {}
       invoicesData.forEach(inv => {
-        paidMap[inv.project_id] = (paidMap[inv.project_id] || 0) + Number(inv.amount)
+        if (inv.status === 'paid') {
+          paidMap[inv.project_id] = (paidMap[inv.project_id] || 0) + Number(inv.amount)
+        } else {
+          pendingMap[inv.project_id] = (pendingMap[inv.project_id] || 0) + Number(inv.amount)
+        }
       })
       setProjectPaidAmounts(paidMap)
+      setProjectPendingAmounts(pendingMap)
     }
   }
 
@@ -354,6 +364,12 @@ export function ProjectBoard({}: ProjectBoardProps) {
             ))}
           </div>
           <button
+            onClick={() => setIsEmailRulesModalOpen(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-surface)', color: 'var(--color-text)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', cursor: 'pointer', fontWeight: 500 }}
+          >
+            <Info size={16} /> Regole Email
+          </button>
+          <button
             onClick={() => setIsAddModalOpen(true)}
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-primary)', color: 'var(--color-bg-base)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', fontWeight: 500 }}
           >
@@ -421,14 +437,24 @@ export function ProjectBoard({}: ProjectBoardProps) {
                       {...provided.droppableProps}
                       className={clsx(styles.cardList, snapshot.isDraggingOver && styles.cardListDraggingOver)}
                     >
-                    {visibleProjects.map((project, index) => (
+                    {visibleProjects.map((project, index) => {
+                      const projectPending = projectPendingAmounts[project.id] || 0
+                      const projectUnbilled = unbilledHours[project.id] || 0
+                      const projectRate = project.hourly_rate || 0
+                      const hasUnbilledAmount = (!project.prepaid_minutes || project.prepaid_minutes === 0) && (projectUnbilled > 0) && (projectRate > 0)
+                      const totalToBill = projectPending + ((hasUnbilledAmount ? projectUnbilled : 0) / 60 * projectRate)
+                      const willSendEmail = Boolean((totalToBill > 0 || project.always_send_report) && project.company_id && project.companies?.contact_email)
+
+                      return (
                       <Draggable key={project.id} draggableId={project.id} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            style={provided.draggableProps.style as React.CSSProperties}
+                            style={{
+                              ...provided.draggableProps.style,
+                            }}
                             className={clsx(
                               styles.card,
                               snapshot.isDragging && styles.cardDragging
@@ -436,7 +462,12 @@ export function ProjectBoard({}: ProjectBoardProps) {
                             onClick={() => handleProjectClick(project)}
                           >
                             <div className={styles.cardHeader}>
-                              <div className={styles.cardTitle} style={{ flex: 1 }}>{project.title}</div>
+                              <div className={styles.cardTitle} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                {project.title}
+                                {willSendEmail && (
+                                  <Mail size={14} color="var(--color-success)" title="Questo progetto attiverà l'invio dell'email mensile al cliente" />
+                                )}
+                              </div>
                               {project.phase_id !== 'archiviato' && project.phase_id !== 'archived' && (
                                 <button 
                                   className={styles.archiveButton} 
@@ -492,7 +523,8 @@ export function ProjectBoard({}: ProjectBoardProps) {
                           </div>
                         )}
                       </Draggable>
-                    ))}
+                      )
+                    })}
                     {provided.placeholder}
                     {hiddenCount > 0 && (
                       <div style={{ padding: '0.5rem', textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-text-muted)', background: 'var(--color-surface-solid)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)', marginTop: '0.5rem' }}>
@@ -508,6 +540,36 @@ export function ProjectBoard({}: ProjectBoardProps) {
         })}
       </div>
     </DragDropContext>
+
+    <Modal isOpen={isEmailRulesModalOpen} onClose={() => setIsEmailRulesModalOpen(false)}>
+      <div style={{ padding: '2rem' }}>
+        <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 600, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Info size={24} color="var(--color-primary)" /> Regole Invio Email Mensile
+        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', lineHeight: 1.6, color: 'var(--color-text-muted)' }}>
+          <p>
+            L'email riassuntiva viene inviata ai clienti <strong>il 1° di ogni mese</strong> (se il cronjob è attivo) in automatico, oppure quando clicchi su "Invia Ora".
+          </p>
+          <div style={{ background: 'var(--color-surface-solid)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+            <h3 style={{ fontSize: '1rem', color: 'var(--color-text)', marginBottom: '0.5rem' }}>Condizioni per l'invio:</h3>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <li>Il progetto deve essere <strong>assegnato ad un'azienda</strong> e l'azienda deve avere una <strong>email di contatto</strong> configurata.</li>
+              <li>Il progetto deve avere un totale da saldare positivo per il mese corrente (es. <strong>ore extra non fatturate</strong> o <strong>canoni in sospeso</strong>).</li>
+              <li><em>OPPURE</em> deve avere la spunta attiva su <strong>"Invia sempre report mensile via email"</strong> nelle impostazioni del progetto.</li>
+            </ul>
+          </div>
+          <p style={{ marginTop: '0.5rem' }}>
+            <Mail size={16} color="var(--color-success)" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
+            L'icona verde della posta appare di fianco al nome del progetto quando soddisfa i requisiti per ricevere l'email.
+          </p>
+        </div>
+        <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+          <button onClick={() => setIsEmailRulesModalOpen(false)} style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', color: 'var(--color-text)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 500 }}>
+            Ho Capito
+          </button>
+        </div>
+      </div>
+    </Modal>
     </>
   )
 }
