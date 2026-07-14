@@ -270,7 +270,10 @@ export function ProjectBoard({}: ProjectBoardProps) {
     e.stopPropagation()
     if (!confirm(`Sei sicuro di voler archiviare il progetto "${project.title}"?`)) return
     
-    const archivePhase = phases.find(p => (p.id.toLowerCase() === 'archiviato' || p.id.toLowerCase() === 'archived') && p.project_type_id === activeTab)
+    const archivePhase = phases.find(p => 
+      (p.title.toLowerCase().includes('archiv') || p.title.toLowerCase().includes('completat') || p.title.toLowerCase().includes('chius') || p.id.toLowerCase().includes('archiv')) 
+      && p.project_type_id === activeTab
+    )
     if (!archivePhase) {
       toast.error('Fase "Archiviato" non trovata per questo tipo di progetto')
       return
@@ -408,7 +411,8 @@ export function ProjectBoard({}: ProjectBoardProps) {
         {phases.filter(p => p.project_type_id === activeTab).map(phase => {
           const columnProjects = projects.filter(p => p.phase_id === phase.id && p.type_id === activeTab).sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0))
           const isCollapsed = collapsedPhases[phase.id]
-          const isTerminal = ['won', 'lost', 'archiviato', 'archived', 'completato', 'chiuso'].includes(phase.id.toLowerCase())
+          const isTerminalTitle = phase.title.toLowerCase()
+          const isTerminal = ['won', 'lost', 'archivia', 'archiv', 'completat', 'chius'].some(t => isTerminalTitle.includes(t) || phase.id.toLowerCase().includes(t))
           const MAX_VISIBLE = 30
           const visibleProjects = isTerminal ? columnProjects.slice(0, MAX_VISIBLE) : columnProjects
           const hiddenCount = columnProjects.length - visibleProjects.length
@@ -476,7 +480,7 @@ export function ProjectBoard({}: ProjectBoardProps) {
                                   <Mail size={14} color="var(--color-danger)" title="ATTENZIONE: Il progetto soddisferebbe i requisiti per l'email, ma l'Azienda non ha un'email di contatto!" />
                                 )}
                               </div>
-                              {project.phase_id !== 'archiviato' && project.phase_id !== 'archived' && (
+                              {!project.phase_id.toLowerCase().includes('archiv') && !project.phase_id.toLowerCase().includes('completat') && !project.phase_id.toLowerCase().includes('chius') && (
                                 <button 
                                   className={styles.archiveButton} 
                                   onClick={(e) => handleArchiveProject(e, project)}
