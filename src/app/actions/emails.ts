@@ -334,3 +334,55 @@ export async function sendMonthlyRetainerEmail({
   }
 }
 
+export async function sendCompanyPortalEmail({
+  to,
+  companyName,
+  portalUrl,
+  logoUrl
+}: {
+  to: string,
+  companyName: string,
+  portalUrl: string,
+  logoUrl?: string
+}) {
+  if (!resend) {
+    console.log('[SIMULAZIONE EMAIL] Recap Portale Aziendale a:', to)
+    return { success: true, simulated: true }
+  }
+
+  try {
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [to],
+      subject: \`Aggiornamento Amministrativo: \${companyName}\`,
+      html: \`
+        <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          \${logoUrl ? \`<div style="text-align: center; margin-bottom: 30px;"><img src="\${logoUrl}" alt="Logo" style="max-height: 50px; width: auto;" /></div>\` : ''}
+          <h2 style="color: #000;">Il tuo cruscotto è stato aggiornato</h2>
+          <p>Ciao,</p>
+          <p>Abbiamo aggiornato la tua dashboard amministrativa con i dati del mese appena trascorso.</p>
+          <p>Troverai i dettagli dei canoni attivi, dei consuntivi e l'eventuale stato dei pagamenti in sospeso per tutti i tuoi progetti direttamente nel tuo portale dedicato.</p>
+          
+          <div style="text-align: center; margin: 40px 0;">
+            <a href="\${portalUrl}" style="display: inline-block; padding: 14px 28px; background-color: #000; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; letter-spacing: 0.5px;">
+              Accedi al Portale Cliente
+            </a>
+          </div>
+          <p>Per qualsiasi dubbio sulle lavorazioni o sull'amministrazione, non esitare a contattarci.</p>
+          <br/>
+          <p style="color: #666; font-size: 0.9em;">Un saluto,<br/>Il team di Altamente</p>
+        </div>
+      \`
+    })
+
+    if (response.error) {
+      console.error('Resend API Error:', response.error)
+      return { success: false, error: response.error.message }
+    }
+
+    return { success: true, data: response.data }
+  } catch (error) {
+    console.error('Email sending failed:', error)
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
+  }
+}

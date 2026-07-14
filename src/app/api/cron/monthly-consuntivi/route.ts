@@ -107,57 +107,43 @@ export async function GET(request: Request) {
     })
   }
 
-  // 5. Send emails
-  const results = []
-  let emailsSent = 0
+  // 5. Group by Company and Send emails
+  const companiesToNotify = new Map<string, { email: string, name: string }>()
 
   for (const [projId, stats] of Array.from(projectStats.entries())) {
-    const { project, totalMinutes, hourlyAmount, retainerAmount } = stats
+    const { project, hourlyAmount, retainerAmount } = stats
     const clientEmail = project.companies?.contact_email
     const totalToBill = hourlyAmount + retainerAmount
     
-    if ((totalToBill > 0 || project.always_send_report) && clientEmail) {
-      let token = project.report_token
-      if (!token) {
-        token = await generateReportToken(projId)
-      }
-
-      const reportUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${token}`
-      const totalHoursStr = `${Math.floor(totalMinutes / 60)}h ${(totalMinutes % 60).toString().padStart(2, '0')}m`
-      const hourlyRate = project.hourly_rate || 0
-
-      let result;
-      if (project.billing_type === 'retainer_monthly') {
-        result = await sendMonthlyRetainerEmail({
-          to: clientEmail,
-          companyName: project.companies?.name || 'Azienda',
-          projectName: project.title,
-          billingAmount: project.billing_amount || 0,
-          reportUrl,
-          logoUrl: settings?.logo_url
-        })
-      } else {
-        result = await sendMonthlyConsuntiviEmail({
-          to: clientEmail,
-          companyName: project.companies?.name || 'Azienda',
-          projectName: project.title,
-          hourlyRate,
-          hourlyAmount,
-          retainerAmount,
-          totalAmount: totalToBill,
-          totalHoursStr,
-          reportUrl,
-          logoUrl: settings?.logo_url
-        })
-      }
-      
-      results.push({ projectId: projId, email: clientEmail, success: result.success })
-      if (result.success) emailsSent++
+    if ((totalToBill > 0 || project.always_send_report) && clientEmail && project.company_id) {
+      companiesToNotify.set(project.company_id, {
+        email: clientEmail,
+        name: project.companies?.name || 'Azienda'
+      })
     }
   }
 
+  const results = []
+  let emailsSent = 0
+  
+  const { sendCompanyPortalEmail } = await import('@/app/actions/emails')
+
+  for (const [companyId, companyInfo] of Array.from(companiesToNotify.entries())) {
+    const portalUrl = \`\${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/portal/\${companyId}\`
+    
+    const result = await sendCompanyPortalEmail({
+      to: companyInfo.email,
+      companyName: companyInfo.name,
+      portalUrl,
+      logoUrl: settings?.logo_url
+    })
+    
+    results.push({ companyId, email: companyInfo.email, success: result.success })
+    if (result.success) emailsSent++
+  }
+
   return NextResponse.json({ 
-    message: `Cron job completato. Inviate ${emailsSent} email di riepilogo consuntivi.`,
+    message: \`Cron job completato. Inviate \${emailsSent} email di riepilogo aziendale al portale.\`,
     results 
   })
 }

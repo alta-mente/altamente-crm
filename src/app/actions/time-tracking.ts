@@ -253,67 +253,18 @@ export async function notifyClientAboutReport(projectId: string, monthName: stri
     return { success: false, error: 'Nessuna email di contatto impostata per l\'azienda' };
   }
 
-  // Ensure report token exists
-  let token = proj.report_token;
-  if (!token) {
-    token = await generateReportToken(projectId);
-  }
-
-  const reportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/report/${token}`;
-
-  // Fetch unbilled hours for consuntivo
-  const { data: unbilledHours } = await supabase
-    .from('company_hours')
-    .select('minutes')
-    .eq('project_id', projectId)
-    .eq('billed', false);
-    
-  let totalMinutes = 0;
-  if (!proj.prepaid_minutes || proj.prepaid_minutes === 0) {
-    totalMinutes = (unbilledHours || []).reduce((acc, h) => acc + h.minutes, 0);
-  }
-  
-  const hourlyRate = proj.hourly_rate || 0;
-  const hourlyAmount = (totalMinutes / 60) * hourlyRate;
-  
-  // Fetch pending invoices (retainers)
-  const { data: pendingInvoices } = await supabase
-    .from('invoices')
-    .select('amount')
-    .eq('project_id', projectId)
-    .eq('status', 'pending');
-    
-  const retainerAmount = (pendingInvoices || []).reduce((acc, inv) => acc + Number(inv.amount), 0);
-
-  const totalAmount = hourlyAmount + retainerAmount;
-  const totalHoursStr = `${Math.floor(totalMinutes / 60)}h ${(totalMinutes % 60).toString().padStart(2, '0')}m`;
+  const portalUrl = \`\${process.env.NEXT_PUBLIC_SITE_URL || 'https://altamente-crm.vercel.app'}/portal/\${proj.company_id}\`;
 
   const { data: settings } = await supabase.from('workspace_settings').select('logo_url').eq('id', 1).single();
 
-  let res;
-  if (proj.billing_type === 'retainer_monthly') {
-    res = await sendMonthlyRetainerEmail({
-      to: proj.companies.contact_email,
-      companyName: proj.companies.name,
-      projectName: proj.title,
-      billingAmount: proj.billing_amount || 0,
-      reportUrl,
-      logoUrl: settings?.logo_url
-    });
-  } else {
-    res = await sendMonthlyConsuntiviEmail({
-      to: proj.companies.contact_email,
-      companyName: proj.companies.name,
-      projectName: proj.title,
-      hourlyRate,
-      hourlyAmount,
-      retainerAmount,
-      totalAmount,
-      totalHoursStr,
-      reportUrl,
-      logoUrl: settings?.logo_url
-    });
-  }
+  const { sendCompanyPortalEmail } = await import('@/app/actions/emails');
+  
+  const res = await sendCompanyPortalEmail({
+    to: proj.companies.contact_email,
+    companyName: proj.companies.name,
+    portalUrl,
+    logoUrl: settings?.logo_url
+  });
 
   if (!res.success) {
     return { success: false, error: res.error || 'Errore durante l\'invio dell\'email' };
