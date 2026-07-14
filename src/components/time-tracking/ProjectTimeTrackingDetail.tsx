@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2, Clock } from 'lucide-react'
+import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2, Clock, LayoutDashboard } from 'lucide-react'
 import { addCompanyHours, editCompanyHours, deleteCompanyHours, archiveCompanyHours, unarchiveCompanyHourRow, generateReportToken, notifyClientAboutReport } from '@/app/actions/time-tracking'
 import styles from './TimeTrackingDetail.module.css'
 
@@ -215,6 +215,11 @@ export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, o
         <div className={styles.cardHeader}>
           <h2 className={styles.cardTitle}>{project.title} {!isEmbedded && <span style={{fontWeight: 'normal', color: 'var(--color-text-muted)'}}>({project.companies?.name || 'Senza Azienda'})</span>}</h2>
           <div className={styles.headerButtons}>
+            {project.company_id && (
+              <Button onClick={() => window.open(`/portal/${project.company_id}`, '_blank')} title="Apri la Dashboard Aziendale">
+                <LayoutDashboard size={16} style={{ marginRight: '8px' }} /> Dashboard
+              </Button>
+            )}
             <Button onClick={handleGenerateReportUrl} title="Genera Link Report Pubblico">
               <FileText size={16} style={{ marginRight: '8px' }} /> Visualizza Report
             </Button>
