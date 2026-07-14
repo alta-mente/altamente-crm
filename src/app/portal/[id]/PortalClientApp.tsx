@@ -170,8 +170,10 @@ export function PortalClientApp({
 
         {/* Archived Projects Section */}
         {archivedProjects.length > 0 && (
-          <div style={{ marginTop: '3rem' }}>
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--color-text-muted)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Storico Progetti Archiviati</h3>
+          <div style={{ marginTop: '1rem' }}>
+            <div style={{ padding: '0 3rem' }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '0', color: 'var(--color-text-muted)', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>Storico Progetti Archiviati</h3>
+            </div>
             <div className={styles.projectsGrid}>
               {archivedProjects.map(project => renderProjectCard(project, true))}
             </div>
