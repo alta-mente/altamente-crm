@@ -142,6 +142,15 @@ export function CompanyModal({ isOpen, onClose, onSaved, company }: CompanyModal
               </div>
 
 
+              <div className={styles.formGroup}>
+                <label>Email di Contatto (Per fatturazione e reportistica)</label>
+                <input 
+                  type="email" 
+                  value={contactEmail} 
+                  onChange={e => setContactEmail(e.target.value)} 
+                  placeholder="amministrazione@azienda.com"
+                />
+              </div>
 
               <div className={styles.footer}>
                 <Button variant="ghost" onClick={onClose} type="button">Annulla</Button>
