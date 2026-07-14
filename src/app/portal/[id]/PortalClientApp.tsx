@@ -99,7 +99,8 @@ export function PortalClientApp({
                     <div className={styles.projectTitle}>{project.title}</div>
                   <div className={styles.projectType}>
                     {project.billing_type === 'retainer_monthly' ? 'Canone Mensile' : 
-                     project.prepaid_minutes > 0 ? 'Monte Ore' : 'Progetto a Corpo / Ore'}
+                     project.prepaid_minutes > 0 ? 'Monte Ore' : 
+                     project.time_tracking_enabled ? 'Consuntivo Ore' : 'Progetto'}
                   </div>
                 </div>
                 <div style={{ color: 'var(--color-text-muted)' }}>
