@@ -48,12 +48,19 @@ export default async function PublicPortalPage({
     console.error('Error fetching projects:', projectsError)
   }
 
+  // Fetch settings for logo
+  const { data: settings } = await supabase
+    .from('workspace_settings')
+    .select('logo_url')
+    .eq('id', 1)
+    .single()
+
   // Calculate global stats
   let globalPendingAmount = 0
   let globalRetainerAmount = 0
   let globalPrepaidRemaining = 0
   
-  const enrichedProjects = (projects || []).map(project => {
+  const displayProjects = (projects || []).map(project => {
     // Invoices
     const pendingInvoices = (project.invoices || []).filter((i: any) => i.status === 'pending' || i.status === 'late')
     const pendingAmount = pendingInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
@@ -91,18 +98,10 @@ export default async function PublicPortalPage({
     }
   })
 
-  // Group projects (maybe hide ones with no activity and no retainer)
-  const displayProjects = enrichedProjects.filter(p => 
-    p.billing_type === 'retainer_monthly' || 
-    p.pendingAmount > 0 || 
-    p.prepaid_minutes > 0 || 
-    p.totalActiveMinutes > 0
-  )
-
   const formatTime = (totalMin: number) => {
     const h = Math.floor(totalMin / 60)
     const m = totalMin % 60
-    return `${h}h ${m.toString().padStart(2, '0')}m`
+    return \`\${h}h \${m.toString().padStart(2, '0')}m\`
   }
 
   return (
@@ -112,7 +111,10 @@ export default async function PublicPortalPage({
         {/* Header / Company Info */}
         <div className={styles.header}>
           <div className={styles.companyInfo}>
-            <h1 style={{ fontSize: '2.5rem' }}>Dashboard Aziendale</h1>
+            {settings?.logo_url && (
+              <img src={settings.logo_url} alt="Logo" style={{ maxHeight: '50px', marginBottom: '1.5rem', display: 'block' }} />
+            )}
+            <h1 style={{ fontSize: '2.5rem' }}>Area Riservata</h1>
             <p style={{ marginTop: '0.5rem' }}><Building size={24} /> {company.name}</p>
           </div>
           

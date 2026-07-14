@@ -354,18 +354,18 @@ export async function sendCompanyPortalEmail({
     const response = await resend.emails.send({
       from: FROM_EMAIL,
       to: [to],
-      subject: `Aggiornamento Amministrativo: ${companyName}`,
+      subject: `Situazione Progetti e Canoni: ${companyName}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
           ${logoUrl ? `<div style="text-align: center; margin-bottom: 30px;"><img src="${logoUrl}" alt="Logo" style="max-height: 50px; width: auto;" /></div>` : ''}
           <h2 style="color: #000;">Il tuo cruscotto è stato aggiornato</h2>
           <p>Ciao,</p>
-          <p>Abbiamo aggiornato la tua dashboard amministrativa con i dati del mese appena trascorso.</p>
+          <p>Abbiamo aggiornato la tua Area Riservata con i dati del mese appena trascorso.</p>
           <p>Troverai i dettagli dei canoni attivi, dei consuntivi e l'eventuale stato dei pagamenti in sospeso per tutti i tuoi progetti direttamente nel tuo portale dedicato.</p>
           
           <div style="text-align: center; margin: 40px 0;">
             <a href="${portalUrl}" style="display: inline-block; padding: 14px 28px; background-color: #000; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; letter-spacing: 0.5px;">
-              Accedi al Portale Cliente
+              Accedi all'Area Riservata
             </a>
           </div>
           <p>Per qualsiasi dubbio sulle lavorazioni o sull'amministrazione, non esitare a contattarci.</p>
