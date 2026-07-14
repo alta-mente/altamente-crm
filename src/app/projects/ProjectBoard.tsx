@@ -442,8 +442,13 @@ export function ProjectBoard({}: ProjectBoardProps) {
                       const projectUnbilled = unbilledHours[project.id] || 0
                       const projectRate = project.hourly_rate || 0
                       const hasUnbilledAmount = (!project.prepaid_minutes || project.prepaid_minutes === 0) && (projectUnbilled > 0) && (projectRate > 0)
-                      const totalToBill = projectPending + ((hasUnbilledAmount ? projectUnbilled : 0) / 60 * projectRate)
-                      const willSendEmail = Boolean((totalToBill > 0 || project.always_send_report) && project.company_id && project.companies?.contact_email)
+                      const willGenerateRetainer = project.billing_type === 'retainer_monthly' && (project.billing_amount || 0) > 0
+                      const totalToBill = projectPending + ((hasUnbilledAmount ? projectUnbilled : 0) / 60 * projectRate) + (willGenerateRetainer ? project.billing_amount : 0)
+                      
+                      const meetsConditions = totalToBill > 0 || project.always_send_report
+                      const hasEmail = Boolean(project.company_id && project.companies?.contact_email)
+                      const willSendEmail = Boolean(meetsConditions && hasEmail)
+                      const missingEmailWarning = Boolean(meetsConditions && !hasEmail)
 
                       return (
                       <Draggable key={project.id} draggableId={project.id} index={index}>
@@ -466,6 +471,9 @@ export function ProjectBoard({}: ProjectBoardProps) {
                                 {project.title}
                                 {willSendEmail && (
                                   <Mail size={14} color="var(--color-success)" title="Questo progetto attiverà l'invio dell'email mensile al cliente" />
+                                )}
+                                {missingEmailWarning && (
+                                  <Mail size={14} color="var(--color-danger)" title="ATTENZIONE: Il progetto soddisferebbe i requisiti per l'email, ma l'Azienda non ha un'email di contatto!" />
                                 )}
                               </div>
                               {project.phase_id !== 'archiviato' && project.phase_id !== 'archived' && (
@@ -554,13 +562,16 @@ export function ProjectBoard({}: ProjectBoardProps) {
             <h3 style={{ fontSize: '1rem', color: 'var(--color-text)', marginBottom: '0.5rem' }}>Condizioni per l'invio:</h3>
             <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <li>Il progetto deve essere <strong>assegnato ad un'azienda</strong> e l'azienda deve avere una <strong>email di contatto</strong> configurata.</li>
-              <li>Il progetto deve avere un totale da saldare positivo per il mese corrente (es. <strong>ore extra non fatturate</strong> o <strong>canoni in sospeso</strong>).</li>
+              <li>Il progetto deve avere un importo da saldare positivo per il mese corrente (es. <strong>ore extra a consuntivo</strong>, <strong>canoni in sospeso</strong> o <strong>canoni mensili ricorrenti</strong>).</li>
               <li><em>OPPURE</em> deve avere la spunta attiva su <strong>"Invia sempre report mensile via email"</strong> nelle impostazioni del progetto.</li>
             </ul>
           </div>
           <p style={{ marginTop: '0.5rem' }}>
             <Mail size={16} color="var(--color-success)" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
-            L'icona verde della posta appare di fianco al nome del progetto quando soddisfa i requisiti per ricevere l'email.
+            L'icona verde della posta appare di fianco al nome del progetto quando soddisfa i requisiti ed è pronto per l'invio.
+            <br/><br/>
+            <Mail size={16} color="var(--color-danger)" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
+            Se vedi un'icona <strong>rossa</strong>, significa che il progetto soddisferebbe i requisiti per l'invio, ma manca l'email di contatto dell'azienda!
           </p>
         </div>
         <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
