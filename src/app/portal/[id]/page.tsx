@@ -141,15 +141,21 @@ export default async function PublicPortalPage({
 
         {/* Projects Grid */}
         <div className={styles.projectsGrid}>
-          {displayProjects.map(project => (
-            <Link 
-              href={`/report/${project.report_token}`} 
-              key={project.id}
-              className={styles.projectCard}
-            >
-              <div className={styles.projectHeader}>
-                <div>
-                  <div className={styles.projectTitle}>{project.title}</div>
+          {displayProjects.map(project => {
+            const hasToken = !!project.report_token;
+            return (
+              <Link 
+                href={hasToken ? `/report/${project.report_token}` : '#'} 
+                key={project.id}
+                className={styles.projectCard}
+                onClick={(e) => { if (!hasToken) e.preventDefault(); }}
+                style={{ cursor: hasToken ? 'pointer' : 'default', opacity: hasToken ? 1 : 0.7 }}
+              >
+                <div className={styles.projectHeader}>
+                  <div>
+                    <div className={styles.projectTitle}>{project.title}
+                      {!hasToken && <span style={{ fontSize: '0.7rem', background: '#eee', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px' }}>Setup in corso</span>}
+                    </div>
                   <div className={styles.projectType}>
                     {project.billing_type === 'retainer_monthly' ? 'Canone Mensile' : 
                      project.prepaid_minutes > 0 ? 'Monte Ore' : 'Progetto a Corpo / Ore'}

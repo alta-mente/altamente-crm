@@ -77,6 +77,8 @@ export function DealDrawer({ isOpen, onClose, deal, onSaved }: DealDrawerProps) 
     if (!deal) return
     setIsSubmitting(true)
     
+    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
     const { data: project, error } = await supabase.from('projects').insert([{
       title: deal.title,
       company_id: deal.company_id,
@@ -85,7 +87,8 @@ export function DealDrawer({ isOpen, onClose, deal, onSaved }: DealDrawerProps) 
       phase_id: 'briefing',
       billing_type: 'one-off',
       billing_amount: deal.value,
-      billing_status: 'to_invoice'
+      billing_status: 'to_invoice',
+      report_token: token
     }]).select().single()
     
     setIsSubmitting(false)

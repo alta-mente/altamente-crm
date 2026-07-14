@@ -41,6 +41,8 @@ export function QuickAddProjectModal({ isOpen, onClose, onAdd, activeTab, phases
     const tabPhases = phases.filter(p => p.project_type_id === activeTab).sort((a,b) => a.sort_order - b.sort_order)
     const firstPhase = tabPhases.length > 0 ? tabPhases[0].id : 'new'
 
+    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
     // Create new project in DB
     const projectData = {
       title,
@@ -49,7 +51,8 @@ export function QuickAddProjectModal({ isOpen, onClose, onAdd, activeTab, phases
       phase_id: firstPhase,
       billing_type: 'one-off',
       billing_amount: 0,
-      time_tracking_enabled: false
+      time_tracking_enabled: false,
+      report_token: token
     }
 
     const { data, error } = await supabase
