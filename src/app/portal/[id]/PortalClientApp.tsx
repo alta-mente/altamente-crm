@@ -84,6 +84,11 @@ export function PortalClientApp({
         {/* Projects Grid */}
         <div className={styles.projectsGrid}>
           {displayProjects.map(project => {
+            const isArchived = project.phase_id && (
+              project.phase_id.toLowerCase().includes('archiv') || 
+              project.phase_id.toLowerCase().includes('completat') || 
+              project.phase_id.toLowerCase().includes('chius')
+            );
             return (
               <div
                 key={project.id}
@@ -92,11 +97,18 @@ export function PortalClientApp({
                   setSelectedProjectId(project.id)
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
-                style={{ cursor: 'pointer', opacity: 1 }}
+                style={{ cursor: 'pointer', opacity: isArchived ? 0.6 : 1 }}
               >
                 <div className={styles.projectHeader}>
                   <div>
-                    <div className={styles.projectTitle}>{project.title}</div>
+                    <div className={styles.projectTitle} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      {project.title}
+                      {isArchived && (
+                        <span style={{ fontSize: '0.7rem', padding: '2px 6px', background: 'var(--color-surface-hover)', borderRadius: '4px', color: 'var(--color-text-muted)' }}>
+                          Archiviato
+                        </span>
+                      )}
+                    </div>
                   <div className={styles.projectType}>
                     {project.billing_type === 'retainer_monthly' ? 'Canone Mensile' : 
                      project.prepaid_minutes > 0 ? 'Monte Ore' : 
