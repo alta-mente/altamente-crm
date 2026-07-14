@@ -84,24 +84,19 @@ export function PortalClientApp({
         {/* Projects Grid */}
         <div className={styles.projectsGrid}>
           {displayProjects.map(project => {
-            const hasToken = !!project.report_token;
             return (
               <div
                 key={project.id}
                 className={styles.projectCard}
                 onClick={() => {
-                  if (hasToken) {
-                    setSelectedProjectId(project.id)
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                  }
+                  setSelectedProjectId(project.id)
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
-                style={{ cursor: hasToken ? 'pointer' : 'default', opacity: hasToken ? 1 : 0.7 }}
+                style={{ cursor: 'pointer', opacity: 1 }}
               >
                 <div className={styles.projectHeader}>
                   <div>
-                    <div className={styles.projectTitle}>{project.title}
-                      {!hasToken && <span style={{ fontSize: '0.7rem', background: '#eee', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px' }}>Setup in corso</span>}
-                    </div>
+                    <div className={styles.projectTitle}>{project.title}</div>
                   <div className={styles.projectType}>
                     {project.billing_type === 'retainer_monthly' ? 'Canone Mensile' : 
                      project.prepaid_minutes > 0 ? 'Monte Ore' : 'Progetto a Corpo / Ore'}
