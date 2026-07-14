@@ -487,6 +487,12 @@ export function ProjectBoard({}: ProjectBoardProps) {
                               )}
                             </div>
 
+                            {project.companies && (
+                              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <Building size={12} /> {project.companies.name}
+                              </div>
+                            )}
+
                             {(project.time_tracking_enabled && (unbilledHours[project.id] > 0 || project.prepaid_minutes! > 0 || project.hourly_rate! > 0)) && (
                               <div style={{ marginTop: '0.5rem', marginBottom: '0.25rem', display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
                                 {project.prepaid_minutes! > 0 && (
