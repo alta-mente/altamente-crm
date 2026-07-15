@@ -47,6 +47,24 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
   
   const usedPercentage = prepaidMin > 0 ? Math.max(0, Math.min(100, (totalActiveMinutes / prepaidMin) * 100)) : 0
   const remainingMin = Math.max(0, prepaidMin - totalActiveMinutes)
+  
+  let nextRenewal = null;
+  let canCancel = true;
+  if (project.billing_type === 'retainer_yearly' && project.billing_start_date) {
+    const start = new Date(project.billing_start_date);
+    if (!isNaN(start.getTime())) {
+      const today = new Date();
+      nextRenewal = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      while (nextRenewal <= today) {
+        nextRenewal.setFullYear(nextRenewal.getFullYear() + 1);
+      }
+      const oneMonthBefore = new Date(nextRenewal);
+      oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
+      if (today >= oneMonthBefore) {
+        canCancel = false;
+      }
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -99,13 +117,13 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
           {/* Stat Block */}
           <div className={styles.statBlock}>
             <div className={styles.statBlockIcon}>
-              {project.billing_type === 'retainer_monthly' ? <RefreshCw size={150} /> : prepaidMin > 0 ? <Package size={150} /> : rate > 0 ? <Euro size={150} /> : <Clock size={150} />}
+              {project.billing_type?.startsWith('retainer') ? <RefreshCw size={150} /> : prepaidMin > 0 ? <Package size={150} /> : rate > 0 ? <Euro size={150} /> : <Clock size={150} />}
             </div>
             
-            {project.billing_type === 'retainer_monthly' ? (
+            {project.billing_type?.startsWith('retainer') ? (
               <>
                 <div className={styles.statLabel}>
-                  <RefreshCw size={16} /> Canone Mensile
+                  <RefreshCw size={16} /> {project.billing_type === 'retainer_yearly' ? 'Canone Annuale' : 'Canone Mensile'}
                 </div>
                 <div className={styles.statValue} style={{ color: 'var(--color-primary)' }}>
                   € {(project.billing_amount || 0).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
@@ -119,6 +137,22 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                 ) : (
                   <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', color: 'var(--color-success)' }}>
                     Nessun canone in sospeso al momento.
+                  </div>
+                )}
+                {project.billing_type === 'retainer_yearly' && (
+                  <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', fontSize: '0.85rem', lineHeight: '1.5', color: 'var(--color-text-muted)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <p style={{ marginBottom: '1rem' }}>
+                      I canoni annuali si intendono attivati per 12 mesi al termine dei quali verranno rinnovati per un periodo analogo. L’eventuale disdetta va finalizzata almeno un mese prima del rinnovo automatico.
+                    </p>
+                    <p style={{ marginBottom: '1.5rem' }}>
+                      Non sono considerati all’interno del canone tutti gli eventuali costi vivi, come ad esempio trasferte, acquisto plug-in per funzionalità non previste inizialmente, che verranno preventivati ove esigenti (di volta in volta, di lavoro in lavoro), e per i quali si dovrà procedere solo ed esclusivamente previa approvazione del Cliente.
+                    </p>
+                    <button 
+                      disabled={!canCancel}
+                      onClick={() => alert("Per procedere con la disdetta, contatta l'amministrazione.")}
+                      style={{ background: canCancel ? 'var(--color-danger)' : 'var(--color-surface-hover)', color: canCancel ? '#fff' : 'var(--color-text-muted)', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: canCancel ? 'pointer' : 'not-allowed', fontSize: '0.9rem', fontWeight: 600, transition: 'all 0.2s', width: '100%' }}>
+                      {canCancel ? 'Disdici Canone' : 'Disdetta non disponibile (meno di 1 mese al rinnovo)'}
+                    </button>
                   </div>
                 )}
               </>
@@ -210,7 +244,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
         </div>
 
         {/* Storico Canoni Section (Retainer Only) */}
-        {project.billing_type === 'retainer_monthly' && allInvoices && allInvoices.length > 0 && (
+        {project.billing_type?.startsWith('retainer') && allInvoices && allInvoices.length > 0 && (
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <div className={`${styles.iconWrapper}`} style={{ background: 'var(--color-primary)', color: '#fff' }}>
@@ -234,7 +268,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                     <td className={styles.date}>
                       {new Date(inv.issue_date).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}
                     </td>
-                    <td>{inv.notes || 'Canone Mensile'}</td>
+                    <td>{inv.notes || (project.billing_type === 'retainer_yearly' ? 'Canone Annuale' : 'Canone Mensile')}</td>
                     <td>
                       {inv.status === 'paid' ? (
                         <span style={{ fontSize: '0.75rem', background: 'rgba(0,255,0,0.1)', color: 'var(--color-success)', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>Saldato</span>
@@ -255,7 +289,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
         )}
 
         {/* Pending Invoices Section (Non-Retainer) */}
-        {project.billing_type !== 'retainer_monthly' && pendingInvoices.length > 0 && (
+        {(!project.billing_type?.startsWith('retainer')) && pendingInvoices.length > 0 && (
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <div className={`${styles.iconWrapper} ${styles.active}`} style={{ background: 'var(--color-warning)', color: '#fff' }}>
@@ -298,7 +332,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
         )}
 
         {/* Paid Invoices Section (Non-Retainer) */}
-        {project.billing_type !== 'retainer_monthly' && paidInvoices.length > 0 && (
+        {(!project.billing_type?.startsWith('retainer')) && paidInvoices.length > 0 && (
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <div className={`${styles.iconWrapper}`} style={{ background: 'var(--color-success)', color: '#fff' }}>
