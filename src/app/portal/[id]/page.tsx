@@ -41,7 +41,7 @@ export default async function PublicPortalPage({
   // We'll fetch all projects and their invoices + hours.
   const { data: projects, error: projectsError } = await supabase
     .from('projects')
-    .select('*, invoices(*), company_hours(*)')
+    .select('*, invoices(*), company_hours(*), deals(description, quote_description)')
     .eq('company_id', company.id)
     .order('created_at', { ascending: false })
 
