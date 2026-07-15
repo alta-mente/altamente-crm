@@ -113,13 +113,13 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
               Aggiornato al {new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             
-            {project.deals && (project.deals.quote_description || project.deals.description) && (
+            {(project.description || (project.deals && (project.deals.quote_description || project.deals.description))) && (
               <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'left' }}>
                 <h3 style={{ fontSize: '1rem', marginBottom: '1rem', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Folder size={16} /> Descrizione del Progetto
                 </h3>
                 <div 
-                  dangerouslySetInnerHTML={{ __html: project.deals.quote_description || project.deals.description }}
+                  dangerouslySetInnerHTML={{ __html: project.description || (project.deals && project.deals.quote_description) || (project.deals && project.deals.description) }}
                   className={styles.descriptionContent}
                   style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--color-text)' }}
                 />

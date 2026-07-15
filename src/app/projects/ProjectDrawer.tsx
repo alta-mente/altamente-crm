@@ -6,6 +6,10 @@ import { X, Building, BookOpen, Euro, Calendar as CalendarIcon, Trash2, Link as 
 import { Button } from '@/components/ui/Button'
 import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
+import dynamic from 'next/dynamic'
+import 'react-quill-new/dist/quill.snow.css'
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 import styles from './ProjectDrawer.module.css'
 import type { Project, ProjectPhase, ProjectType } from './ProjectBoard'
 import { ActivityLog } from '@/components/ActivityLog'
@@ -22,7 +26,7 @@ interface ProjectDrawerProps {
 }
 
 export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDrawerProps) {
-  const [activeTab, setActiveTab] = useState<'diary' | 'admin' | 'links' | 'deal' | 'invoices' | 'time_tracking'>('diary')
+  const [activeTab, setActiveTab] = useState<'diary' | 'description' | 'admin' | 'links' | 'deal' | 'invoices' | 'time_tracking'>('diary')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
   const [formData, setFormData] = useState<any>({})
@@ -57,6 +61,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
         drive_url: project.drive_url || '',
         figma_url: project.figma_url || '',
         github_url: project.github_url || '',
+        description: project.description || '',
         billing_type: project.billing_type || 'one-off',
         billing_amount: project.billing_amount || 0,
         billing_status: project.billing_status || 'to_invoice',
@@ -120,6 +125,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
       drive_url: formData.drive_url,
       figma_url: formData.figma_url,
       github_url: formData.github_url,
+      description: formData.description,
       billing_type: formData.billing_type,
       billing_amount: formData.billing_amount,
       billing_status: formData.billing_status,
@@ -223,7 +229,13 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                   className={`${styles.tab} ${activeTab === 'diary' ? styles.activeTab : ''}`}
                   onClick={() => setActiveTab('diary')}
                 >
-                  Diario di Bordo
+                  Diario (Timeline)
+                </button>
+                <button 
+                  className={`${styles.tab} ${activeTab === 'description' ? styles.activeTab : ''}`}
+                  onClick={() => setActiveTab('description')}
+                >
+                  Descrizione
                 </button>
                 <button 
                   className={`${styles.tab} ${activeTab === 'admin' ? styles.activeTab : ''}`}
@@ -268,6 +280,21 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                   <div style={{ flex: 1 }}>
                     <ActivityLog projectId={project.id} dealId={project.deal_id} />
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'description' && (
+                <div className={styles.section} style={{ flex: 1, borderBottom: 'none' }}>
+                  <h3 className={styles.sectionTitle} style={{ borderBottom: 'none', paddingBottom: 0 }}>Descrizione del Progetto</h3>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
+                    Aggiungi note, dettagli o la descrizione specifica per questo progetto.
+                  </p>
+                  <ReactQuill 
+                    theme="snow"
+                    value={formData.description || ''}
+                    onChange={(val) => setFormData({...formData, description: val})}
+                    style={{ height: '300px', marginBottom: '3rem' }}
+                  />
                 </div>
               )}
 
