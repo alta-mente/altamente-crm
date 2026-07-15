@@ -170,8 +170,8 @@ export function PortalClientApp({
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={settings.logo_url} alt="Logo" style={{ maxHeight: '50px', marginBottom: '1.5rem', display: 'block' }} />
             )}
-            <h1 style={{ fontSize: '2.5rem' }}>Area Riservata</h1>
-            <p style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}><Building size={24} /> {company.name}</p>
+            <h2 style={{ fontSize: '1.2rem', color: 'var(--color-text-muted)', fontWeight: 500, margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Area Riservata</h2>
+            <h1 style={{ fontSize: '3rem', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '12px' }}><Building size={32} color="var(--color-primary)" /> {company.name}</h1>
             <p style={{ marginTop: '1rem', color: 'var(--color-text-muted)', fontSize: '1.05rem', maxWidth: '600px', lineHeight: '1.5' }}>
               Benvenuto nella tua area personale. Qui puoi monitorare lo stato di tutti i tuoi progetti attivi, consultare il dettaglio delle ore lavorate e verificare i canoni dei servizi in corso. Seleziona un progetto per scoprirne tutti i dettagli.
             </p>
