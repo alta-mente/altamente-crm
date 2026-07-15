@@ -75,9 +75,27 @@ export default async function DashboardHome() {
       return sum + (remaining > 0 ? remaining : 0)
     }, 0)
 
-  const competenzaValue = safeInvoices.reduce((sum, i) => sum + (Number(i.amount) || 0), 0)
-  const cassaValue = safeInvoices
+  // Log top paid invoices to the server console for verification
+  const topPaidInvoices = [...safeInvoices]
     .filter(i => i.status === 'paid')
+    .sort((a, b) => Number(b.amount) - Number(a.amount))
+    .slice(0, 10);
+  console.log("\n--- TOP 10 FATTURE PAGATE (VERIFICA) ---");
+  topPaidInvoices.forEach(i => console.log(`Fattura/ID: ${i.invoice_number || i.id} | Data: ${i.issue_date || i.created_at} | Importo: € ${i.amount}`));
+  console.log("----------------------------------------\n");
+
+  const competenzaValue = safeInvoices
+    .filter(i => {
+      const date = i.issue_date || i.created_at;
+      return date && new Date(date).getFullYear() === currentYear;
+    })
+    .reduce((sum, i) => sum + (Number(i.amount) || 0), 0)
+
+  const cassaValue = safeInvoices
+    .filter(i => {
+      const date = i.issue_date || i.created_at;
+      return i.status === 'paid' && date && new Date(date).getFullYear() === currentYear;
+    })
     .reduce((sum, i) => sum + (Number(i.amount) || 0), 0)
 
 
