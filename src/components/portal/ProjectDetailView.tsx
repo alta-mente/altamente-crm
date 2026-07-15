@@ -120,6 +120,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                 </h3>
                 <div 
                   dangerouslySetInnerHTML={{ __html: project.deals.quote_description || project.deals.description }}
+                  className={styles.descriptionContent}
                   style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--color-text)' }}
                 />
               </div>

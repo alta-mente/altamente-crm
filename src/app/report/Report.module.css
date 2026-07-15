@@ -41,6 +41,11 @@
   }
 }
 
+.companyInfo {
+  flex: 1;
+  min-width: 0;
+}
+
 .companyInfo h1 {
   font-size: var(--font-size-5xl);
   margin-bottom: 1rem;
@@ -326,3 +331,47 @@
   font-size: var(--font-size-xl);
 }
 
+.descriptionContent {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.descriptionContent * {
+  color: var(--color-text) !important;
+}
+
+.descriptionContent p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.descriptionContent strong, 
+.descriptionContent b {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.descriptionContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.descriptionContent th,
+.descriptionContent td {
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+}
+
+.descriptionContent th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+}
+
+.descriptionContent ul,
+.descriptionContent ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
