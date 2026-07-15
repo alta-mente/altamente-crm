@@ -207,16 +207,18 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                     {unInvoicedAmount > 0 && (
                       <div style={{ marginTop: totalPendingAmount > 0 ? '0.5rem' : '1.5rem', marginBottom: '1.5rem' }}>
                         <div style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--color-text)' }}>
-                          Fatture non ancora emesse: € {unInvoicedAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                          {totalInvoiced > 0 ? 'Saldo / scaglioni da fatturare:' : 'Fatture non ancora emesse:'} € {unInvoicedAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                         </div>
-                        <RequestInvoiceButton 
-                          projectName={project.title} 
-                          companyName={project.companies?.name || 'Azienda non specificata'} 
-                          totalAmount={unInvoicedAmount}
-                          reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
-                          logoUrl={settings?.logo_url || undefined}
-                          clientEmail={project.companies?.contact_email || undefined}
-                        />
+                        {totalInvoiced === 0 && (
+                          <RequestInvoiceButton 
+                            projectName={project.title} 
+                            companyName={project.companies?.name || 'Azienda non specificata'} 
+                            totalAmount={unInvoicedAmount}
+                            reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
+                            logoUrl={settings?.logo_url || undefined}
+                            clientEmail={project.companies?.contact_email || undefined}
+                          />
+                        )}
                       </div>
                     )}
                   </>
