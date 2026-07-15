@@ -170,31 +170,58 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                 )}
               </>
             ) : project.time_tracking_enabled === false ? (
-              <>
-                <div className={styles.statLabel}>
-                  <Euro size={16} /> Totale da Saldare
-                </div>
-                <div className={styles.statValue} style={{ color: ((project.billing_amount > 0 ? Math.max(0, project.billing_amount - totalPaidAmount) : totalPendingAmount) > 0) ? 'var(--color-warning)' : 'var(--color-success)' }}>
-                  € {(project.billing_amount > 0 ? Math.max(0, project.billing_amount - totalPaidAmount) : totalPendingAmount).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                </div>
-                {project.billing_amount > 0 && (
-                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)' }}>
-                    Valore progetto: € {project.billing_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                  </div>
-                )}
-                {totalPendingAmount === 0 && (!project.billing_amount || Math.max(0, project.billing_amount - totalPaidAmount) === 0) && (
-                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', color: 'var(--color-success)' }}>
-                    Nessun pagamento in sospeso al momento.
-                  </div>
-                )}
-                {totalPendingAmount > 0 && (
-                  <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
-                    <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--color-warning)' }}>
-                      Di cui già fatturati/in attesa: € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+              (() => {
+                const totalInvoiced = totalPaidAmount + totalPendingAmount;
+                const unInvoicedAmount = Math.max(0, project.billing_amount - totalInvoiced);
+                const toPayAmount = project.billing_amount > 0 ? Math.max(0, project.billing_amount - totalPaidAmount) : totalPendingAmount;
+                
+                return (
+                  <>
+                    <div className={styles.statLabel}>
+                      <Euro size={16} /> Totale da Saldare
                     </div>
-                  </div>
-                )}
-              </>
+                    <div className={styles.statValue} style={{ color: toPayAmount > 0 ? 'var(--color-warning)' : 'var(--color-success)' }}>
+                      € {toPayAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                    </div>
+                    
+                    {project.billing_amount > 0 && (
+                      <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)' }}>
+                        Valore progetto: € {project.billing_amount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                      </div>
+                    )}
+                    
+                    {toPayAmount === 0 && (
+                      <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', color: 'var(--color-success)' }}>
+                        Nessun pagamento in sospeso al momento.
+                      </div>
+                    )}
+
+                    {totalPendingAmount > 0 && (
+                      <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+                        <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--color-warning)' }}>
+                          Di cui già fatturato (da saldare): € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        </div>
+                      </div>
+                    )}
+
+                    {unInvoicedAmount > 0 && (
+                      <div style={{ marginTop: totalPendingAmount > 0 ? '0.5rem' : '1.5rem', marginBottom: '1.5rem' }}>
+                        <div style={{ fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--color-text)' }}>
+                          Fatture non ancora emesse: € {unInvoicedAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        </div>
+                        <RequestInvoiceButton 
+                          projectName={project.title} 
+                          companyName={project.companies?.name || 'Azienda non specificata'} 
+                          totalAmount={unInvoicedAmount}
+                          reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
+                          logoUrl={settings?.logo_url || undefined}
+                          clientEmail={project.companies?.contact_email || undefined}
+                        />
+                      </div>
+                    )}
+                  </>
+                );
+              })()
             ) : prepaidMin > 0 ? (
               <>
                 <div className={styles.statLabel}>
