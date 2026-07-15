@@ -229,10 +229,27 @@ export function ProjectInvoices({ project }: { project: Project }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <button 
                   onClick={() => handleToggleStatus(invoice)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: invoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-text-muted)' }}
+                  style={{ 
+                    background: invoice.status === 'paid' ? 'rgba(0,255,0,0.1)' : 'var(--color-bg-primary)', 
+                    border: `1px solid ${invoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-border)'}`, 
+                    cursor: 'pointer', 
+                    color: invoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-text)',
+                    padding: '0.5rem 0.75rem',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    transition: 'all 0.2s',
+                    fontSize: '0.8rem',
+                    fontWeight: 500
+                  }}
                   title="Clicca per segnare come pagato/non pagato"
                 >
-                  {invoice.status === 'paid' ? <CheckCircle2 size={24} /> : <Clock size={24} />}
+                  {invoice.status === 'paid' ? (
+                    <><CheckCircle2 size={16} /> Pagato</>
+                  ) : (
+                    <><Clock size={16} color="var(--color-text-muted)" /> Segna Pagato</>
+                  )}
                 </button>
                 
                 <div>
