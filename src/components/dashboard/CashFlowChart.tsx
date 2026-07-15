@@ -341,16 +341,27 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
         {/* Totals Row */}
         <div style={{ display: 'flex', gap: '16px', marginTop: '10px' }}>
           {months.map((m, i) => {
+             const monthTotal = m.paid + m.retainer + m.hoursBilled + m.expected;
              return (
                <div key={`tot-${i}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                  <span style={{ fontSize: '13px', textTransform: 'capitalize', color: m.month === new Date().getMonth() && m.year === new Date().getFullYear() ? 'var(--color-primary)' : 'var(--color-text-muted)', fontWeight: 600 }}>
                    {m.monthStr}
                  </span>
-                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px', gap: '2px' }}>
+                 
+                 {/* Totale Mese */}
+                 {monthTotal > 0 ? (
+                   <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-text)', marginTop: '4px', marginBottom: '2px' }} title="Totale">
+                     {monthTotal >= 1000 ? `€ ${(monthTotal/1000).toFixed(1)}k` : formatter.format(monthTotal)}
+                   </span>
+                 ) : (
+                   <span style={{ fontSize: '12px', opacity: 0, marginTop: '4px', marginBottom: '2px' }}>0</span>
+                 )}
+
+                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px', gap: '2px', borderTop: monthTotal > 0 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingTop: monthTotal > 0 ? '4px' : '0' }}>
                    {/* Incassato */}
                    {m.paid > 0 ? (
-                     <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-success)' }} title="Incassato">
-                       {m.paid > 1000 ? `${(m.paid/1000).toFixed(1)}k` : formatter.format(m.paid)}
+                     <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-success)' }} title="Incassato">
+                       {m.paid >= 1000 ? `${(m.paid/1000).toFixed(1)}k` : formatter.format(m.paid)}
                      </span>
                    ) : <span style={{ fontSize: '12px', opacity: 0 }}>0</span>}
                    
