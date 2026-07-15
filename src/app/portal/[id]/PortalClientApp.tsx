@@ -171,7 +171,10 @@ export function PortalClientApp({
               <img src={settings.logo_url} alt="Logo" style={{ maxHeight: '50px', marginBottom: '1.5rem', display: 'block' }} />
             )}
             <h1 style={{ fontSize: '2.5rem' }}>Area Riservata</h1>
-            <p style={{ marginTop: '0.5rem' }}><Building size={24} /> {company.name}</p>
+            <p style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}><Building size={24} /> {company.name}</p>
+            <p style={{ marginTop: '1rem', color: 'var(--color-text-muted)', fontSize: '1.05rem', maxWidth: '600px', lineHeight: '1.5' }}>
+              Benvenuto nella tua area personale. Qui puoi monitorare lo stato di tutti i tuoi progetti attivi, consultare il dettaglio delle ore lavorate e verificare i canoni dei servizi in corso. Seleziona un progetto per scoprirne tutti i dettagli.
+            </p>
           </div>
           
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
@@ -184,14 +187,6 @@ export function PortalClientApp({
                 </div>
               </div>
             )}
-            
-            {/* Global Pending */}
-            <div className={styles.statBlock} style={{ minWidth: 'auto', padding: '1.5rem', background: 'rgba(255,255,255,0.02)' }}>
-              <div className={styles.statLabel}><Euro size={16} /> Totale da Saldare</div>
-              <div className={styles.statValue} style={{ fontSize: '2rem', color: globalPendingAmount > 0 ? 'var(--color-warning)' : 'var(--color-success)' }}>
-                € {globalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-              </div>
-            </div>
           </div>
         </div>
 
