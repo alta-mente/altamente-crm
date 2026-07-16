@@ -67,17 +67,22 @@ export function ActivityChart({ invoices, projects, services, companyHours }: { 
 
   // Aggregate retainers
   projects?.forEach(p => {
-    if (p.billing_type === 'retainer_monthly') {
+    if (p.billing_type === 'retainer_monthly' && p.phase_id !== 'archiviato' && p.phase_id !== 'archived' && p.phase_id !== 'lost') {
       const createdDate = new Date(p.billing_start_date || p.created_at)
       const createdMonth = new Date(createdDate.getFullYear(), createdDate.getMonth(), 1)
       
+      const now = new Date()
+      const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+      
       months.forEach(m => {
         const monthDate = new Date(m.year, m.month, 1)
-        if (monthDate.getTime() >= createdMonth.getTime()) {
+        // Solo per i mesi FUTURI (strettamente maggiori del mese corrente).
+        // I mesi passati e correnti avranno la vera fattura generata dal cron job.
+        if (monthDate.getTime() >= createdMonth.getTime() && monthDate.getTime() > currentMonth.getTime()) {
           const amt = Number(p.billing_amount) || 0
           m.retainer += amt
           if (amt > 0) {
-             m.retainerItems.push({ name: p.name || 'Progetto', amount: amt })
+             m.retainerItems.push({ name: p.name || p.title || 'Progetto', amount: amt })
           }
         }
       })

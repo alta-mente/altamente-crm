@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/aruba-sync",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/monthly-retainers",
+      "schedule": "0 0 1 * *"
     }
   ]
 }
