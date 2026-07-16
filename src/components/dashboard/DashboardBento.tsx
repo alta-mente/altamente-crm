@@ -8,6 +8,7 @@ import { TrendingUp, Briefcase, Award, Calendar, Clock, Info } from 'lucide-reac
 import Link from 'next/link'
 import styles from '@/app/Dashboard.module.css'
 import { CashFlowChart } from './CashFlowChart'
+import { ActivityChart } from './ActivityChart'
 
 interface DashboardBentoProps {
   metrics: {
@@ -286,10 +287,24 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
   
-  const ChartCard = (
-      <motion.div key="chart" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoFull}`} style={{ padding: 0 }}>
+  const ActivityChartCard = (
+      <motion.div key="activity-chart" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoFull}`} style={{ padding: 0 }}>
         <div className={styles.cardTop} style={{ padding: '1.5rem 1.5rem 0' }}>
-          <span className={styles.cardLabel}>Cash Flow & Attività</span>
+          <span className={styles.cardLabel}>Attività & Previsioni</span>
+        </div>
+        <ActivityChart 
+          invoices={invoices} 
+          projects={projectsAll} 
+          services={services}
+          companyHours={companyHours}
+        />
+      </motion.div>
+  )
+
+  const CashChartCard = (
+      <motion.div key="cash-chart" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoFull}`} style={{ padding: 0 }}>
+        <div className={styles.cardTop} style={{ padding: '1.5rem 1.5rem 0' }}>
+          <span className={styles.cardLabel}>Flusso di Cassa</span>
         </div>
         <CashFlowChart 
           invoices={invoices} 
@@ -312,7 +327,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           CompetenzaCard,
           CassaCard,
           AgendaCard,
-          ChartCard
+          ActivityChartCard
         ]
       case 'sales':
         return [
@@ -330,7 +345,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           DaIncassareCard,
           MRRCard,
           ARRCard,
-          ChartCard
+          CashChartCard
         ]
       case 'projects':
         return [
@@ -338,7 +353,8 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           OreCard,
           MRRCard,
           ARRCard,
-          AgendaCard
+          AgendaCard,
+          ActivityChartCard
         ]
       default:
         return []
