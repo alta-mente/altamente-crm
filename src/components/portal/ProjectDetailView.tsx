@@ -70,14 +70,21 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
     <div className={styles.container}>
       {settings?.logo_url && (
         <div style={{ width: '100%', textAlign: 'center', marginBottom: '1rem', position: 'relative' }}>
-          {onBack && (
+          {onBack ? (
             <button 
               onClick={onBack}
               style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 }}
             >
-              <ArrowLeft size={16} /> Dashboard
+              <ArrowLeft size={16} /> Area Cliente
             </button>
-          )}
+          ) : project?.company_id ? (
+            <a 
+              href={`/portal/${project.company_id}`}
+              style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)', fontSize: '0.9rem', fontWeight: 500, textDecoration: 'none' }}
+            >
+              <ArrowLeft size={16} /> Area Cliente
+            </a>
+          ) : null}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src={settings.logo_url} 
