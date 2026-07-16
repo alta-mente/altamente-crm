@@ -53,10 +53,12 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
       const projName = proj?.title || proj?.name || 'Progetto Generico'
       const labelName = inv.invoice_number ? `Fatt. ${inv.invoice_number} - ${projName}` : `Fatt. ${projName}`
 
-      let isHours = companyHours?.some((h: any) => h.invoice_id === inv.id)
       let type = 'projects'
-      if (isHours) type = 'hours'
-      else if (proj?.billing_type === 'retainer_monthly' || proj?.billing_type === 'retainer_yearly') type = 'retainer'
+      if (proj?.billing_type === 'retainer_monthly' || proj?.billing_type === 'retainer_yearly') {
+        type = 'retainer'
+      } else if (proj?.time_tracking_enabled) {
+        type = 'hours'
+      }
 
       if (type === 'retainer') months[mIndex].paidRetainer += Number(inv.amount)
       else if (type === 'hours') months[mIndex].paidHours += Number(inv.amount)
