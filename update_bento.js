@@ -1,4 +1,6 @@
+const fs = require('fs');
 
+const fileContent = `
 'use client'
 
 import React, { useState } from 'react'
@@ -41,7 +43,7 @@ const containerVariants = {
   }
 }
 
-const itemVariants: any = {
+const itemVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },
   show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
 }
@@ -61,7 +63,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   // --- REUSABLE WIDGETS ---
 
   const HeroCard = (
-      <motion.div key="hero" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoHero}`} style={{ position: 'relative', overflow: 'hidden' }}>
+      <motion.div key="hero" variants={itemVariants} className={\`bento-card bento-dark \${styles.bentoHero}\`} style={{ position: 'relative', overflow: 'hidden' }}>
         <div className={styles.cardContent}>
           <div className={styles.heroTitle} style={{ color: 'white' }}>
             Dashboard<br/><span style={{ background: 'linear-gradient(to right, #a855f7, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>& Analytics</span>
@@ -101,7 +103,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const MRRCard = (
-      <motion.div key="mrr" variants={itemVariants} className={`bento-card bento-green ${styles.bentoSmall}`}>
+      <motion.div key="mrr" variants={itemVariants} className={\`bento-card bento-green \${styles.bentoSmall}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore totale dei contratti ricorrenti mensili attivi (MRR)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -120,7 +122,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const ARRCard = (
-      <motion.div key="arr" variants={itemVariants} className={`bento-card bento-primary ${styles.bentoSmall}`}>
+      <motion.div key="arr" variants={itemVariants} className={\`bento-card bento-primary \${styles.bentoSmall}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore totale dei contratti ricorrenti annuali attivi (ARR)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -139,7 +141,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const CompetenzaCard = (
-      <motion.div key="comp" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoSmall}`} style={{ border: '1px solid rgba(168, 85, 247, 0.2)' }}>
+      <motion.div key="comp" variants={itemVariants} className={\`bento-card bento-dark \${styles.bentoSmall}\`} style={{ border: '1px solid rgba(168, 85, 247, 0.2)' }}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Competenza Economica: Totale Fatturato (emesso)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -158,7 +160,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const CassaCard = (
-      <motion.div key="cassa" variants={itemVariants} className={`bento-card bento-green ${styles.bentoSmall}`}>
+      <motion.div key="cassa" variants={itemVariants} className={\`bento-card bento-green \${styles.bentoSmall}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Cassa Reale: Totale Incassato (fatture saldate)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -177,7 +179,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const DaIncassareCard = (
-      <motion.div key="daincassare" variants={itemVariants} className={`bento-card bento-orange ${styles.bentoSmall}`}>
+      <motion.div key="daincassare" variants={itemVariants} className={\`bento-card bento-orange \${styles.bentoSmall}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore dei progetti 'Da Fatturare' o 'In Ritardo', sottraendo eventuali fatture/incassi già registrati nel progetto." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -195,7 +197,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const PipelineCard = (
-      <motion.div key="pipeline" variants={itemVariants} className={`bento-card bento-blue ${styles.bentoSmall}`}>
+      <motion.div key="pipeline" variants={itemVariants} className={\`bento-card bento-blue \${styles.bentoSmall}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore totale stimato di tutti i Deal attualmente aperti (non persi, non vinti, non archiviati)." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -214,7 +216,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const VendutoCard = (
-      <motion.div key="venduto" variants={itemVariants} className={`bento-card bento-purple ${styles.bentoSmall}`}>
+      <motion.div key="venduto" variants={itemVariants} className={\`bento-card bento-purple \${styles.bentoSmall}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore totale dei Deal vinti nell'anno corrente." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -233,7 +235,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
 
   const OreCard = (
-      <motion.div key="ore" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoSmall}`}>
+      <motion.div key="ore" variants={itemVariants} className={\`bento-card bento-dark \${styles.bentoSmall}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore delle ore lavorate a consuntivo non ancora fatturate (esclude le ore in pre-pagato)." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
@@ -252,7 +254,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
   
   const AgendaCard = (
-      <motion.div key="agenda" variants={itemVariants} className={`bento-card bento-purple ${styles.bentoWide}`}>
+      <motion.div key="agenda" variants={itemVariants} className={\`bento-card bento-purple \${styles.bentoWide}\`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel}>Prossimi Appuntamenti</span>
@@ -287,7 +289,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   )
   
   const ChartCard = (
-      <motion.div key="chart" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoFull}`} style={{ padding: 0 }}>
+      <motion.div key="chart" variants={itemVariants} className={\`bento-card bento-dark \${styles.bentoFull}\`} style={{ padding: 0 }}>
         <div className={styles.cardTop} style={{ padding: '1.5rem 1.5rem 0' }}>
           <span className={styles.cardLabel}>Cash Flow & Attività</span>
         </div>
@@ -351,7 +353,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            className={`${styles.tabButton} ${activeTab === tab.id ? styles.tabButtonActive : ''}`}
+            className={\`\${styles.tabButton} \${activeTab === tab.id ? styles.tabButtonActive : ''}\`}
             onClick={() => setActiveTab(tab.id)}
           >
             {activeTab === tab.id && (
@@ -381,3 +383,6 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
     </>
   )
 }
+`
+
+fs.writeFileSync('src/components/dashboard/DashboardBento.tsx', fileContent);
