@@ -5,6 +5,7 @@ import styles from '@/app/Dashboard.module.css'
 
 interface Invoice {
   id: string
+  project_id?: string
   amount: number
   status: 'pending' | 'paid' | 'late'
   issue_date: string
@@ -30,35 +31,39 @@ export function ActivityChart({ invoices, projects, services, companyHours }: { 
       year: selectedYear,
       month: i,
       paid: 0,
-      paidItems: [] as TooltipItem[],
       expected: 0,
-      expectedItems: [] as TooltipItem[],
       retainer: 0,
-      retainerItems: [] as TooltipItem[],
       hoursBilled: 0,
+      paidItems: [] as TooltipItem[],
+      expectedItems: [] as TooltipItem[],
+      retainerItems: [] as TooltipItem[],
       hoursItems: [] as TooltipItem[]
     }
   })
 
   // Aggregate data
   invoices.forEach(inv => {
-    const targetDateStr = inv.status === 'paid' ? (inv.paid_date || inv.issue_date) : inv.issue_date
+    const targetDateStr = inv.paid_date || inv.issue_date
     if (!targetDateStr) return
     
     const d = new Date(targetDateStr)
     const mIndex = months.findIndex(m => m.year === d.getFullYear() && m.month === d.getMonth())
     
     if (mIndex !== -1) {
+      const proj = projects?.find(p => p.id === inv.project_id)
+      const projName = proj?.title || proj?.name || 'Progetto Generico'
+      const labelName = inv.invoice_number ? `Fatt. ${inv.invoice_number} - ${projName}` : `Fatt. ${projName}`
+
       if (inv.status === 'paid') {
         months[mIndex].paid += Number(inv.amount)
         months[mIndex].paidItems.push({
-          name: inv.invoice_number ? `Fatt. ${inv.invoice_number}` : `Fattura ${inv.id.slice(0, 4)}`,
+          name: labelName,
           amount: Number(inv.amount)
         })
       } else {
         months[mIndex].expected += Number(inv.amount)
         months[mIndex].expectedItems.push({
-          name: inv.invoice_number ? `Fatt. ${inv.invoice_number}` : `Fattura (Da Incassare)`,
+          name: `${labelName} (Da Incassare)`,
           amount: Number(inv.amount)
         })
       }

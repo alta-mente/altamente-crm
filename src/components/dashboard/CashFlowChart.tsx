@@ -5,6 +5,7 @@ import styles from '@/app/Dashboard.module.css'
 
 interface Invoice {
   id: string
+  project_id?: string
   amount: number
   status: 'pending' | 'paid' | 'late'
   issue_date: string
@@ -30,6 +31,9 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
       year: selectedYear,
       month: i,
       paid: 0,
+      paidRetainer: 0,
+      paidHours: 0,
+      paidProjects: 0,
       paidItems: [] as TooltipItem[]
     }
   })
@@ -45,9 +49,22 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
     const mIndex = months.findIndex(m => m.year === d.getFullYear() && m.month === d.getMonth())
     
     if (mIndex !== -1) {
+      const proj = projects?.find(p => p.id === inv.project_id)
+      const projName = proj?.title || proj?.name || 'Progetto Generico'
+      const labelName = inv.invoice_number ? `Fatt. ${inv.invoice_number} - ${projName}` : `Fatt. ${projName}`
+
+      let isHours = companyHours?.some((h: any) => h.invoice_id === inv.id)
+      let type = 'projects'
+      if (isHours) type = 'hours'
+      else if (proj?.billing_type === 'retainer_monthly' || proj?.billing_type === 'retainer_yearly') type = 'retainer'
+
+      if (type === 'retainer') months[mIndex].paidRetainer += Number(inv.amount)
+      else if (type === 'hours') months[mIndex].paidHours += Number(inv.amount)
+      else months[mIndex].paidProjects += Number(inv.amount)
+      
       months[mIndex].paid += Number(inv.amount)
       months[mIndex].paidItems.push({
-        name: inv.invoice_number ? `Fatt. ${inv.invoice_number}` : `Fattura ${inv.id.slice(0, 4)}`,
+        name: labelName,
         amount: Number(inv.amount)
       })
     }
@@ -112,12 +129,38 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                 onMouseLeave={() => setHoveredMonthIdx(null)}
               >
                 
-                {/* Paid Bar */}
+                {/* Paid Projects Bar */}
                 <div 
                   style={{ 
                     width: '35px', 
-                    height: `${paidHeight}%`, 
+                    height: `${(m.paidProjects / maxAmount) * 100}%`, 
                     background: 'var(--color-primary)', 
+                    borderTopLeftRadius: m.paidHours === 0 && m.paidRetainer === 0 ? '4px' : '0',
+                    borderTopRightRadius: m.paidHours === 0 && m.paidRetainer === 0 ? '4px' : '0',
+                    transition: 'height 0.3s ease, opacity 0.2s',
+                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                  }} 
+                />
+                
+                {/* Paid Hours Bar */}
+                <div 
+                  style={{ 
+                    width: '35px', 
+                    height: `${(m.paidHours / maxAmount) * 100}%`, 
+                    background: 'var(--color-warning)', 
+                    borderTopLeftRadius: m.paidRetainer === 0 ? '4px' : '0',
+                    borderTopRightRadius: m.paidRetainer === 0 ? '4px' : '0',
+                    transition: 'height 0.3s ease, opacity 0.2s',
+                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                  }} 
+                />
+
+                {/* Paid Retainer Bar */}
+                <div 
+                  style={{ 
+                    width: '35px', 
+                    height: `${(m.paidRetainer / maxAmount) * 100}%`, 
+                    background: 'var(--color-success)', 
                     borderTopLeftRadius: '4px',
                     borderTopRightRadius: '4px',
                     transition: 'height 0.3s ease, opacity 0.2s',
@@ -209,10 +252,18 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
         </div>
         
         {/* Legend */}
-        <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', fontSize: '13px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', fontSize: '13px', justifyContent: 'center', flexWrap: 'wrap' }}>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
              <div style={{ width: '14px', height: '14px', background: 'var(--color-primary)', borderRadius: '3px' }}></div>
-             <span style={{ fontWeight: 500 }}>Incassato</span>
+             <span style={{ fontWeight: 500 }}>Progetti (One-off)</span>
+           </div>
+           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+             <div style={{ width: '14px', height: '14px', background: 'var(--color-warning)', borderRadius: '3px' }}></div>
+             <span style={{ fontWeight: 500 }}>Ore Consuntivate</span>
+           </div>
+           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+             <div style={{ width: '14px', height: '14px', background: 'var(--color-success)', borderRadius: '3px' }}></div>
+             <span style={{ fontWeight: 500 }}>Canoni Mensili/Annuali</span>
            </div>
         </div>
 
