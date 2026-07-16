@@ -42,6 +42,10 @@ export function RequestInvoiceButton({ projectName, companyName, totalAmount, re
     }
   }
 
+  if (totalAmount <= 0) {
+    return null
+  }
+
   if (status === 'success') {
     return (
       <button 
