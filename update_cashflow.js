@@ -1,7 +1,10 @@
+const fs = require('fs');
 
+const fileContent = `
 import React, { useState } from 'react'
 import { Euro } from 'lucide-react'
 import styles from '@/app/Dashboard.module.css'
+import type { Project } from './projects/ProjectBoard'
 
 interface Invoice {
   id: string
@@ -47,7 +50,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
     if (mIndex !== -1) {
       months[mIndex].paid += Number(inv.amount)
       months[mIndex].paidItems.push({
-        name: inv.invoice_number ? `Fatt. ${inv.invoice_number}` : `Fattura ${inv.id.slice(0, 4)}`,
+        name: inv.invoice_number ? \`Fatt. \${inv.invoice_number}\` : \`Fattura \${inv.id.slice(0, 4)}\`,
         amount: Number(inv.amount)
       })
     }
@@ -67,7 +70,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
   })
 
   return (
-    <div className={`bento-card bento-glass ${styles.bentoFull}`}>
+    <div className={\`bento-card bento-glass \${styles.bentoFull}\`}>
       <div className={styles.cardContent}>
         <div className={styles.cardTop} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -116,7 +119,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                 <div 
                   style={{ 
                     width: '35px', 
-                    height: `${paidHeight}%`, 
+                    height: \`\${paidHeight}%\`, 
                     background: 'var(--color-primary)', 
                     borderTopLeftRadius: '4px',
                     borderTopRightRadius: '4px',
@@ -160,7 +163,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                       {m.paidItems.length > 0 && (
                         <div style={{ paddingLeft: '8px', borderLeft: '2px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '11px', opacity: 0.7 }}>
                           {m.paidItems.map((item, idx) => (
-                            <div key={`paid-${idx}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                            <div key={\`paid-\${idx}\`} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
                               <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</span>
                               <span>{formatter.format(item.amount)}</span>
                             </div>
@@ -181,7 +184,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
           {months.map((m, i) => {
              const monthTotal = m.paid;
              return (
-               <div key={`tot-${i}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+               <div key={\`tot-\${i}\`} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                  <span style={{ fontSize: '13px', textTransform: 'capitalize', color: m.month === new Date().getMonth() && m.year === new Date().getFullYear() ? 'var(--color-primary)' : 'var(--color-text-muted)', fontWeight: 600 }}>
                    {m.monthStr}
                  </span>
@@ -189,7 +192,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                  {/* Totale Mese */}
                  {monthTotal > 0 ? (
                    <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-text)', marginTop: '4px', marginBottom: '2px' }} title="Totale Incassato">
-                     {monthTotal >= 1000 ? `€ ${(monthTotal/1000).toFixed(1)}k` : formatter.format(monthTotal)}
+                     {monthTotal >= 1000 ? \`€ \${(monthTotal/1000).toFixed(1)}k\` : formatter.format(monthTotal)}
                    </span>
                  ) : (
                    <span style={{ fontSize: '12px', opacity: 0, marginTop: '4px', marginBottom: '2px' }}>0</span>
@@ -199,7 +202,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                    {/* Incassato */}
                    {m.paid > 0 ? (
                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-success)' }} title="Incassato">
-                       {m.paid >= 1000 ? `${(m.paid/1000).toFixed(1)}k` : formatter.format(m.paid)}
+                       {m.paid >= 1000 ? \`\${(m.paid/1000).toFixed(1)}k\` : formatter.format(m.paid)}
                      </span>
                    ) : <span style={{ fontSize: '12px', opacity: 0 }}>0</span>}
                  </div>
@@ -263,3 +266,6 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
     </div>
   )
 }
+`
+
+fs.writeFileSync('src/components/dashboard/CashFlowChart.tsx', fileContent);
