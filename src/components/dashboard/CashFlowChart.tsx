@@ -199,11 +199,35 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ opacity: 0.8, fontWeight: 600 }}>Incassato:</span>
+                        <span style={{ opacity: 0.8, fontWeight: 600 }}>Incassato Totale:</span>
                         <span style={{ fontWeight: 700 }}>{formatter.format(m.paid)}</span>
                       </div>
+                      
+                      {(m.paidProjects > 0 || m.paidHours > 0 || m.paidRetainer > 0) && (
+                        <div style={{ paddingLeft: '8px', borderLeft: '2px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '12px', marginTop: '4px', marginBottom: '4px' }}>
+                          {m.paidProjects > 0 && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-primary)' }}>
+                              <span>Progetti:</span>
+                              <span style={{ fontWeight: 600 }}>{formatter.format(m.paidProjects)}</span>
+                            </div>
+                          )}
+                          {m.paidHours > 0 && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-warning)' }}>
+                              <span>Ore Consuntivate:</span>
+                              <span style={{ fontWeight: 600 }}>{formatter.format(m.paidHours)}</span>
+                            </div>
+                          )}
+                          {m.paidRetainer > 0 && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-success)' }}>
+                              <span>Canoni:</span>
+                              <span style={{ fontWeight: 600 }}>{formatter.format(m.paidRetainer)}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       {m.paidItems.length > 0 && (
-                        <div style={{ paddingLeft: '8px', borderLeft: '2px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '11px', opacity: 0.7 }}>
+                        <div style={{ paddingLeft: '8px', borderLeft: '2px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '11px', opacity: 0.7, marginTop: '4px' }}>
                           {m.paidItems.map((item, idx) => (
                             <div key={`paid-${idx}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
                               <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</span>
@@ -234,20 +258,11 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                  {/* Totale Mese */}
                  {monthTotal > 0 ? (
                    <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-text)', marginTop: '4px', marginBottom: '2px' }} title="Totale Incassato">
-                     {monthTotal >= 1000 ? `€ ${(monthTotal/1000).toFixed(1)}k` : formatter.format(monthTotal)}
+                     {formatter.format(monthTotal)}
                    </span>
                  ) : (
                    <span style={{ fontSize: '12px', opacity: 0, marginTop: '4px', marginBottom: '2px' }}>0</span>
                  )}
-
-                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px', gap: '2px', borderTop: monthTotal > 0 ? '1px solid rgba(255,255,255,0.1)' : 'none', paddingTop: monthTotal > 0 ? '4px' : '0' }}>
-                   {/* Incassato */}
-                   {m.paid > 0 ? (
-                     <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-success)' }} title="Incassato">
-                       {m.paid >= 1000 ? `${(m.paid/1000).toFixed(1)}k` : formatter.format(m.paid)}
-                     </span>
-                   ) : <span style={{ fontSize: '12px', opacity: 0 }}>0</span>}
-                 </div>
                </div>
              )
           })}
