@@ -492,6 +492,9 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                   ? `€ ${((data.totalMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                   : null
 
+                const batchInvoiceId = data.hours.find((h: any) => h.invoice_id)?.invoice_id
+                const batchInvoice = batchInvoiceId ? allInvoices.find((i: any) => i.id === batchInvoiceId) : null
+
                 return (
                   <details key={batchId} className={styles.accordion}>
                     <summary className={styles.accordionSummary}>
@@ -501,9 +504,22 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                       <div className={styles.batchTitle}>
                         Archiviato il {batchDate}
                       </div>
-                      <div className={styles.batchStats}>
+                      <div className={styles.batchStats} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span className={styles.batchTime}>({formatTime(data.totalMinutes)})</span>
                         {costDisplay && <span className={styles.batchCost}>— {costDisplay}</span>}
+                        {batchInvoice && (
+                          <span style={{
+                            padding: '2px 8px',
+                            fontSize: '11px',
+                            borderRadius: '12px',
+                            background: batchInvoice.status === 'paid' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+                            color: batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)',
+                            fontWeight: 600,
+                            border: `1px solid ${batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)'}`
+                          }}>
+                            {batchInvoice.status === 'paid' ? 'Pagato' : 'Da Saldare'}
+                          </span>
+                        )}
                       </div>
                     </summary>
                     <div className={styles.accordionContent}>
