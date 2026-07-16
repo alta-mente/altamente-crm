@@ -127,15 +127,15 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
       github_url: formData.github_url,
       description: formData.description,
       billing_type: formData.billing_type,
-      billing_amount: formData.billing_amount,
+      billing_amount: formData.billing_amount ? Number(formData.billing_amount) : 0,
       billing_status: formData.billing_status,
-      billing_start_date: formData.billing_start_date,
+      billing_start_date: formData.billing_start_date || null,
       time_tracking_enabled: formData.time_tracking_enabled,
       always_send_report: formData.always_send_report,
-      prepaid_minutes: formData.prepaid_minutes,
-      hourly_rate: formData.hourly_rate,
+      prepaid_minutes: formData.prepaid_minutes ? Number(formData.prepaid_minutes) : 0,
+      hourly_rate: formData.hourly_rate ? Number(formData.hourly_rate) : 0,
       collaborator_email: formData.collaborator_email || null,
-      commission_rate: formData.commission_rate || 0
+      commission_rate: formData.commission_rate ? Number(formData.commission_rate) : 0
     }).eq('id', project.id)
     
     setIsSubmitting(false)
