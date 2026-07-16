@@ -15,7 +15,7 @@ import type { Project, ProjectPhase, ProjectType } from './ProjectBoard'
 import { ActivityLog } from '@/components/ActivityLog'
 import { ProjectInvoices } from './ProjectInvoices'
 import { TimeTrackingTab } from '@/components/time-tracking/TimeTrackingTab'
-import { notifyClientAboutReport } from '@/app/actions/time-tracking'
+import { notifyClientAboutReport, generateReportToken } from '@/app/actions/time-tracking'
 import { Send, LayoutDashboard } from 'lucide-react'
 
 interface ProjectDrawerProps {
@@ -367,7 +367,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                             />
                             <span className={styles.detailLabel} style={{ marginBottom: 0 }}>Invia sempre report mensile via email (anche senza ore a consuntivo / canoni da fatturare)</span>
                           </label>
-                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                             {project?.company_id && (
                               <Button
                                 variant="secondary"
@@ -378,9 +378,25 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                                 style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
                                 title="Visualizza la Dashboard Aziendale del cliente"
                               >
-                                <LayoutDashboard size={14} style={{ marginRight: '4px' }} /> Dashboard
+                                <LayoutDashboard size={14} style={{ marginRight: '4px' }} /> Area Cliente
                               </Button>
                             )}
+                            <Button
+                              variant="secondary"
+                              onClick={async (e) => {
+                                e.preventDefault();
+                                try {
+                                  const token = project?.report_token || await generateReportToken(project!.id);
+                                  window.open(`/report/${token}`, '_blank');
+                                } catch (err) {
+                                  alert('Errore durante la generazione del link report');
+                                }
+                              }}
+                              style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                              title="Visualizza il Report Pubblico di questo singolo progetto"
+                            >
+                              <FileText size={14} style={{ marginRight: '4px' }} /> Report Progetto
+                            </Button>
                             <Button 
                               variant="primary" 
                               onClick={handleSendReportNow} 

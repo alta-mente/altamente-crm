@@ -32,11 +32,16 @@ export interface Project {
   billing_amount: number
   billing_status: BillingStatus
   created_at: string
-  sort_order?: number
+  billing_start_date?: string
   time_tracking_enabled?: boolean
+  always_send_report?: boolean
   prepaid_minutes?: number
   hourly_rate?: number
-  always_send_report?: boolean
+  collaborator_email?: string
+  commission_rate?: number
+  report_token?: string
+  description?: string
+  sort_order?: number
 }
 
 export interface ProjectPhase {
