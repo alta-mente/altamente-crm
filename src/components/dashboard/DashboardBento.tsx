@@ -9,6 +9,7 @@ import Link from 'next/link'
 import styles from '@/app/Dashboard.module.css'
 import { CashFlowChart } from './CashFlowChart'
 import { ActivityChart } from './ActivityChart'
+import { SalesChart } from './SalesChart'
 
 interface DashboardBentoProps {
   metrics: {
@@ -30,6 +31,7 @@ interface DashboardBentoProps {
   projectsAll: any[]
   services: any[]
   companyHours: any[]
+  deals?: any[]
 }
 
 const containerVariants = {
@@ -49,7 +51,7 @@ const itemVariants: any = {
 
 type TabType = 'overview' | 'sales' | 'cash' | 'projects';
 
-export function DashboardBento({ metrics, appointments, invoices, projectsAll, services, companyHours }: DashboardBentoProps) {
+export function DashboardBento({ metrics, appointments, invoices, projectsAll, services, companyHours, deals }: DashboardBentoProps) {
   const [activeTab, setActiveTab] = useState<TabType>('overview')
 
   const tabs: { id: TabType, label: string }[] = [
@@ -315,6 +317,15 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
 
+  const SalesChartCard = (
+      <motion.div key="sales-chart" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoFull}`} style={{ padding: 0 }}>
+        <div className={styles.cardTop} style={{ padding: '1.5rem 1.5rem 0' }}>
+          <span className={styles.cardLabel}>Andamento Vendite</span>
+        </div>
+        <SalesChart deals={deals || []} />
+      </motion.div>
+  )
+
   // --- RENDERING BASED ON ACTIVE TAB ---
 
   const renderTabContent = () => {
@@ -336,7 +347,8 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           VendutoCard,
           MRRCard,
           ARRCard,
-          AgendaCard
+          AgendaCard,
+          SalesChartCard
         ]
       case 'cash':
         return [

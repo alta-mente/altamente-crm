@@ -132,6 +132,7 @@ export default async function DashboardHome() {
           projectsAll={safeProjectsAll}
           services={safeServices}
           companyHours={safeCompanyHours}
+          deals={safeDeals}
         />
       </div>
     </DashboardLayout>
