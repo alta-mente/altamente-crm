@@ -145,7 +145,7 @@ export function ActivityChart({ invoices, projects, services, companyHours }: { 
   })
 
   return (
-    <div className={`bento-card bento-glass ${styles.bentoFull}`}>
+    <div className={`bento-card bento-glass ${styles.bentoFull}`} style={{ background: 'transparent', boxShadow: 'none', border: 'none' }}>
       <div className={styles.cardContent}>
         <div className={styles.cardTop} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -217,13 +217,14 @@ export function ActivityChart({ invoices, projects, services, companyHours }: { 
                     style={{ 
                       width: '35px', 
                       height: `${hoursHeight}%`, 
-                      background: isFuture ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.6)',
+                      background: isFuture ? 'rgba(59, 130, 246, 0.2)' : 'linear-gradient(to top, rgba(59, 130, 246, 0.5), #3b82f6)',
                       border: isFuture ? '2px dashed rgba(59, 130, 246, 0.5)' : 'none',
                       borderBottom: 'none',
                       borderTopLeftRadius: expectedHeight === 0 ? '4px' : '0',
                       borderTopRightRadius: expectedHeight === 0 ? '4px' : '0',
                       transition: 'height 0.3s ease, opacity 0.2s',
-                      opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                      opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1,
+                      boxShadow: !isFuture && (hoveredMonthIdx === null || hoveredMonthIdx === i) && hoursHeight > 0 ? '0 0 10px rgba(59, 130, 246, 0.4)' : 'none'
                     }} 
                   />
                 )}
@@ -234,13 +235,14 @@ export function ActivityChart({ invoices, projects, services, companyHours }: { 
                     style={{ 
                       width: '35px', 
                       height: `${retainerHeight}%`, 
-                      background: isFuture ? 'rgba(16, 185, 129, 0.2)' : 'rgba(16, 185, 129, 0.6)',
+                      background: isFuture ? 'rgba(16, 185, 129, 0.2)' : 'linear-gradient(to top, rgba(16, 185, 129, 0.5), #10b981)',
                       border: isFuture ? '2px dashed rgba(16, 185, 129, 0.5)' : 'none',
                       borderBottom: 'none',
                       borderTopLeftRadius: (expectedHeight === 0 && hoursHeight === 0) ? '4px' : '0',
                       borderTopRightRadius: (expectedHeight === 0 && hoursHeight === 0) ? '4px' : '0',
                       transition: 'height 0.3s ease, opacity 0.2s',
-                      opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                      opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1,
+                      boxShadow: !isFuture && (hoveredMonthIdx === null || hoveredMonthIdx === i) && retainerHeight > 0 ? '0 0 10px rgba(16, 185, 129, 0.4)' : 'none'
                     }} 
                   />
                 )}
@@ -250,11 +252,12 @@ export function ActivityChart({ invoices, projects, services, companyHours }: { 
                   style={{ 
                     width: '35px', 
                     height: `${paidHeight}%`, 
-                    background: 'var(--color-primary)', 
+                    background: 'linear-gradient(to top, rgba(168, 85, 247, 0.5), #a855f7)', 
                     borderTopLeftRadius: (expectedHeight === 0 && hoursHeight === 0 && retainerHeight === 0) ? '4px' : '0',
                     borderTopRightRadius: (expectedHeight === 0 && hoursHeight === 0 && retainerHeight === 0) ? '4px' : '0',
                     transition: 'height 0.3s ease, opacity 0.2s',
-                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1,
+                    boxShadow: (hoveredMonthIdx === null || hoveredMonthIdx === i) && paidHeight > 0 ? '0 0 10px rgba(168, 85, 247, 0.4)' : 'none'
                   }} 
                 />
 
@@ -404,15 +407,15 @@ export function ActivityChart({ invoices, projects, services, companyHours }: { 
         {/* Legend */}
         <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', fontSize: '13px', justifyContent: 'center' }}>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-             <div style={{ width: '14px', height: '14px', background: 'var(--color-primary)', borderRadius: '3px' }}></div>
+             <div style={{ width: '14px', height: '14px', background: 'linear-gradient(to top, rgba(168, 85, 247, 0.5), #a855f7)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Incassato</span>
            </div>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-             <div style={{ width: '14px', height: '14px', background: 'rgba(16, 185, 129, 0.8)', borderRadius: '3px' }}></div>
+             <div style={{ width: '14px', height: '14px', background: 'linear-gradient(to top, rgba(16, 185, 129, 0.5), #10b981)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Retainer (Auto)</span>
            </div>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-             <div style={{ width: '14px', height: '14px', background: 'rgba(59, 130, 246, 0.8)', borderRadius: '3px' }}></div>
+             <div style={{ width: '14px', height: '14px', background: 'linear-gradient(to top, rgba(59, 130, 246, 0.5), #3b82f6)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Ore Archiviate</span>
            </div>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

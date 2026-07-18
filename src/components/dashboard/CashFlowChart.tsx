@@ -135,7 +135,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
   })
 
   return (
-    <div className={`bento-card bento-glass ${styles.bentoFull}`}>
+    <div className={`bento-card bento-glass ${styles.bentoFull}`} style={{ background: 'transparent', boxShadow: 'none', border: 'none' }}>
       <div className={styles.cardContent}>
         <div className={styles.cardTop} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -202,11 +202,12 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                   style={{ 
                     width: '35px', 
                     height: `${(m.paidProjects / maxAmount) * 100}%`, 
-                    background: 'var(--color-primary)', 
+                    background: 'linear-gradient(to top, rgba(59, 130, 246, 0.5), #3b82f6)', 
                     borderTopLeftRadius: m.paidHours === 0 && m.paidRetainer === 0 && m.expected === 0 ? '4px' : '0',
                     borderTopRightRadius: m.paidHours === 0 && m.paidRetainer === 0 && m.expected === 0 ? '4px' : '0',
                     transition: 'height 0.3s ease, opacity 0.2s',
-                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1,
+                    boxShadow: (hoveredMonthIdx === null || hoveredMonthIdx === i) && m.paidProjects > 0 ? '0 0 10px rgba(59, 130, 246, 0.4)' : 'none'
                   }} 
                 />
                 
@@ -215,11 +216,12 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                   style={{ 
                     width: '35px', 
                     height: `${(m.paidHours / maxAmount) * 100}%`, 
-                    background: 'var(--color-warning)', 
-                    borderTopLeftRadius: m.paidRetainer === 0 ? '4px' : '0',
-                    borderTopRightRadius: m.paidRetainer === 0 ? '4px' : '0',
+                    background: 'linear-gradient(to top, rgba(245, 158, 11, 0.5), #f59e0b)', 
+                    borderTopLeftRadius: m.paidRetainer === 0 && m.expected === 0 ? '4px' : '0',
+                    borderTopRightRadius: m.paidRetainer === 0 && m.expected === 0 ? '4px' : '0',
                     transition: 'height 0.3s ease, opacity 0.2s',
-                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1,
+                    boxShadow: (hoveredMonthIdx === null || hoveredMonthIdx === i) && m.paidHours > 0 ? '0 0 10px rgba(245, 158, 11, 0.4)' : 'none'
                   }} 
                 />
 
@@ -228,11 +230,12 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                   style={{ 
                     width: '35px', 
                     height: `${(m.paidRetainer / maxAmount) * 100}%`, 
-                    background: 'var(--color-success)', 
-                    borderTopLeftRadius: '4px',
-                    borderTopRightRadius: '4px',
+                    background: 'linear-gradient(to top, rgba(16, 185, 129, 0.5), #10b981)', 
+                    borderTopLeftRadius: m.expected === 0 ? '4px' : '0',
+                    borderTopRightRadius: m.expected === 0 ? '4px' : '0',
                     transition: 'height 0.3s ease, opacity 0.2s',
-                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                    opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1,
+                    boxShadow: (hoveredMonthIdx === null || hoveredMonthIdx === i) && m.paidRetainer > 0 ? '0 0 10px rgba(16, 185, 129, 0.4)' : 'none'
                   }} 
                 />
 
@@ -359,15 +362,15 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
         {/* Legend */}
         <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', fontSize: '13px', justifyContent: 'center', flexWrap: 'wrap' }}>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-             <div style={{ width: '14px', height: '14px', background: 'var(--color-primary)', borderRadius: '3px' }}></div>
+             <div style={{ width: '14px', height: '14px', background: 'linear-gradient(to top, rgba(59, 130, 246, 0.5), #3b82f6)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Progetti (One-off)</span>
            </div>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-             <div style={{ width: '14px', height: '14px', background: 'var(--color-warning)', borderRadius: '3px' }}></div>
+             <div style={{ width: '14px', height: '14px', background: 'linear-gradient(to top, rgba(245, 158, 11, 0.5), #f59e0b)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Ore Consuntivate</span>
            </div>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-             <div style={{ width: '14px', height: '14px', background: 'var(--color-success)', borderRadius: '3px' }}></div>
+             <div style={{ width: '14px', height: '14px', background: 'linear-gradient(to top, rgba(16, 185, 129, 0.5), #10b981)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Canoni Mensili/Annuali</span>
            </div>
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
