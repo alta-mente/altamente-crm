@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Table } from '@/components/ui/Table'
 import { Button } from '@/components/ui/Button'
-import { Edit2, Trash2, Link } from 'lucide-react'
+import { Edit2, Trash2, Link, ExternalLink } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { CompanyModal } from './CompanyModal'
 import { MergeCompanyModal } from './MergeCompanyModal'
@@ -75,7 +75,16 @@ export function CompaniesTableClient() {
       key: 'actions', 
       title: 'Azioni', 
       render: (c: any) => (
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <a 
+            title="Apri Dashboard Cliente"
+            href={`/portal/${c.id}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: 'var(--color-primary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          >
+            <ExternalLink size={16} />
+          </a>
           <button 
             title="Modifica Azienda"
             onClick={() => handleEdit(c)}
