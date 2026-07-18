@@ -61,6 +61,31 @@ export async function GET(request: Request) {
           })
         }
       }
+    } else if (p.billing_type === 'retainer_yearly' && p.billing_amount > 0) {
+      // Per i retainer annuali, verifichiamo se il mese corrente è il mese di anniversario
+      const startDate = p.billing_start_date ? new Date(p.billing_start_date) : new Date(p.created_at)
+      
+      if (now.getMonth() === startDate.getMonth()) {
+        const yearStr = now.getFullYear().toString()
+        const noteStrYearly = `Canone Annuale - ${yearStr}`
+        
+        const { data: existingYearly } = await supabase
+          .from('invoices')
+          .select('id')
+          .eq('project_id', p.id)
+          .eq('notes', noteStrYearly)
+          .maybeSingle()
+
+        if (!existingYearly) {
+          await supabase.from('invoices').insert({
+            project_id: p.id,
+            amount: p.billing_amount,
+            status: 'pending',
+            notes: noteStrYearly,
+            issue_date: now.toISOString().split('T')[0]
+          })
+        }
+      }
     }
   }
 
