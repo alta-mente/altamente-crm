@@ -577,7 +577,9 @@ export function ProjectBoard({}: ProjectBoardProps) {
             <h3 style={{ fontSize: '1rem', color: 'var(--color-text)', marginBottom: '0.5rem' }}>Condizioni per l'invio:</h3>
             <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <li>Il progetto deve essere <strong>assegnato ad un'azienda</strong> e l'azienda deve avere una <strong>email di contatto</strong> configurata.</li>
-              <li>Il progetto deve avere un importo da saldare positivo per il mese corrente (es. <strong>ore extra a consuntivo</strong>, <strong>canoni in sospeso</strong> o <strong>canoni mensili ricorrenti</strong>).</li>
+              <li>Il progetto deve avere un importo da saldare positivo per il mese corrente (es. <strong>ore extra a consuntivo</strong> o <strong>fatture manuali in sospeso</strong>).</li>
+              <li>I progetti <strong>Retainer Mensile</strong> generano sempre in automatico la propria fattura, attivando l'invio.</li>
+              <li>I progetti <strong>Retainer Annuale</strong> generano in automatico la fattura <strong>solo nel mese di anniversario</strong> (in base alla data di inizio), attivando l'invio in quel mese specifico.</li>
               <li><em>OPPURE</em> deve avere la spunta attiva su <strong>"Invia sempre report mensile via email"</strong> nelle impostazioni del progetto.</li>
             </ul>
           </div>
