@@ -304,6 +304,7 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                             </div>
                           ))}
                         </div>
+                      )}
                       {m.expected > 0 && (
                         <>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
