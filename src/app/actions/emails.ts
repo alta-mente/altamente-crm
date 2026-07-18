@@ -386,3 +386,73 @@ export async function sendCompanyPortalEmail({
     return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
+
+export async function sendDunningEmail({
+  to,
+  companyName,
+  projectName,
+  amount,
+  issueDate,
+  portalUrl,
+  logoUrl
+}: {
+  to: string,
+  companyName: string,
+  projectName: string,
+  amount: number,
+  issueDate: string,
+  portalUrl: string,
+  logoUrl?: string
+}) {
+  if (!resend) {
+    console.log('[SIMULAZIONE EMAIL] Sollecito Automatico a:', to, 'Importo:', amount)
+    return { success: true, simulated: true }
+  }
+
+  try {
+    const formattedDate = new Date(issueDate).toLocaleDateString('it-IT')
+    
+    const response = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [to],
+      subject: `Promemoria: Scadenza Fatturazione - ${companyName}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          ${logoUrl ? `<div style="text-align: center; margin-bottom: 30px;"><img src="${logoUrl}" alt="Logo" style="max-height: 50px; width: auto;" /></div>` : ''}
+          <h2 style="color: #000;">Promemoria Scadenza</h2>
+          <p>Gentile ${companyName},</p>
+          <p>Ti scriviamo per ricordarti che ci risulta una posizione contabile in sospeso per il progetto <strong>${projectName}</strong> relativa ad una competenza maturata il ${formattedDate}.</p>
+          
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Importo da saldare:</span>
+              <strong style="font-size: 1.4em; color: #e11d48;">€ ${amount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            </div>
+          </div>
+
+          <p>Se hai già provveduto al saldo, ti preghiamo di ignorare questa comunicazione. In caso contrario, ti invitiamo a regolarizzare la posizione il prima possibile.</p>
+          
+          <div style="text-align: center; margin: 40px 0;">
+            <a href="${portalUrl}" style="display: inline-block; padding: 14px 28px; background-color: #000; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; letter-spacing: 0.5px;">
+              Accedi all'Area Riservata
+            </a>
+          </div>
+          <p>Per qualsiasi dubbio sull'amministrazione, non esitare a contattarci rispondendo a questa email.</p>
+          <br/>
+          <p style="color: #666; font-size: 0.9em;">Un saluto,<br/>Il team di Altamente</p>
+        </div>
+      `
+    })
+
+    if (response.error) {
+      console.error('Resend API Error:', response.error)
+      return { success: false, error: response.error.message }
+    }
+
+    return { success: true, data: response.data }
+  } catch (error) {
+    console.error('Email sending failed:', error)
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
+  }
+}
+

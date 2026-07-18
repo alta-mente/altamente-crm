@@ -289,6 +289,53 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
   
+  const targetRevenue = 300000;
+  const targetMRR = 10000;
+  const revenuePercent = Math.min(100, Math.round((metrics.wonDealsValue / targetRevenue) * 100));
+  const mrrPercent = Math.min(100, Math.round((metrics.mrrValue / targetMRR) * 100));
+
+  const GoalsCard = (
+      <motion.div key="goals" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoWide}`}>
+        <div className={styles.cardContent}>
+          <div className={styles.cardTop}>
+            <span className={styles.cardLabel} title="Valori target impostati a livello aziendale" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>Obiettivi Aziendali <Info size={12} opacity={0.6}/></span>
+            <Award size={16} className={styles.cardIcon} style={{ color: 'var(--color-warning)' }}/>
+          </div>
+          <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            
+            {/* Obiettivo Fatturato */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                <span style={{ color: 'var(--color-text-muted)' }}>Target Venduto YTD</span>
+                <span style={{ fontWeight: 600 }}>€ {metrics.wonDealsValue.toLocaleString('it-IT')} / {targetRevenue.toLocaleString('it-IT')}</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${revenuePercent}%`, height: '100%', background: 'var(--color-primary)', transition: 'width 1s ease-out' }} />
+              </div>
+              <div style={{ textAlign: 'right', fontSize: '11px', color: 'var(--color-primary)', marginTop: '4px', fontWeight: 700 }}>
+                {revenuePercent}%
+              </div>
+            </div>
+
+            {/* Obiettivo MRR */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                <span style={{ color: 'var(--color-text-muted)' }}>Target MRR</span>
+                <span style={{ fontWeight: 600 }}>€ {metrics.mrrValue.toLocaleString('it-IT')} / {targetMRR.toLocaleString('it-IT')}</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${mrrPercent}%`, height: '100%', background: 'var(--color-success)', transition: 'width 1s ease-out' }} />
+              </div>
+              <div style={{ textAlign: 'right', fontSize: '11px', color: 'var(--color-success)', marginTop: '4px', fontWeight: 700 }}>
+                {mrrPercent}%
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </motion.div>
+  )
+  
   const ActivityChartCard = (
       <motion.div key="activity-chart" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoFull}`} style={{ padding: 0 }}>
         <div className={styles.cardTop} style={{ padding: '1.5rem 1.5rem 0' }}>
@@ -333,6 +380,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       case 'overview':
         return [
           HeroCard,
+          GoalsCard,
           MRRCard,
           ARRCard,
           CompetenzaCard,

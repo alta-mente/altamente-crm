@@ -34,18 +34,33 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
       paidRetainer: 0,
       paidHours: 0,
       paidProjects: 0,
-      paidItems: [] as TooltipItem[]
+      expected: 0,
+      paidItems: [] as TooltipItem[],
+      expectedItems: [] as TooltipItem[]
     }
   })
 
-  // Aggregate data (ONLY PAID INVOICES)
+  // Aggregate data (PAID and PENDING INVOICES)
   invoices.forEach(inv => {
-    if (inv.status !== 'paid') return; // Solo incassato
-
-    const targetDateStr = inv.paid_date || inv.issue_date
+    // Determine the target date for the chart:
+    // If paid, use paid_date or issue_date.
+    // If pending/late, project payment to next month or current month if issue_date is old.
+    let targetDateStr = inv.paid_date || inv.issue_date
     if (!targetDateStr) return
+
+    let d = new Date(targetDateStr)
     
-    const d = new Date(targetDateStr)
+    if (inv.status !== 'paid') {
+      // For forecasting, assume payment will happen in the current month or next month
+      const now = new Date()
+      if (d < now) {
+         // If it's already overdue or issued in the past, project it to this month
+         d = new Date(now.getFullYear(), now.getMonth(), 1)
+      } else {
+         // Otherwise project it 30 days after issue
+         d.setDate(d.getDate() + 30)
+      }
+    }
     const mIndex = months.findIndex(m => m.year === d.getFullYear() && m.month === d.getMonth())
     
     if (mIndex !== -1) {
@@ -60,29 +75,63 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
         type = 'hours'
       }
 
-      if (type === 'retainer') months[mIndex].paidRetainer += Number(inv.amount)
-      else if (type === 'hours') months[mIndex].paidHours += Number(inv.amount)
-      else months[mIndex].paidProjects += Number(inv.amount)
+      if (inv.status === 'paid') {
+        if (type === 'retainer') months[mIndex].paidRetainer += Number(inv.amount)
+        else if (type === 'hours') months[mIndex].paidHours += Number(inv.amount)
+        else months[mIndex].paidProjects += Number(inv.amount)
+        
+        months[mIndex].paid += Number(inv.amount)
+        months[mIndex].paidItems.push({
+          name: labelName,
+          amount: Number(inv.amount)
+        })
+      } else {
+        months[mIndex].expected += Number(inv.amount)
+        months[mIndex].expectedItems.push({
+          name: `${labelName} (Previsione)`,
+          amount: Number(inv.amount)
+        })
+      }
+    }
+  })
+
+  // Aggregate future retainers for forecasting
+  projects?.forEach(p => {
+    if ((p.billing_type === 'retainer_monthly' || p.billing_type === 'retainer_yearly') && p.phase_id !== 'archiviato' && p.phase_id !== 'archived' && p.phase_id !== 'lost') {
+      const createdDate = new Date(p.billing_start_date || p.created_at)
+      const createdMonth = new Date(createdDate.getFullYear(), createdDate.getMonth(), 1)
       
-      months[mIndex].paid += Number(inv.amount)
-      months[mIndex].paidItems.push({
-        name: labelName,
-        amount: Number(inv.amount)
+      const now = new Date()
+      const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+      
+      months.forEach(m => {
+        const monthDate = new Date(m.year, m.month, 1)
+        // Project retainers into future months
+        if (monthDate.getTime() >= createdMonth.getTime() && monthDate.getTime() > currentMonth.getTime()) {
+          const amt = Number(p.billing_amount) || 0
+          m.expected += amt
+          if (amt > 0) {
+             m.expectedItems.push({ name: `${p.name || p.title || 'Progetto'} (Retainer Futuro)`, amount: amt })
+          }
+        }
       })
     }
   })
 
   // Find max for scaling
-  const maxAmount = Math.max(...months.map(m => m.paid), 1000)
+  const maxAmount = Math.max(...months.map(m => m.paid + m.expected), 1000)
   const formatter = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
 
   // Compute stats for Analisi Andamento
   let currentProgress = 0
+  let currentExpectedProgress = 0
   const enrichedMonths = months.map(m => {
     const totalM = m.paid
+    const expectedM = m.expected
     currentProgress += totalM
+    currentExpectedProgress += totalM + expectedM
     const avg = currentProgress / (m.month + 1)
-    return { ...m, totalM, currentProgress, avg }
+    return { ...m, totalM, expectedM, currentProgress, currentExpectedProgress, avg }
   })
 
   return (
@@ -131,14 +180,31 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                 onMouseLeave={() => setHoveredMonthIdx(null)}
               >
                 
+                {/* Expected Bar */}
+                {m.expected > 0 && (
+                  <div 
+                    style={{ 
+                      width: '35px', 
+                      height: `${(m.expected / maxAmount) * 100}%`, 
+                      background: 'rgba(255, 255, 255, 0.1)', 
+                      border: '2px dashed rgba(255, 255, 255, 0.3)',
+                      borderBottom: 'none',
+                      borderTopLeftRadius: '4px',
+                      borderTopRightRadius: '4px',
+                      transition: 'height 0.3s ease, opacity 0.2s',
+                      opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
+                    }} 
+                  />
+                )}
+                
                 {/* Paid Projects Bar */}
                 <div 
                   style={{ 
                     width: '35px', 
                     height: `${(m.paidProjects / maxAmount) * 100}%`, 
                     background: 'var(--color-primary)', 
-                    borderTopLeftRadius: m.paidHours === 0 && m.paidRetainer === 0 ? '4px' : '0',
-                    borderTopRightRadius: m.paidHours === 0 && m.paidRetainer === 0 ? '4px' : '0',
+                    borderTopLeftRadius: m.paidHours === 0 && m.paidRetainer === 0 && m.expected === 0 ? '4px' : '0',
+                    borderTopRightRadius: m.paidHours === 0 && m.paidRetainer === 0 && m.expected === 0 ? '4px' : '0',
                     transition: 'height 0.3s ease, opacity 0.2s',
                     opacity: hoveredMonthIdx !== null && hoveredMonthIdx !== i ? 0.4 : 1
                   }} 
@@ -235,6 +301,23 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                             </div>
                           ))}
                         </div>
+                      {m.expected > 0 && (
+                        <>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                            <span style={{ opacity: 0.8, fontWeight: 600 }}>Entrate Previste:</span>
+                            <span style={{ fontWeight: 700, color: 'var(--color-text-muted)' }}>{formatter.format(m.expected)}</span>
+                          </div>
+                          {m.expectedItems.length > 0 && (
+                            <div style={{ paddingLeft: '8px', borderLeft: '2px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '11px', opacity: 0.7, marginTop: '4px' }}>
+                              {m.expectedItems.map((item, idx) => (
+                                <div key={`exp-${idx}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                                  <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</span>
+                                  <span>{formatter.format(item.amount)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
 
@@ -263,6 +346,11 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                  ) : (
                    <span style={{ fontSize: '12px', opacity: 0, marginTop: '4px', marginBottom: '2px' }}>0</span>
                  )}
+                 {m.expected > 0 && (
+                   <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-text-muted)' }} title="Entrate Previste">
+                     +{m.expected >= 1000 ? `${(m.expected/1000).toFixed(1)}k` : m.expected}
+                   </span>
+                 )}
                </div>
              )
           })}
@@ -281,6 +369,10 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
              <div style={{ width: '14px', height: '14px', background: 'var(--color-success)', borderRadius: '3px' }}></div>
              <span style={{ fontWeight: 500 }}>Canoni Mensili/Annuali</span>
+           </div>
+           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+             <div style={{ width: '14px', height: '14px', background: 'rgba(255, 255, 255, 0.1)', border: '2px dashed rgba(255, 255, 255, 0.3)', borderRadius: '3px' }}></div>
+             <span style={{ fontWeight: 500 }}>Previsione Incassi</span>
            </div>
         </div>
 
@@ -307,7 +399,15 @@ export function CashFlowChart({ invoices, projects, services, companyHours }: { 
                   ))}
                 </tr>
                 <tr>
-                  <td style={{ textAlign: 'left', padding: '0.5rem', color: 'var(--color-text-muted)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>Progressivo YTD</td>
+                  <td style={{ textAlign: 'left', padding: '0.5rem', color: 'var(--color-text-muted)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>Previsione Mese</td>
+                  {enrichedMonths.map((m, i) => (
+                    <td key={i} style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', color: m.expectedM > 0 ? 'var(--color-text-muted)' : 'rgba(255,255,255,0.1)' }}>
+                      {m.expectedM > 0 ? formatter.format(m.expectedM) : '-'}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td style={{ textAlign: 'left', padding: '0.5rem', color: 'var(--color-text-muted)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>Progressivo YTD (Incassato)</td>
                   {enrichedMonths.map((m, i) => (
                     <td key={i} style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--color-primary)', fontWeight: 600 }}>
                       {m.currentProgress > 0 ? formatter.format(m.currentProgress) : '-'}
