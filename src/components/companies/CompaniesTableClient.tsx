@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 export function CompaniesTableClient() {
   const [companies, setCompanies] = useState<any[]>([])
   const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string[]>(['attivo', 'storico'])
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false)
@@ -70,8 +71,26 @@ export function CompaniesTableClient() {
     setSortConfig({ key, direction })
   }
 
+  const getStatusVal = (c: any) => {
+    if (!c.projects || c.projects.length === 0) return 'prospect';
+    const isArchived = (pid: string) => pid && ['won', 'lost', 'archivia', 'archiv', 'completat', 'chius'].some(t => pid.toLowerCase().includes(t));
+    const hasActive = c.projects.some((p: any) => !isArchived(p.phase_id));
+    return hasActive ? 'attivo' : 'storico';
+  };
+
+  const toggleStatusFilter = (status: string) => {
+    setStatusFilter(prev => 
+      prev.includes(status) 
+        ? prev.filter(s => s !== status)
+        : [...prev, status]
+    );
+  };
+
   const getFilteredAndSortedCompanies = () => {
     let result = [...companies]
+
+    // Applica filtro status
+    result = result.filter(c => statusFilter.includes(getStatusVal(c)))
 
     if (searchTerm) {
       const lowerSearch = searchTerm.toLowerCase()
@@ -91,14 +110,14 @@ export function CompaniesTableClient() {
         let valB = b[sortConfig.key];
 
         if (sortConfig.key === 'status') {
-          const getStatusVal = (c: any) => {
-            if (!c.projects || c.projects.length === 0) return 3; // Prospect
-            const isArchived = (pid: string) => pid && ['won', 'lost', 'archivia', 'archiv', 'completat', 'chius'].some(t => pid.toLowerCase().includes(t));
-            const hasActive = c.projects.some((p: any) => !isArchived(p.phase_id));
-            return hasActive ? 1 : 2; // 1 = Attivo, 2 = Storico
+          const getVal = (c: any) => {
+            const s = getStatusVal(c);
+            if (s === 'attivo') return 1;
+            if (s === 'storico') return 2;
+            return 3;
           };
-          valA = getStatusVal(a);
-          valB = getStatusVal(b);
+          valA = getVal(a);
+          valB = getVal(b);
         }
 
         if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -119,18 +138,10 @@ export function CompaniesTableClient() {
       title: 'Status',
       sortable: true,
       render: (c: any) => {
-        const isArchived = (phaseId: string) => {
-          if (!phaseId) return false;
-          const lower = phaseId.toLowerCase();
-          return ['won', 'lost', 'archivia', 'archiv', 'completat', 'chius'].some(t => lower.includes(t));
-        };
-        
-        if (!c.projects || c.projects.length === 0) {
+        const s = getStatusVal(c);
+        if (s === 'prospect') {
           return <span style={{ padding: '0.25rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(234, 179, 8, 0.1)', color: '#eab308', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>🌱 Prospect</span>;
-        }
-        
-        const hasActive = c.projects.some((p: any) => !isArchived(p.phase_id));
-        if (hasActive) {
+        } else if (s === 'attivo') {
           return <span style={{ padding: '0.25rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>🚀 Attivo</span>;
         } else {
           return <span style={{ padding: '0.25rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(156, 163, 175, 0.1)', color: 'var(--color-text-muted)', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>🗄️ Storico</span>;
@@ -234,7 +245,31 @@ export function CompaniesTableClient() {
   return (
     <>
       <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, margin: 0 }}>Anagrafica Aziende</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, margin: 0 }}>Anagrafica Aziende</h2>
+          
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Filtri:</span>
+            <button 
+              onClick={() => toggleStatusFilter('attivo')}
+              style={{ padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', border: '1px solid', borderColor: statusFilter.includes('attivo') ? '#22c55e' : 'var(--color-border)', background: statusFilter.includes('attivo') ? 'rgba(34, 197, 94, 0.1)' : 'transparent', color: statusFilter.includes('attivo') ? '#22c55e' : 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+            >
+              🚀 Attivi
+            </button>
+            <button 
+              onClick={() => toggleStatusFilter('storico')}
+              style={{ padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', border: '1px solid', borderColor: statusFilter.includes('storico') ? 'var(--color-text-muted)' : 'var(--color-border)', background: statusFilter.includes('storico') ? 'rgba(156, 163, 175, 0.1)' : 'transparent', color: statusFilter.includes('storico') ? 'var(--color-text)' : 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+            >
+              🗄️ Storici
+            </button>
+            <button 
+              onClick={() => toggleStatusFilter('prospect')}
+              style={{ padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', border: '1px solid', borderColor: statusFilter.includes('prospect') ? '#eab308' : 'var(--color-border)', background: statusFilter.includes('prospect') ? 'rgba(234, 179, 8, 0.1)' : 'transparent', color: statusFilter.includes('prospect') ? '#eab308' : 'var(--color-text-muted)', fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s' }}
+            >
+              🌱 Prospect
+            </button>
+          </div>
+        </div>
         
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
           <div style={{ position: 'relative', maxWidth: '300px', width: '100%' }}>
