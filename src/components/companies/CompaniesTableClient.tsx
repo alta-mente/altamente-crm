@@ -24,7 +24,7 @@ export function CompaniesTableClient() {
     setIsLoading(true)
     const { data } = await supabase
       .from('companies')
-      .select('*, contacts(id, first_name, last_name), projects(id, always_send_report, company_hours(id, billed), invoices(id, status))')
+      .select('*, contacts(id, first_name, last_name), projects(id, phase_id, always_send_report, company_hours(id, billed), invoices(id, status))')
       .order('created_at', { ascending: false })
     
     if (data) setCompanies(data)
@@ -87,13 +87,23 @@ export function CompaniesTableClient() {
 
     if (sortConfig !== null) {
       result.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === 'asc' ? -1 : 1
+        let valA = a[sortConfig.key];
+        let valB = b[sortConfig.key];
+
+        if (sortConfig.key === 'status') {
+          const getStatusVal = (c: any) => {
+            if (!c.projects || c.projects.length === 0) return 3; // Prospect
+            const isArchived = (pid: string) => pid && ['won', 'lost', 'archivia', 'archiv', 'completat', 'chius'].some(t => pid.toLowerCase().includes(t));
+            const hasActive = c.projects.some((p: any) => !isArchived(p.phase_id));
+            return hasActive ? 1 : 2; // 1 = Attivo, 2 = Storico
+          };
+          valA = getStatusVal(a);
+          valB = getStatusVal(b);
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === 'asc' ? 1 : -1
-        }
-        return 0
+
+        if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
       })
     }
 
@@ -104,6 +114,29 @@ export function CompaniesTableClient() {
 
   const columns = [
     { key: 'name', title: 'Nome Azienda', sortable: true, render: (c: any) => <strong>{c.name}</strong> },
+    {
+      key: 'status',
+      title: 'Status',
+      sortable: true,
+      render: (c: any) => {
+        const isArchived = (phaseId: string) => {
+          if (!phaseId) return false;
+          const lower = phaseId.toLowerCase();
+          return ['won', 'lost', 'archivia', 'archiv', 'completat', 'chius'].some(t => lower.includes(t));
+        };
+        
+        if (!c.projects || c.projects.length === 0) {
+          return <span style={{ padding: '0.25rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(234, 179, 8, 0.1)', color: '#eab308', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>🌱 Prospect</span>;
+        }
+        
+        const hasActive = c.projects.some((p: any) => !isArchived(p.phase_id));
+        if (hasActive) {
+          return <span style={{ padding: '0.25rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>🚀 Attivo</span>;
+        } else {
+          return <span style={{ padding: '0.25rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(156, 163, 175, 0.1)', color: 'var(--color-text-muted)', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap' }}>🗄️ Storico</span>;
+        }
+      }
+    },
     { key: 'vat_number', title: 'Partita IVA', sortable: true, render: (c: any) => c.vat_number || '-' },
     { key: 'address', title: 'Indirizzo', render: (c: any) => c.address || '-' },
     { 
