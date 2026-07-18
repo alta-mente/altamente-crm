@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Table } from '@/components/ui/Table'
 import { Button } from '@/components/ui/Button'
-import { Edit2, Trash2, Link, ExternalLink } from 'lucide-react'
+import { Input } from '@/components/ui/Input'
+import { Edit2, Trash2, Link, ExternalLink, Search } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { CompanyModal } from './CompanyModal'
 import { MergeCompanyModal } from './MergeCompanyModal'
@@ -11,6 +12,8 @@ import { toast } from 'sonner'
 
 export function CompaniesTableClient() {
   const [companies, setCompanies] = useState<any[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMergeModalOpen, setIsMergeModalOpen] = useState(false)
   const [selectedCompany, setSelectedCompany] = useState<any | null>(null)
@@ -59,9 +62,49 @@ export function CompaniesTableClient() {
     setIsModalOpen(true)
   }
 
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc'
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc'
+    }
+    setSortConfig({ key, direction })
+  }
+
+  const getFilteredAndSortedCompanies = () => {
+    let result = [...companies]
+
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase()
+      result = result.filter(c => 
+        c.name?.toLowerCase().includes(lowerSearch) ||
+        c.vat_number?.toLowerCase().includes(lowerSearch) ||
+        c.contacts?.some((contact: any) => 
+          contact.first_name?.toLowerCase().includes(lowerSearch) || 
+          contact.last_name?.toLowerCase().includes(lowerSearch)
+        )
+      )
+    }
+
+    if (sortConfig !== null) {
+      result.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'asc' ? -1 : 1
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'asc' ? 1 : -1
+        }
+        return 0
+      })
+    }
+
+    return result
+  }
+
+  const processedCompanies = getFilteredAndSortedCompanies()
+
   const columns = [
-    { key: 'name', title: 'Nome Azienda', render: (c: any) => <strong>{c.name}</strong> },
-    { key: 'vat_number', title: 'Partita IVA', render: (c: any) => c.vat_number || '-' },
+    { key: 'name', title: 'Nome Azienda', sortable: true, render: (c: any) => <strong>{c.name}</strong> },
+    { key: 'vat_number', title: 'Partita IVA', sortable: true, render: (c: any) => c.vat_number || '-' },
     { key: 'address', title: 'Indirizzo', render: (c: any) => c.address || '-' },
     { 
       key: 'contacts', 
@@ -70,7 +113,7 @@ export function CompaniesTableClient() {
         ? <div style={{ fontSize: '0.85rem' }}>{c.contacts.map((contact: any) => `${contact.first_name} ${contact.last_name}`).join(', ')}</div>
         : <span style={{color: 'var(--color-text-muted)'}}>-</span> 
     },
-    { key: 'created_at', title: 'Creato il', render: (c: any) => new Date(c.created_at).toLocaleDateString('it-IT') },
+    { key: 'created_at', title: 'Creato il', sortable: true, render: (c: any) => new Date(c.created_at).toLocaleDateString('it-IT') },
     { 
       key: 'actions', 
       title: 'Azioni', 
@@ -113,9 +156,21 @@ export function CompaniesTableClient() {
 
   return (
     <>
-      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600 }}>Anagrafica Aziende</h2>
-        <Button variant="primary" onClick={handleNew}>+ Nuova Azienda</Button>
+      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 600, margin: 0 }}>Anagrafica Aziende</h2>
+        
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
+          <div style={{ position: 'relative', maxWidth: '300px', width: '100%' }}>
+            <Search size={18} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
+            <Input 
+              placeholder="Cerca azienda, P.IVA o contatto..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ paddingLeft: '35px', width: '100%' }}
+            />
+          </div>
+          <Button variant="primary" onClick={handleNew} style={{ whiteSpace: 'nowrap' }}>+ Nuova Azienda</Button>
+        </div>
       </div>
 
       <CompanyModal 
@@ -136,7 +191,7 @@ export function CompaniesTableClient() {
       {isLoading ? (
         <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>Caricamento...</div>
       ) : (
-        <Table columns={columns} data={companies} />
+        <Table columns={columns} data={processedCompanies} sortConfig={sortConfig} onSort={handleSort} />
       )}
     </>
   )
