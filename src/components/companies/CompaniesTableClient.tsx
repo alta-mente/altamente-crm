@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Table } from '@/components/ui/Table'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { Edit2, Trash2, Link, ExternalLink, Search } from 'lucide-react'
+import { Edit2, Trash2, Link, ExternalLink, Search, Mail, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { CompanyModal } from './CompanyModal'
 import { MergeCompanyModal } from './MergeCompanyModal'
@@ -24,7 +24,7 @@ export function CompaniesTableClient() {
     setIsLoading(true)
     const { data } = await supabase
       .from('companies')
-      .select('*, contacts(id, first_name, last_name)')
+      .select('*, contacts(id, first_name, last_name), projects(id, always_send_report, company_hours(id, billed), invoices(id, status))')
       .order('created_at', { ascending: false })
     
     if (data) setCompanies(data)
@@ -112,6 +112,50 @@ export function CompaniesTableClient() {
       render: (c: any) => c.contacts && c.contacts.length > 0 
         ? <div style={{ fontSize: '0.85rem' }}>{c.contacts.map((contact: any) => `${contact.first_name} ${contact.last_name}`).join(', ')}</div>
         : <span style={{color: 'var(--color-text-muted)'}}>-</span> 
+    },
+    {
+      key: 'report',
+      title: 'Report Mensile',
+      render: (c: any) => {
+        const shouldReceiveReport = c.projects?.some((p: any) => {
+          if (p.always_send_report) return true;
+          const hasUnbilledHours = p.company_hours?.some((h: any) => !h.billed);
+          const hasPendingInvoices = p.invoices?.some((i: any) => i.status === 'pending');
+          return hasUnbilledHours || hasPendingInvoices;
+        });
+
+        const hasEmail = !!c.contact_email;
+
+        if (shouldReceiveReport) {
+          if (hasEmail) {
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-success)', fontSize: '0.85rem', fontWeight: 500 }}>
+                  <CheckCircle2 size={14} /> Riceve
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{c.contact_email}</span>
+              </div>
+            );
+          } else {
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-danger)', fontSize: '0.85rem', fontWeight: 500 }}>
+                  <AlertCircle size={14} /> Manca Email!
+                </span>
+              </div>
+            );
+          }
+        } else {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
+                -
+              </span>
+              {hasEmail && <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', opacity: 0.7 }}>{c.contact_email}</span>}
+            </div>
+          );
+        }
+      }
     },
     { key: 'created_at', title: 'Creato il', sortable: true, render: (c: any) => new Date(c.created_at).toLocaleDateString('it-IT') },
     { 
