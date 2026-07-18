@@ -207,6 +207,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                         </div>
                         {totalInvoiced === 0 && (
                           <RequestInvoiceButton 
+                            projectId={project.id}
                             projectName={project.title} 
                             companyName={project.companies?.name || 'Azienda non specificata'} 
                             totalAmount={unInvoicedAmount}
@@ -256,6 +257,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                 </div>
                 {(totalActiveMinutes > 0 || totalPendingAmount > 0) && (
                   <RequestInvoiceButton 
+                    projectId={project.id}
                     projectName={project.title} 
                     companyName={project.companies?.name || 'Azienda non specificata'} 
                     totalAmount={((totalActiveMinutes / 60) * rate) + totalPendingAmount}

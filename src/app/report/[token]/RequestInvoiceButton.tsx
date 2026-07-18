@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react'
 import { Euro, CheckCircle2 } from 'lucide-react'
-import { sendInvoiceRequestEmail } from '@/app/actions/emails'
+import { processInvoiceRequestAction } from '@/app/actions/invoices'
 
 interface Props {
+  projectId: string
   projectName: string
   companyName: string
   totalAmount: number
@@ -13,7 +14,7 @@ interface Props {
   clientEmail?: string
 }
 
-export function RequestInvoiceButton({ projectName, companyName, totalAmount, reportUrl, logoUrl, clientEmail }: Props) {
+export function RequestInvoiceButton({ projectId, projectName, companyName, totalAmount, reportUrl, logoUrl, clientEmail }: Props) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const handleRequest = async () => {
@@ -21,7 +22,8 @@ export function RequestInvoiceButton({ projectName, companyName, totalAmount, re
     
     setStatus('loading')
     try {
-      const result = await sendInvoiceRequestEmail({
+      const result = await processInvoiceRequestAction({
+        projectId,
         projectName,
         companyName,
         totalAmount,
