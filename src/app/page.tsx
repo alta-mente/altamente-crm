@@ -5,7 +5,10 @@ import { redirect } from 'next/navigation'
 import styles from './Dashboard.module.css'
 import { DashboardBento } from '@/components/dashboard/DashboardBento'
 
-export default async function DashboardHome() {
+export default async function DashboardHome(props: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const searchParams = await props.searchParams
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
 
@@ -50,7 +53,8 @@ export default async function DashboardHome() {
   )
   const pipelineValue = activeDeals.reduce((sum, d) => sum + (Number(d.value) || 0), 0)
   
-  const currentYear = new Date().getFullYear()
+  const yearParam = searchParams?.year as string
+  const currentYear = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear()
   const wonDealsValue = safeDeals
     .filter(d => d.phase_id === 'won' && new Date(d.created_at).getFullYear() === currentYear)
     .reduce((sum, d) => sum + (Number(d.value) || 0), 0)
@@ -128,7 +132,8 @@ export default async function DashboardHome() {
             oreDaFatturareValue,
             oreDaFatturareText,
             targetRevenue: settings?.target_revenue || 300000,
-            targetMRR: settings?.target_mrr || 10000
+            targetMRR: settings?.target_mrr || 10000,
+            currentYear
           }}
           appointments={safeAppointments}
           invoices={invoices || []}

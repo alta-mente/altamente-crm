@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import CountUp from 'react-countup'
 import { TrendingUp, Briefcase, Award, Calendar, Clock, Info } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import styles from '@/app/Dashboard.module.css'
 import { CashFlowChart } from './CashFlowChart'
 import { ActivityChart } from './ActivityChart'
@@ -27,6 +28,7 @@ interface DashboardBentoProps {
     oreDaFatturareText: string
     targetRevenue?: number
     targetMRR?: number
+    currentYear: number
   }
   appointments: any[]
   invoices: any[]
@@ -54,7 +56,9 @@ const itemVariants: any = {
 type TabType = 'overview' | 'sales' | 'cash' | 'projects';
 
 export function DashboardBento({ metrics, appointments, invoices, projectsAll, services, companyHours, deals }: DashboardBentoProps) {
-  const [activeTab, setActiveTab] = useState<TabType>('overview')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [activeTab, setActiveTab] = useState<TabType>('cash')
 
   const tabs: { id: TabType, label: string }[] = [
     { id: 'overview', label: 'Panoramica' },
@@ -181,19 +185,51 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
 
+  const pendingProjects = projectsAll
+    .filter(p => p.billing_type === 'one-off' && (p.billing_status === 'to_invoice' || p.billing_status === 'late'))
+    .map(p => {
+      const projectTotal = Number(p.billing_amount) || 0
+      const paidIntermediate = invoices
+        .filter(i => i.project_id === p.id && i.status === 'paid')
+        .reduce((invSum, i) => invSum + (Number(i.amount) || 0), 0)
+      
+      const remaining = projectTotal - paidIntermediate
+      return { ...p, remaining }
+    })
+    .filter(p => p.remaining > 0)
+    .sort((a, b) => b.remaining - a.remaining)
+    .slice(0, 5)
+
   const DaIncassareCard = (
-      <motion.div key="daincassare" variants={itemVariants} className={`bento-card bento-orange ${styles.bentoSmall}`}>
+      <motion.div key="daincassare" variants={itemVariants} className={`bento-card bento-orange ${styles.bentoWide}`}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore dei progetti 'Da Fatturare' o 'In Ritardo', sottraendo eventuali fatture/incassi già registrati nel progetto." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
-              Da Incassare <Info size={12} opacity={0.6}/>
+              Da Incassare (Crediti) <Info size={12} opacity={0.6}/>
             </span>
             <Award size={16} className={styles.cardIcon}/>
           </div>
-          <div>
+          <div style={{ marginTop: '0.5rem' }}>
             <div className={styles.cardValue}>
               <CountUp end={metrics.daIncassare} duration={2} separator="." decimal="," prefix="€ " />
             </div>
+            
+            {pendingProjects.length > 0 && (
+              <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '4px' }}>Top Progetti da Saldare:</div>
+                {pendingProjects.map((p, i) => (
+                  <Link href={`/projects/${p.id}`} key={p.id} className={styles.listItem}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className={styles.itemTitle}>{p.title}</span>
+                        <span className={styles.itemMeta}>{p.billing_status === 'late' ? 'In Ritardo' : 'Da Fatturare'}</span>
+                      </div>
+                      <span style={{ fontWeight: 600, color: 'var(--color-warning)' }}>€ {p.remaining.toLocaleString('it-IT')}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
@@ -422,23 +458,48 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
 
   return (
     <>
-      <div className={styles.tabsContainer}>
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            className={`${styles.tabButton} ${activeTab === tab.id ? styles.tabButtonActive : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {activeTab === tab.id && (
-              <motion.div
-                layoutId="activeTabIndicator"
-                className={styles.activeTabBackground}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              />
-            )}
-            {tab.label}
-          </button>
-        ))}
+      <div className={styles.tabsContainer} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`${styles.tabButton} ${activeTab === tab.id ? styles.tabButtonActive : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className={styles.activeTabBackground}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        
+        {/* Global Year Selector */}
+        <select 
+          value={metrics.currentYear}
+          onChange={(e) => {
+            router.push(`?year=${e.target.value}`)
+          }}
+          style={{
+            background: 'var(--color-surface-solid)',
+            border: '1px solid var(--color-border)',
+            color: 'var(--color-text)',
+            padding: '6px 12px',
+            borderRadius: 'var(--radius-md)',
+            fontSize: '14px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            outline: 'none'
+          }}
+        >
+          {[2023, 2024, 2025, 2026, 2027].map(y => (
+            <option key={y} value={y}>{y}</option>
+          ))}
+        </select>
       </div>
 
       <AnimatePresence mode="wait">

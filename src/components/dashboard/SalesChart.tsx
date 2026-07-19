@@ -9,17 +9,15 @@ interface TooltipItem {
   amount: number
 }
 
-export function SalesChart({ deals }: { deals: any[] }) {
-  const currentYear = new Date().getFullYear()
-  const [selectedYear, setSelectedYear] = useState<number>(currentYear)
+export function SalesChart({ deals, currentYear }: { deals: any[], currentYear: number }) {
   const [hoveredMonthIdx, setHoveredMonthIdx] = useState<number | null>(null)
 
   // Generate 12 months for the selected year
   const months = Array.from({ length: 12 }).map((_, i) => {
-    const d = new Date(selectedYear, i, 1)
+    const d = new Date(currentYear, i, 1)
     return {
       monthStr: d.toLocaleString('it-IT', { month: 'short' }),
-      year: selectedYear,
+      year: currentYear,
       month: i,
       wonAmount: 0,
       wonItems: [] as TooltipItem[]
@@ -66,21 +64,6 @@ export function SalesChart({ deals }: { deals: any[] }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span className={styles.cardLabel} style={{ fontSize: '13px', fontWeight: 600 }}>Vendite Chiuse (Won)</span>
             <Briefcase size={18} className={styles.cardIcon} style={{ color: '#a855f7' }}/>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button 
-              onClick={() => setSelectedYear(selectedYear - 1)}
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--color-border)', color: 'var(--color-text)', padding: '2px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
-            >
-              &lt;
-            </button>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: '#a855f7' }}>{selectedYear}</span>
-            <button 
-              onClick={() => setSelectedYear(selectedYear + 1)}
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--color-border)', color: 'var(--color-text)', padding: '2px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
-            >
-              &gt;
-            </button>
           </div>
         </div>
         
