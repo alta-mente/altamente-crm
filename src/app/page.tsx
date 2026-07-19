@@ -68,17 +68,23 @@ export default async function DashboardHome(props: {
     .reduce((sum, p) => sum + (Number(p.billing_amount) || 0), 0)
     
   const safeInvoices = invoices || []
-  const daIncassare = safeProjectsAll
+  const fattureScoperteValue = safeInvoices
+    .filter(i => i.status === 'pending' || i.status === 'late')
+    .reduce((sum, i) => sum + (Number(i.amount) || 0), 0)
+
+  const daFatturareValue = safeProjectsAll
     .filter(p => p.billing_type === 'one-off' && (p.billing_status === 'to_invoice' || p.billing_status === 'late'))
     .reduce((sum, p) => {
       const projectTotal = Number(p.billing_amount) || 0
-      const paidIntermediate = safeInvoices
-        .filter(i => i.project_id === p.id && i.status === 'paid')
+      const totalInvoiced = safeInvoices
+        .filter(i => i.project_id === p.id)
         .reduce((invSum, i) => invSum + (Number(i.amount) || 0), 0)
       
-      const remaining = projectTotal - paidIntermediate
+      const remaining = projectTotal - totalInvoiced
       return sum + (remaining > 0 ? remaining : 0)
     }, 0)
+
+  const daIncassare = fattureScoperteValue + daFatturareValue
 
   // Log top paid invoices to the server console for verification
   const topPaidInvoices = [...safeInvoices]
@@ -133,7 +139,9 @@ export default async function DashboardHome(props: {
             oreDaFatturareText,
             targetRevenue: settings?.target_revenue || 300000,
             targetMRR: settings?.target_mrr || 10000,
-            currentYear
+            currentYear,
+            fattureScoperteValue,
+            daFatturareValue
           }}
           appointments={safeAppointments}
           invoices={invoices || []}

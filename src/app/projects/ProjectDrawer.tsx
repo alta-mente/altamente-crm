@@ -36,6 +36,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
   const [deals, setDeals] = useState<any[]>([])
   const [phases, setPhases] = useState<ProjectPhase[]>([])
   const [projectTypes, setProjectTypes] = useState<ProjectType[]>([])
+  const [projectInvoices, setProjectInvoices] = useState<any[]>([])
 
   const supabase = createClient()
 
@@ -79,12 +80,18 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
       } else {
         setAssociatedDeal(null)
       }
+      fetchProjectInvoices(project.id)
     }
   }, [project])
 
   const fetchAssociatedDeal = async (dealId: string) => {
     const { data } = await supabase.from('deals').select('description, quote_description').eq('id', dealId).maybeSingle()
     if (data) setAssociatedDeal(data)
+  }
+
+  const fetchProjectInvoices = async (projectId: string) => {
+    const { data } = await supabase.from('invoices').select('*').eq('project_id', projectId);
+    if (data) setProjectInvoices(data);
   }
 
   const fetchOptions = async () => {
@@ -352,6 +359,37 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                           <option value="paid">Saldato</option>
                           <option value="late">In Ritardo</option>
                         </select>
+
+                        {formData.billing_type === 'one-off' && (() => {
+                          const paidAmount = projectInvoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + Number(i.amount), 0)
+                          const pendingAmount = projectInvoices.filter(i => i.status === 'pending' || i.status === 'late').reduce((sum, i) => sum + Number(i.amount), 0)
+                          const totalInvoiced = paidAmount + pendingAmount
+                          const projectTotal = Math.max(formData.billing_amount, totalInvoiced)
+                          const unbilledAmount = Math.max(0, projectTotal - totalInvoiced)
+
+                          const paidPercent = projectTotal > 0 ? (paidAmount / projectTotal) * 100 : 0
+                          const pendingPercent = projectTotal > 0 ? (pendingAmount / projectTotal) * 100 : 0
+                          const unbilledPercent = projectTotal > 0 ? (unbilledAmount / projectTotal) * 100 : 0
+
+                          return (
+                            <div style={{ marginTop: '1.5rem', width: '100%' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.5rem', color: 'var(--color-text-muted)' }}>
+                                <span>Avanzamento Finanziario</span>
+                                <span>Totale: € {projectTotal.toLocaleString('it-IT')}</span>
+                              </div>
+                              <div style={{ width: '100%', height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', overflow: 'hidden', display: 'flex' }}>
+                                {paidPercent > 0 && <div style={{ width: `${paidPercent}%`, background: 'var(--color-success)', height: '100%', transition: 'width 0.5s' }} title={`Incassato: € ${paidAmount.toLocaleString('it-IT')}`} />}
+                                {pendingPercent > 0 && <div style={{ width: `${pendingPercent}%`, background: 'var(--color-warning)', height: '100%', transition: 'width 0.5s' }} title={`Emesso: € ${pendingAmount.toLocaleString('it-IT')}`} />}
+                                {unbilledPercent > 0 && <div style={{ width: `${unbilledPercent}%`, background: 'var(--color-border)', height: '100%', transition: 'width 0.5s' }} title={`Da Fatturare: € ${unbilledAmount.toLocaleString('it-IT')}`} />}
+                              </div>
+                              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', fontSize: '0.7rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-success)' }} /> Incassato: € {paidAmount.toLocaleString('it-IT')}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-warning)' }} /> Emesso: € {pendingAmount.toLocaleString('it-IT')}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-border)' }} /> Da Fatturare: € {unbilledAmount.toLocaleString('it-IT')}</div>
+                              </div>
+                            </div>
+                          )
+                        })()}
                       </div>
                     </div>
 

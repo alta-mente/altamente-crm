@@ -20,6 +20,8 @@ interface DashboardBentoProps {
     mrrValue: number
     arrValue: number
     daIncassare: number
+    fattureScoperteValue: number
+    daFatturareValue: number
     competenzaValue: number
     cassaValue: number
     pipelineValue: number
@@ -185,15 +187,20 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
 
-  const pendingProjects = projectsAll
+  const pendingInvoicesList = invoices
+    .filter(i => i.status === 'pending' || i.status === 'late')
+    .sort((a, b) => Number(b.amount) - Number(a.amount))
+    .slice(0, 5)
+
+  const unbilledProjectsList = projectsAll
     .filter(p => p.billing_type === 'one-off' && (p.billing_status === 'to_invoice' || p.billing_status === 'late'))
     .map(p => {
       const projectTotal = Number(p.billing_amount) || 0
-      const paidIntermediate = invoices
-        .filter(i => i.project_id === p.id && i.status === 'paid')
+      const totalInvoiced = invoices
+        .filter(i => i.project_id === p.id)
         .reduce((invSum, i) => invSum + (Number(i.amount) || 0), 0)
       
-      const remaining = projectTotal - paidIntermediate
+      const remaining = projectTotal - totalInvoiced
       return { ...p, remaining }
     })
     .filter(p => p.remaining > 0)
@@ -204,8 +211,8 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       <motion.div key="daincassare" variants={itemVariants} className={`bento-card bento-orange ${styles.bentoWide}`} style={{ gridRow: 'span 2' }}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
-            <span className={styles.cardLabel} title="Valore dei progetti 'Da Fatturare' o 'In Ritardo', sottraendo eventuali fatture/incassi già registrati nel progetto." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
-              Da Incassare (Crediti) <Info size={12} opacity={0.6}/>
+            <span className={styles.cardLabel} title="Somma di Fatture Scoperte e Lavoro da Fatturare" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Totale Da Incassare <Info size={12} opacity={0.6}/>
             </span>
             <Award size={16} className={styles.cardIcon}/>
           </div>
@@ -214,22 +221,58 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
               <CountUp end={metrics.daIncassare} duration={2} separator="." decimal="," prefix="€ " />
             </div>
             
-            {pendingProjects.length > 0 && (
-              <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '4px' }}>Top Progetti da Saldare:</div>
-                {pendingProjects.map((p, i) => (
-                  <Link href={`/projects/${p.id}`} key={p.id} className={styles.listItem}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span className={styles.itemTitle}>{p.title}</span>
-                        <span className={styles.itemMeta}>{p.billing_status === 'late' ? 'In Ritardo' : 'Da Fatturare'}</span>
-                      </div>
-                      <span style={{ fontWeight: 600, color: 'var(--color-warning)' }}>€ {p.remaining.toLocaleString('it-IT')}</span>
-                    </div>
-                  </Link>
-                ))}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '2rem' }}>
+              
+              {/* Colonna Sinistra: Fatture Scoperte */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-warning)', display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Fatture Scoperte (Crediti)</span>
+                  <span>€ {metrics.fattureScoperteValue.toLocaleString('it-IT')}</span>
+                </div>
+                {pendingInvoicesList.length > 0 ? (
+                  pendingInvoicesList.map((i, idx) => {
+                    const proj = projectsAll.find(p => p.id === i.project_id)
+                    return (
+                      <Link href={proj ? `/projects/${proj.id}` : '#'} key={i.id || idx} className={styles.listItem}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span className={styles.itemTitle}>{i.invoice_number ? `Fatt. ${i.invoice_number}` : 'Fattura'} {proj ? `- ${proj.title}` : ''}</span>
+                            <span className={styles.itemMeta} style={{ color: i.status === 'late' ? 'var(--color-danger)' : 'var(--color-warning)' }}>{i.status === 'late' ? 'In Ritardo' : 'In Attesa'}</span>
+                          </div>
+                          <span style={{ fontWeight: 600 }}>€ {Number(i.amount).toLocaleString('it-IT')}</span>
+                        </div>
+                      </Link>
+                    )
+                  })
+                ) : (
+                  <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Nessuna fattura scoperta.</span>
+                )}
               </div>
-            )}
+
+              {/* Colonna Destra: Da Fatturare */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text)', display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Da Fatturare (Backlog)</span>
+                  <span>€ {metrics.daFatturareValue.toLocaleString('it-IT')}</span>
+                </div>
+                {unbilledProjectsList.length > 0 ? (
+                  unbilledProjectsList.map((p, idx) => (
+                    <Link href={`/projects/${p.id}`} key={p.id} className={styles.listItem}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span className={styles.itemTitle}>{p.title}</span>
+                          <span className={styles.itemMeta}>Residuo Progetto</span>
+                        </div>
+                        <span style={{ fontWeight: 600 }}>€ {p.remaining.toLocaleString('it-IT')}</span>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Nessun backlog da fatturare.</span>
+                )}
+              </div>
+
+            </div>
           </div>
         </div>
       </motion.div>
