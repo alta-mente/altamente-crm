@@ -387,7 +387,6 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           ARRCard,
           CompetenzaCard,
           CassaCard,
-          AgendaCard,
           ActivityChartCard
         ]
       case 'sales':
@@ -397,7 +396,6 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           VendutoCard,
           MRRCard,
           ARRCard,
-          AgendaCard,
           SalesChartCard
         ]
       case 'cash':
@@ -415,7 +413,6 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           OreCard,
           MRRCard,
           ARRCard,
-          AgendaCard,
           ActivityChartCard
         ]
       default:
