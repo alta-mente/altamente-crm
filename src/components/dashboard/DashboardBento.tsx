@@ -384,6 +384,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           projects={projectsAll} 
           services={services}
           companyHours={companyHours}
+          currentYear={metrics.currentYear}
         />
       </motion.div>
   )
@@ -398,6 +399,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           projects={projectsAll} 
           services={services}
           companyHours={companyHours}
+          currentYear={metrics.currentYear}
         />
       </motion.div>
   )
@@ -407,7 +409,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
         <div className={styles.cardTop} style={{ padding: '1.5rem 1.5rem 0' }}>
           <span className={styles.cardLabel}>Andamento Vendite</span>
         </div>
-        <SalesChart deals={deals || []} />
+        <SalesChart deals={deals || []} currentYear={metrics.currentYear} />
       </motion.div>
   )
 
