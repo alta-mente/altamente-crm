@@ -124,8 +124,9 @@ export function SalesChart({ deals }: { deals: any[] }) {
                   <div style={{
                     position: 'absolute',
                     bottom: '40px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
+                    left: i === 0 ? '0' : (i === months.length - 1 ? 'auto' : '50%'),
+                    right: i === months.length - 1 ? '0' : 'auto',
+                    transform: i === 0 ? 'translateX(0)' : (i === months.length - 1 ? 'translateX(0)' : 'translateX(-50%)'),
                     background: 'var(--color-surface-solid)',
                     border: '1px solid var(--color-border)',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
