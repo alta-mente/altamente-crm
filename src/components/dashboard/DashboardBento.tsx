@@ -25,6 +25,8 @@ interface DashboardBentoProps {
     wonDealsValue: number
     oreDaFatturareValue: number
     oreDaFatturareText: string
+    targetRevenue?: number
+    targetMRR?: number
   }
   appointments: any[]
   invoices: any[]
@@ -289,8 +291,8 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
   
-  const targetRevenue = 300000;
-  const targetMRR = 10000;
+  const targetRevenue = metrics.targetRevenue || 300000;
+  const targetMRR = metrics.targetMRR || 10000;
   const revenuePercent = Math.min(100, Math.round((metrics.wonDealsValue / targetRevenue) * 100));
   const mrrPercent = Math.min(100, Math.round((metrics.mrrValue / targetMRR) * 100));
 

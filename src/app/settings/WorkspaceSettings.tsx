@@ -20,7 +20,9 @@ export function WorkspaceSettings() {
     address: '',
     email: '',
     logo_url: '',
-    quote_terms: ''
+    quote_terms: '',
+    target_revenue: 300000,
+    target_mrr: 10000
   })
   
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -55,7 +57,9 @@ export function WorkspaceSettings() {
         address: settings.address,
         email: settings.email,
         logo_url: settings.logo_url,
-        quote_terms: settings.quote_terms
+        quote_terms: settings.quote_terms,
+        target_revenue: settings.target_revenue,
+        target_mrr: settings.target_mrr
       })
       .eq('id', 1)
 
@@ -186,6 +190,25 @@ export function WorkspaceSettings() {
             value={settings.address} 
             onChange={e => setSettings({...settings, address: e.target.value})} 
           />
+        </div>
+
+        {/* Obiettivi Aziendali */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)' }}>Obiettivi Aziendali (Dashboard)</h3>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <Input 
+              label="Target Venduto Annuo (€)" 
+              type="number"
+              value={settings.target_revenue} 
+              onChange={e => setSettings({...settings, target_revenue: Number(e.target.value)})} 
+            />
+            <Input 
+              label="Target Canoni MRR (€)" 
+              type="number"
+              value={settings.target_mrr} 
+              onChange={e => setSettings({...settings, target_mrr: Number(e.target.value)})} 
+            />
+          </div>
         </div>
 
         {/* Condizioni di Contratto */}

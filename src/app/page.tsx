@@ -20,6 +20,7 @@ export default async function DashboardHome() {
   const { count: companiesCount } = await supabase.from('companies').select('*', { count: 'exact', head: true })
   const { data: invoices } = await supabase.from('invoices').select('*')
   const { data: services } = await supabase.from('services').select('*')
+  const { data: settings } = await supabase.from('workspace_settings').select('*').eq('id', 1).single()
   
   // Fetch time tracking hours
   const { data: companyHours } = await supabase
@@ -125,7 +126,9 @@ export default async function DashboardHome() {
             pipelineValue,
             wonDealsValue,
             oreDaFatturareValue,
-            oreDaFatturareText
+            oreDaFatturareText,
+            targetRevenue: settings?.target_revenue || 300000,
+            targetMRR: settings?.target_mrr || 10000
           }}
           appointments={safeAppointments}
           invoices={invoices || []}
