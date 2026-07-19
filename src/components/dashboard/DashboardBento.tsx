@@ -233,7 +233,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
                   pendingInvoicesList.map((i, idx) => {
                     const proj = projectsAll.find(p => p.id === i.project_id)
                     return (
-                      <Link href={proj ? `/projects/${proj.id}` : '#'} key={i.id || idx} className={styles.listItem}>
+                      <Link href={proj ? `/projects?project=${proj.id}` : '#'} key={i.id || idx} className={styles.listItem}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span className={styles.itemTitle}>{i.invoice_number ? `Fatt. ${i.invoice_number}` : 'Fattura'} {proj ? `- ${proj.title}` : ''}</span>
@@ -257,7 +257,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
                 </div>
                 {unbilledProjectsList.length > 0 ? (
                   unbilledProjectsList.map((p, idx) => (
-                    <Link href={`/projects/${p.id}`} key={p.id} className={styles.listItem}>
+                    <Link href={`/projects?project=${p.id}`} key={p.id} className={styles.listItem}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                           <span className={styles.itemTitle}>{p.title}</span>
