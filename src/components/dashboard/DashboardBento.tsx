@@ -201,7 +201,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
     .slice(0, 5)
 
   const DaIncassareCard = (
-      <motion.div key="daincassare" variants={itemVariants} className={`bento-card bento-orange ${styles.bentoWide}`}>
+      <motion.div key="daincassare" variants={itemVariants} className={`bento-card bento-orange ${styles.bentoWide}`} style={{ gridRow: 'span 2' }}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
             <span className={styles.cardLabel} title="Valore dei progetti 'Da Fatturare' o 'In Ritardo', sottraendo eventuali fatture/incassi già registrati nel progetto." style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
