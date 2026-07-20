@@ -203,7 +203,7 @@ export async function unarchiveCompanyHourRow(id: string, projectId: string) {
   
   const { error } = await supabase
     .from('company_hours')
-    .update({ billed: false, batch_id: null, invoice_id: null })
+    .update({ billed: false, batch_id: '', invoice_id: null })
     .eq('id', id);
 
   if (error) {
@@ -220,7 +220,7 @@ export async function unarchiveBatch(batchId: string, projectId: string) {
   
   const { error } = await supabase
     .from('company_hours')
-    .update({ billed: false, batch_id: null, invoice_id: null })
+    .update({ billed: false, batch_id: '', invoice_id: null })
     .eq('batch_id', batchId)
     .eq('project_id', projectId);
 
