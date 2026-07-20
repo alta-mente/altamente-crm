@@ -195,7 +195,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
     .sort((a, b) => Number(b.amount) - Number(a.amount))
     .slice(0, 5)
 
-  const unbilledProjectsList = projectsAll
+  const allUnbilledProjects = projectsAll
     .filter(p => p.billing_type === 'one-off' && (p.billing_status === 'to_invoice' || p.billing_status === 'late'))
     .map(p => {
       const projectTotal = Number(p.billing_amount) || 0
