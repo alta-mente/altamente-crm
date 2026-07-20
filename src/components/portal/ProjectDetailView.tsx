@@ -525,7 +525,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                             fontWeight: 600,
                             border: `1px solid ${isPartiallyPaid ? 'var(--color-warning)' : batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)'}`
                           }}>
-                            {isPartiallyPaid ? `Saldo Parz. (€${batchInvoice.amount})` : batchInvoice.status === 'paid' ? `Pagato (€${batchInvoice.amount})` : 'Da Saldare'}
+                            {isPartiallyPaid ? 'Saldo Parziale' : batchInvoice.status === 'paid' ? 'Pagato' : 'Da Saldare'}
                           </span>
                         )}
                       </div>
