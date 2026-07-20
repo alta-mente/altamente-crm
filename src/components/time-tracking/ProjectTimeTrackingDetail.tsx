@@ -183,8 +183,9 @@ export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, o
         await unarchiveCompanyHourRow(id, project.id)
       }
       if (onHoursUpdated) onHoursUpdated()
-    } catch (err) {
-      alert('Errore durante de-archiviazione')
+    } catch (err: any) {
+      alert('Errore durante de-archiviazione: ' + (err.message || String(err)))
+      console.error("Unarchive error:", err);
     }
   }
 
