@@ -510,15 +510,27 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                   ? new Date(batchId.slice(0,4) + '-' + batchId.slice(4,6) + '-' + batchId.slice(6,8)).toLocaleDateString('it-IT')
                   : 'Pregresso'
                 
-                const costDisplay = rate > 0 
-                  ? `€ ${((data.totalMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                  : null
-
                 const batchInvoiceId = data.hours.find((h: any) => h.invoice_id)?.invoice_id
                 const batchInvoice = batchInvoiceId ? allInvoices.find((i: any) => i.id === batchInvoiceId) : null
                 
                 const batchCost = rate > 0 ? (data.totalMinutes / 60) * rate : 0
-                const isPartiallyPaid = batchInvoice && batchInvoice.status === 'paid' && batchCost > 0 && Number(batchInvoice.amount) < (batchCost - 1)
+                const invAmount = batchInvoice ? Number(batchInvoice.amount) : batchCost
+                
+                let costDisplay = rate > 0 
+                  ? `€ ${batchCost.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                  : null
+
+                if (batchInvoice && Math.abs(invAmount - batchCost) > 0.01) {
+                  costDisplay = `Valore: € ${batchCost.toLocaleString('it-IT', { minimumFractionDigits: 2 })} → Fatturato: € ${invAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}`
+                }
+
+                const isPartiallyPaid = batchInvoice && batchInvoice.status === 'paid' && invAmount < (batchCost - 1)
+                const statusBadge = batchInvoice ? (
+                  isPartiallyPaid ? 'Saldo Parziale' : batchInvoice.status === 'paid' ? 'Pagato' : 'Da Saldare'
+                ) : 'Archiviato'
+                
+                const badgeColor = isPartiallyPaid ? 'var(--color-warning)' : batchInvoice?.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)'
+                const badgeBg = isPartiallyPaid ? 'rgba(234, 179, 8, 0.15)' : batchInvoice?.status === 'paid' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)'
 
                 return (
                   <details key={batchId} className={styles.accordion}>
@@ -531,18 +543,18 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                       </div>
                       <div className={styles.batchStats} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span className={styles.batchTime}>({formatTime(data.totalMinutes)})</span>
-                        {costDisplay && <span className={styles.batchCost}>— {costDisplay}</span>}
+                        {costDisplay && <span className={styles.batchCost} style={{ fontSize: '0.85rem' }}>— {costDisplay}</span>}
                         {batchInvoice && (
                           <span style={{
                             padding: '2px 8px',
                             fontSize: '11px',
                             borderRadius: '12px',
-                            background: isPartiallyPaid ? 'rgba(234, 179, 8, 0.15)' : batchInvoice.status === 'paid' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)',
-                            color: isPartiallyPaid ? 'var(--color-warning)' : batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)',
+                            background: badgeBg,
+                            color: badgeColor,
                             fontWeight: 600,
-                            border: `1px solid ${isPartiallyPaid ? 'var(--color-warning)' : batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)'}`
+                            border: `1px solid ${badgeColor}`
                           }}>
-                            {isPartiallyPaid ? 'Saldo Parziale' : batchInvoice.status === 'paid' ? 'Pagato' : 'Da Saldare'}
+                            {statusBadge}
                           </span>
                         )}
                       </div>
