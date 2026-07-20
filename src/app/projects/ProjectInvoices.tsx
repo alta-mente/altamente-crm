@@ -23,6 +23,7 @@ export function ProjectInvoices({ project }: { project: Project }) {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [isAdding, setIsAdding] = useState(false)
+  const [editingInvoiceId, setEditingInvoiceId] = useState<string | null>(null)
   
   const [amount, setAmount] = useState<number | ''>('')
   const [status, setStatus] = useState<'pending' | 'paid' | 'late'>('pending')
@@ -69,9 +70,48 @@ export function ProjectInvoices({ project }: { project: Project }) {
       console.error(error)
       toast.error(`Errore: ${error.message}`)
     } else if (data) {
-      toast.success('Fattura/Incasso registrato')
+      toast.success('Incasso/Fattura registrato')
       setInvoices([data[0], ...invoices])
       setIsAdding(false)
+      // Reset form
+      setAmount('')
+      setStatus('pending')
+      setNotes('')
+      setPaidDate('')
+    }
+  }
+
+  const startEdit = (invoice: Invoice) => {
+    setEditingInvoiceId(invoice.id)
+    setAmount(invoice.amount)
+    setStatus(invoice.status)
+    setIssueDate(invoice.issue_date)
+    setPaidDate(invoice.paid_date || '')
+    setNotes(invoice.notes || '')
+    setIsAdding(false) // chiudi pannello add se aperto
+  }
+
+  const handleEditSave = async () => {
+    if (!editingInvoiceId || !amount) {
+      toast.error('Inserisci un importo valido')
+      return
+    }
+
+    const { error } = await supabase.from('invoices').update({
+      amount: Number(amount),
+      status,
+      issue_date: issueDate,
+      paid_date: status === 'paid' ? (paidDate || issueDate) : null,
+      notes: notes || null
+    }).eq('id', editingInvoiceId)
+
+    if (error) {
+      console.error(error)
+      toast.error(`Errore: ${error.message}`)
+    } else {
+      toast.success('Aggiornato con successo')
+      setEditingInvoiceId(null)
+      fetchInvoices()
       // Reset form
       setAmount('')
       setStatus('pending')
@@ -140,16 +180,24 @@ export function ProjectInvoices({ project }: { project: Project }) {
       {/* Header and Add Button */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ fontSize: '1.1rem', fontWeight: 600 }}>Registro Incassi & Fatture</h3>
-        {!isAdding && (
-          <Button variant="secondary" onClick={() => setIsAdding(true)}>
+        {!isAdding && !editingInvoiceId && (
+          <Button variant="secondary" onClick={() => {
+            setIsAdding(true)
+            setAmount('')
+            setStatus('pending')
+            setIssueDate(new Date().toISOString().split('T')[0])
+            setPaidDate('')
+            setNotes('')
+          }}>
             <Plus size={16} /> Nuovo Incasso
           </Button>
         )}
       </div>
 
-      {/* Add Form */}
-      {isAdding && (
+      {/* Form Condiviso (Aggiunta / Modifica) */}
+      {(isAdding || editingInvoiceId) && (
         <div style={{ background: 'var(--color-bg-secondary)', padding: '1.5rem', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '1rem', border: '1px solid var(--color-border)' }}>
+          <h4 style={{ margin: 0, fontSize: '1rem' }}>{editingInvoiceId ? 'Modifica Registrazione' : 'Nuova Registrazione'}</h4>
           <div style={{ display: 'flex', gap: '1rem' }}>
             <div style={{ flex: 1 }}>
               <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Importo (€)</label>
@@ -210,8 +258,13 @@ export function ProjectInvoices({ project }: { project: Project }) {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.5rem' }}>
-            <Button variant="ghost" onClick={() => setIsAdding(false)}>Annulla</Button>
-            <Button variant="primary" onClick={handleAdd}>Salva Registrazione</Button>
+            <Button variant="ghost" onClick={() => {
+              setIsAdding(false)
+              setEditingInvoiceId(null)
+            }}>Annulla</Button>
+            <Button variant="primary" onClick={editingInvoiceId ? handleEditSave : handleAdd}>
+              {editingInvoiceId ? 'Salva Modifiche' : 'Salva Registrazione'}
+            </Button>
           </div>
         </div>
       )}
@@ -268,10 +321,20 @@ export function ProjectInvoices({ project }: { project: Project }) {
                   </span>
                 )}
                 <button 
-                  onClick={() => handleDelete(invoice.id)}
-                  style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer', opacity: 0.5, transition: 'opacity 0.2s' }}
+                  onClick={() => startEdit(invoice)}
+                  style={{ background: 'none', border: 'none', color: 'var(--color-text)', cursor: 'pointer', opacity: 0.5, transition: 'opacity 0.2s', padding: '0.25rem' }}
                   onMouseEnter={e => e.currentTarget.style.opacity = '1'}
                   onMouseLeave={e => e.currentTarget.style.opacity = '0.5'}
+                  title="Modifica"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                </button>
+                <button 
+                  onClick={() => handleDelete(invoice.id)}
+                  style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer', opacity: 0.5, transition: 'opacity 0.2s', padding: '0.25rem' }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+                  onMouseLeave={e => e.currentTarget.style.opacity = '0.5'}
+                  title="Elimina"
                 >
                   <Trash2 size={16} />
                 </button>

@@ -11,6 +11,7 @@ import styles from '@/app/Dashboard.module.css'
 import { CashFlowChart } from './CashFlowChart'
 import { ActivityChart } from './ActivityChart'
 import { SalesChart } from './SalesChart'
+import { Modal } from '@/components/ui/Modal'
 
 interface DashboardBentoProps {
   metrics: {
@@ -63,11 +64,13 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
   const [activeTab, setActiveTab] = useState<TabType>('cash')
 
   const tabs: { id: TabType, label: string }[] = [
+    { id: 'cash', label: 'Cassa' },
     { id: 'overview', label: 'Panoramica' },
     { id: 'sales', label: 'Vendite' },
-    { id: 'cash', label: 'Cassa' },
     { id: 'projects', label: 'Progetti' }
   ];
+
+  const [isBacklogModalOpen, setIsBacklogModalOpen] = useState(false)
 
   // --- REUSABLE WIDGETS ---
 
@@ -205,7 +208,8 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
     })
     .filter(p => p.remaining > 0)
     .sort((a, b) => b.remaining - a.remaining)
-    .slice(0, 5)
+    
+  const unbilledProjectsListTop5 = allUnbilledProjects.slice(0, 5)
 
   const DaIncassareCard = (
       <motion.div key="daincassare" variants={itemVariants} className={`bento-card bento-orange ${styles.bentoWide}`} style={{ gridRow: 'span 2' }}>
@@ -225,7 +229,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
               
               {/* Colonna Sinistra: Fatture Scoperte */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-warning)', display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-warning)', display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
                   <span>Fatture Scoperte (Crediti)</span>
                   <span>€ {metrics.fattureScoperteValue.toLocaleString('it-IT')}</span>
                 </div>
@@ -251,12 +255,13 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
 
               {/* Colonna Destra: Da Fatturare */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text)', display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-text)', display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
                   <span>Da Fatturare (Backlog)</span>
                   <span>€ {metrics.daFatturareValue.toLocaleString('it-IT')}</span>
                 </div>
-                {unbilledProjectsList.length > 0 ? (
-                  unbilledProjectsList.map((p, idx) => (
+                {unbilledProjectsListTop5.length > 0 ? (
+                  <>
+                    {unbilledProjectsListTop5.map((p, idx) => (
                     <Link href={`/projects?project=${p.id}`} key={p.id} className={styles.listItem}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -266,7 +271,13 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
                         <span style={{ fontWeight: 600 }}>€ {p.remaining.toLocaleString('it-IT')}</span>
                       </div>
                     </Link>
-                  ))
+                    ))}
+                    {allUnbilledProjects.length > 5 && (
+                      <button onClick={() => setIsBacklogModalOpen(true)} style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: '12px', textAlign: 'center', marginTop: '1rem', cursor: 'pointer' }}>
+                        Vedi tutti i progetti &rarr;
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Nessun backlog da fatturare.</span>
                 )}
@@ -503,6 +514,22 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
 
   return (
     <>
+      <Modal isOpen={isBacklogModalOpen} onClose={() => setIsBacklogModalOpen(false)} title="Da Fatturare (Backlog Completo)">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '60vh', overflowY: 'auto' }}>
+          {allUnbilledProjects.map((p, idx) => (
+            <Link href={`/projects?project=${p.id}`} key={p.id} className={styles.listItem} onClick={() => setIsBacklogModalOpen(false)}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className={styles.itemTitle}>{p.title}</span>
+                  <span className={styles.itemMeta}>{p.companies?.name || 'Cliente Sconosciuto'}</span>
+                </div>
+                <span style={{ fontWeight: 600 }}>€ {Number(p.remaining).toLocaleString('it-IT')}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </Modal>
+
       <div className={styles.tabsContainer} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           {tabs.map((tab) => (
