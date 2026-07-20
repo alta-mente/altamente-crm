@@ -152,20 +152,20 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
 
-  const CompetenzaCard = (
-      <motion.div key="comp" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoSmall}`} style={{ border: '1px solid rgba(168, 85, 247, 0.2)' }}>
+  const PrevisioniCassaCard = (
+      <motion.div key="previsioni" variants={itemVariants} className={`bento-card bento-primary ${styles.bentoSmall}`} style={{ border: '2px solid rgba(255, 255, 255, 0.2)', boxShadow: '0 4px 20px rgba(59, 130, 246, 0.3)' }}>
         <div className={styles.cardContent}>
           <div className={styles.cardTop}>
-            <span className={styles.cardLabel} title="Competenza Economica: Totale Fatturato (emesso)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
-              Competenza (Fatturato) <Info size={12} opacity={0.6}/>
+            <span className={styles.cardLabel} title="Previsione Cassa: Totale Cassa + Da Incassare" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help', fontWeight: 700 }}>
+              Previsioni Cassa <Info size={12} opacity={0.9}/>
             </span>
-            <TrendingUp size={16} className={styles.cardIcon} style={{ color: '#a855f7' }}/>
+            <TrendingUp size={16} className={styles.cardIcon} />
           </div>
           <div>
-            <div className={styles.cardValue}>
-              <CountUp end={metrics.competenzaValue} duration={2} separator="." decimal="," prefix="€ " />
+            <div className={styles.cardValue} style={{ fontSize: '1.8rem', fontWeight: 800 }}>
+              <CountUp end={metrics.cassaValue + metrics.daIncassare} duration={2} separator="." decimal="," prefix="€ " />
             </div>
-            <div className={styles.cardSub}>Valore generato / Emesso</div>
+            <div className={styles.cardSub} style={{ fontWeight: 600, opacity: 0.9 }}>Attualizzate anno in corso</div>
           </div>
         </div>
       </motion.div>
@@ -477,7 +477,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           GoalsCard,
           MRRCard,
           ARRCard,
-          CompetenzaCard,
+          PrevisioniCassaCard,
           CassaCard,
           ActivityChartCard
         ]
@@ -493,7 +493,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       case 'cash':
         return [
           CassaCard,
-          CompetenzaCard,
+          PrevisioniCassaCard,
           DaIncassareCard,
           MRRCard,
           ARRCard,
