@@ -259,26 +259,41 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
             ) : rate > 0 ? (
               <>
                 <div className={styles.statLabel}>
-                  <Euro size={16} /> Da Saldare (Fatturato)
+                  <Activity size={16} /> Lavorazioni in Corso (da fatturare)
                 </div>
-                <div className={styles.statValue} style={{ color: totalPendingAmount > 0 ? 'var(--color-warning)' : 'var(--color-success)' }}>
-                  € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <div className={styles.statValue} style={{ color: totalActiveMinutes > 0 ? 'var(--color-text)' : 'var(--color-success)' }}>
+                  € {((totalActiveMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
+                
                 {totalActiveMinutes > 0 && (
-                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
-                    + € {((totalActiveMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2 })} per {formatTime(totalActiveMinutes)} di nuove lavorazioni in corso non ancora fatturate.
+                  <div style={{ marginTop: '0.25rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1rem', color: 'var(--color-text-muted)' }}>
+                    Pari a {formatTime(totalActiveMinutes)} di attività tracciate.
                   </div>
                 )}
+                
+                {totalPendingAmount > 0 && (
+                  <div style={{ padding: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(234, 179, 8, 0.2)', marginTop: totalActiveMinutes === 0 ? '0.5rem' : '0', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--color-warning)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Euro size={14} /> Da Saldare (Fatturato)
+                    </div>
+                    <div style={{ fontSize: '1.1rem', color: 'var(--color-warning)', fontWeight: 700 }}>
+                      € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                  </div>
+                )}
+
                 {totalDiscountAmount > 0 && (
                   <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
                     Abbuoni applicati: - € {totalDiscountAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                   </div>
                 )}
+
                 {totalPendingAmount === 0 && totalActiveMinutes === 0 && (
                   <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-success)' }}>
-                    Stato pagamenti regolare.
+                    Stato pagamenti e lavorazioni regolare.
                   </div>
                 )}
+
                 {(totalActiveMinutes > 0 || totalPendingAmount > 0) && (
                   <RequestInvoiceButton 
                     projectId={project.id}
