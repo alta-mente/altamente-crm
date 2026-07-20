@@ -121,12 +121,27 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
             </div>
             <h1>{project.title}</h1>
             <p style={{ fontSize: '1.2rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem' }}>{project.companies?.name || ''}</p>
-            <p>
+            <p style={{ marginBottom: totalPendingAmount > 0 ? '1rem' : 0 }}>
               <CalendarDays size={18} /> 
               Aggiornato al {new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             
-
+            {totalPendingAmount > 0 && rate > 0 && (
+              <div style={{ padding: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(234, 179, 8, 0.2)', display: 'inline-block', minWidth: '250px' }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--color-warning)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Euro size={14} /> Da Saldare (Fatturato)
+                </div>
+                <div style={{ fontSize: '1.2rem', color: 'var(--color-warning)', fontWeight: 700, marginTop: '0.25rem' }}>
+                  € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+                {pendingInvoices.some((i: any) => i.notes) && (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--color-warning)', opacity: 0.9, marginTop: '0.25rem' }}>
+                    {pendingInvoices.map((inv: any) => inv.notes).filter(Boolean).join(', ')}
+                  </div>
+                )}
+              </div>
+            )}
+            
           </div>
           
           {/* Stat Block */}
@@ -270,40 +285,19 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                     Pari a {formatTime(totalActiveMinutes)} di attività tracciate.
                   </div>
                 )}
-                
-                {totalPendingAmount > 0 && (
-                  <div style={{ padding: '0.75rem', background: 'rgba(234, 179, 8, 0.1)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(234, 179, 8, 0.2)', marginTop: totalActiveMinutes === 0 ? '0.5rem' : '0', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: '0.9rem', color: 'var(--color-warning)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Euro size={14} /> Da Saldare (Fatturato)
-                    </div>
-                    <div style={{ fontSize: '1.1rem', color: 'var(--color-warning)', fontWeight: 700 }}>
-                      € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </div>
-                  </div>
-                )}
-
-                {totalDiscountAmount > 0 && (
-                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
-                    Abbuoni applicati: - € {totalDiscountAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                  </div>
-                )}
-
-                {totalPendingAmount === 0 && totalActiveMinutes === 0 && (
-                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-success)' }}>
-                    Stato pagamenti e lavorazioni regolare.
-                  </div>
-                )}
 
                 {(totalActiveMinutes > 0 || totalPendingAmount > 0) && (
-                  <RequestInvoiceButton 
-                    projectId={project.id}
-                    projectName={project.title} 
-                    companyName={project.companies?.name || 'Azienda non specificata'} 
-                    totalAmount={((totalActiveMinutes / 60) * rate) + totalPendingAmount}
-                    reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
-                    logoUrl={settings?.logo_url || undefined}
-                    clientEmail={project.companies?.contact_email || undefined}
-                  />
+                  <div style={{ marginBottom: '1.5rem', marginTop: totalActiveMinutes === 0 ? '0.5rem' : '0' }}>
+                    <RequestInvoiceButton 
+                      projectId={project.id}
+                      projectName={project.title} 
+                      companyName={project.companies?.name || 'Azienda non specificata'} 
+                      totalAmount={((totalActiveMinutes / 60) * rate)}
+                      reportUrl={`${process.env.NEXT_PUBLIC_APP_URL || 'https://altamente-crm.vercel.app'}/report/${project.report_token}`}
+                      logoUrl={settings?.logo_url || undefined}
+                      clientEmail={project.companies?.contact_email || undefined}
+                    />
+                  </div>
                 )}
               </>
             ) : (
@@ -362,49 +356,6 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* Pending Invoices Section (Non-Retainer) */}
-        {(!project.billing_type?.startsWith('retainer')) && pendingInvoices.length > 0 && (
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>
-              <div className={`${styles.iconWrapper} ${styles.active}`} style={{ background: 'var(--color-warning)', color: '#fff' }}>
-                <Euro size={24} />
-              </div>
-              Da Saldare / Fatturato
-            </div>
-            
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Data Emissione</th>
-                  <th>Descrizione</th>
-                  <th className={styles.right}>Importo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pendingInvoices.map((inv: any) => (
-                  <tr key={inv.id}>
-                    <td className={styles.date}>
-                      {new Date(inv.issue_date).toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' })}
-                    </td>
-                    <td>{inv.notes || 'Fattura / Addebito'}</td>
-                    <td className={styles.right} style={{ fontWeight: 600 }}>
-                      € {Number(inv.amount).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                    </td>
-                  </tr>
-                ))}
-                <tr className={styles.totalRow}>
-                  <td colSpan={2} className={`${styles.right} ${styles.totalLabel}`}>
-                    Totale Fatturato da Saldare
-                  </td>
-                  <td className={`${styles.right} ${styles.totalValue}`} style={{ color: 'var(--color-warning)' }}>
-                    € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div>
