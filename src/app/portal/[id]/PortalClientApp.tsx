@@ -140,14 +140,23 @@ export function PortalClientApp({
         
         {project.pendingAmount > 0 && (
           <div className={styles.statRow}>
-            <span>Da Saldare</span>
+            <span>Fatture Scoperte</span>
             <span style={{ color: 'var(--color-warning)' }}>
               € {project.pendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
             </span>
           </div>
         )}
 
-        {project.pendingAmount === 0 && !project.billing_type?.startsWith('retainer') && project.prepaid_minutes === 0 && (
+        {project.unbilledValue > 0 && (
+          <div className={styles.statRow}>
+            <span>Lavorazioni (da fatturare)</span>
+            <span style={{ color: 'var(--color-text-muted)' }}>
+              € {project.unbilledValue.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+            </span>
+          </div>
+        )}
+
+        {project.pendingAmount === 0 && project.unbilledValue === 0 && !project.billing_type?.startsWith('retainer') && project.prepaid_minutes === 0 && (
           <div className={styles.statRow}>
             <span>Stato Pagamenti</span>
             <span style={{ color: 'var(--color-success)' }}>Regolare</span>

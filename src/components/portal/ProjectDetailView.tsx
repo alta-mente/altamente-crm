@@ -247,14 +247,21 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
             ) : rate > 0 ? (
               <>
                 <div className={styles.statLabel}>
-                  <Euro size={16} /> Totale Maturato
+                  <Euro size={16} /> Da Saldare (Fatturato)
                 </div>
-                <div className={styles.statValue}>
-                  € {(((totalActiveMinutes / 60) * rate) + totalPendingAmount).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <div className={styles.statValue} style={{ color: totalPendingAmount > 0 ? 'var(--color-warning)' : 'var(--color-success)' }}>
+                  € {totalPendingAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
-                <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem' }}>
-                  {formatTime(totalActiveMinutes)} ore in attesa {totalPendingAmount > 0 ? ` + canoni` : ''}
-                </div>
+                {totalActiveMinutes > 0 && (
+                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
+                    + € {((totalActiveMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2 })} per {formatTime(totalActiveMinutes)} di nuove lavorazioni in corso non ancora fatturate.
+                  </div>
+                )}
+                {totalPendingAmount === 0 && totalActiveMinutes === 0 && (
+                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-success)' }}>
+                    Stato pagamenti regolare.
+                  </div>
+                )}
                 {(totalActiveMinutes > 0 || totalPendingAmount > 0) && (
                   <RequestInvoiceButton 
                     projectId={project.id}

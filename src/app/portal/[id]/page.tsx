@@ -76,16 +76,18 @@ export default async function PublicPortalPage({
     const rate = project.hourly_rate || 0
     
     // For non-retainer projects with time tracking, add the unbilled hours value to pending amount
+    // For non-retainer projects with time tracking, do not automatically add unbilled hours to pending amount.
+    // The client only "owes" what has been invoiced.
     let projectTotalPending = pendingAmount
-    if (project.billing_type !== 'retainer_monthly' && rate > 0 && prepaidMin === 0) {
-      projectTotalPending += (totalActiveMinutes / 60) * rate
-    }
 
     if (project.billing_type !== 'retainer_monthly' && project.time_tracking_enabled === false && project.billing_amount > 0) {
       const paidInvoices = (project.invoices || []).filter((i: any) => i.status === 'paid')
       const totalPaidAmount = paidInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
       projectTotalPending = Math.max(0, project.billing_amount - totalPaidAmount)
     }
+
+    // Unbilled value (for display only)
+    const unbilledValue = (project.billing_type !== 'retainer_monthly' && rate > 0 && prepaidMin === 0) ? (totalActiveMinutes / 60) * rate : 0;
 
     // Accumulate global
     globalPendingAmount += projectTotalPending
@@ -99,6 +101,7 @@ export default async function PublicPortalPage({
     return {
       ...project,
       pendingAmount: projectTotalPending,
+      unbilledValue,
       remainingMin,
       totalActiveMinutes,
       activeHoursCount: activeHours.length
