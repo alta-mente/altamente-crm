@@ -379,7 +379,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
         )}
 
         {/* Paid Invoices Section (Non-Retainer) */}
-        {(!project.billing_type?.startsWith('retainer')) && paidInvoices.length > 0 && (
+        {(!project.billing_type?.startsWith('retainer')) && project.time_tracking_enabled === false && paidInvoices.length > 0 && (
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               <div className={`${styles.iconWrapper}`} style={{ background: 'var(--color-success)', color: '#fff' }}>
