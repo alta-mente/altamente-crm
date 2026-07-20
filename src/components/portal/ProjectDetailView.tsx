@@ -18,7 +18,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
   const totalPendingAmount = pendingInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
   const totalPaidAmount = paidInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
 
-  const allHours = project.company_hours || []
+  const allHours = project.company_hours ? [...project.company_hours].sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()) : []
   const activeHours = allHours.filter((h: any) => !h.billed)
   const archivedHours = allHours.filter((h: any) => h.billed)
 
@@ -452,11 +452,11 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
               ) : (
                 activeHours.map((row: any) => (
                   <tr key={row.id}>
-                    <td className={styles.date}>
+                    <td className={styles.date} style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
                       {new Date(row.date).toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' })}
                     </td>
-                    <td>{row.description}</td>
-                    <td className={styles.right}>
+                    <td style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>{row.description}</td>
+                    <td className={styles.right} style={{ padding: '0.5rem 0', fontSize: '0.9rem' }}>
                       {formatTime(row.minutes)}
                     </td>
                   </tr>
@@ -532,11 +532,11 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                         <tbody>
                           {data.hours.map((row: any) => (
                             <tr key={row.id}>
-                              <td className={styles.date}>
-                                {new Date(row.date).toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })}
+                              <td className={styles.date} style={{ padding: '0.4rem 0', fontSize: '0.9rem' }}>
+                                {new Date(row.date).toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' })}
                               </td>
-                              <td>{row.description}</td>
-                              <td className={styles.right} style={{ color: 'var(--color-text-muted)' }}>
+                              <td style={{ padding: '0.4rem 0', fontSize: '0.9rem' }}>{row.description}</td>
+                              <td className={styles.right} style={{ color: 'var(--color-text-muted)', padding: '0.4rem 0', fontSize: '0.9rem' }}>
                                 {formatTime(row.minutes)}
                               </td>
                             </tr>
