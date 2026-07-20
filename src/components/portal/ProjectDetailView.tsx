@@ -499,6 +499,9 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
 
                 const batchInvoiceId = data.hours.find((h: any) => h.invoice_id)?.invoice_id
                 const batchInvoice = batchInvoiceId ? allInvoices.find((i: any) => i.id === batchInvoiceId) : null
+                
+                const batchCost = rate > 0 ? (data.totalMinutes / 60) * rate : 0
+                const isPartiallyPaid = batchInvoice && batchInvoice.status === 'paid' && batchCost > 0 && batchInvoice.amount < (batchCost - 1)
 
                 return (
                   <details key={batchId} className={styles.accordion}>
@@ -517,12 +520,12 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                             padding: '2px 8px',
                             fontSize: '11px',
                             borderRadius: '12px',
-                            background: batchInvoice.status === 'paid' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)',
-                            color: batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)',
+                            background: isPartiallyPaid ? 'rgba(234, 179, 8, 0.15)' : batchInvoice.status === 'paid' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+                            color: isPartiallyPaid ? 'var(--color-warning)' : batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)',
                             fontWeight: 600,
-                            border: `1px solid ${batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)'}`
+                            border: `1px solid ${isPartiallyPaid ? 'var(--color-warning)' : batchInvoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-warning)'}`
                           }}>
-                            {batchInvoice.status === 'paid' ? 'Pagato' : 'Da Saldare'}
+                            {isPartiallyPaid ? 'Saldo Parziale' : batchInvoice.status === 'paid' ? 'Pagato' : 'Da Saldare'}
                           </span>
                         )}
                       </div>
