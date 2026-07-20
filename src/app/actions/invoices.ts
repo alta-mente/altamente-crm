@@ -37,15 +37,8 @@ export async function processInvoiceRequestAction({
 
     const hourIds = unbilledHours?.map(h => h.id) || []
     
-    // 2. Mark hours as billed
-    if (hourIds.length > 0) {
-      const { error: updateHoursError } = await supabase
-        .from('company_hours')
-        .update({ billed: true })
-        .in('id', hourIds)
-
-      if (updateHoursError) throw updateHoursError
-    }
+    // 2. We'll update the hours AFTER creating the invoice so we can link it
+    // Wait, let's just get the hourIds for now.
 
     // 3. Find pending invoices
     const { data: pendingInvoices, error: pendingError } = await supabase
@@ -70,15 +63,34 @@ export async function processInvoiceRequestAction({
       const pendingTotal = pendingDetails?.reduce((sum, inv) => sum + Number(inv.amount), 0) || 0
       const hoursAmount = totalAmount - pendingTotal
       
+      let invoiceId = null;
       if (hoursAmount > 0) {
-        await supabase.from('invoices').insert({
+        const { data: invData, error: invErr } = await supabase.from('invoices').insert({
           project_id: projectId,
           amount: hoursAmount,
           status: 'pending',
           notes: 'Consuntivo Ore Extra (Richiesta dal Cliente)',
           issue_date: new Date().toISOString().split('T')[0]
-        })
+        }).select('id').single()
+        
+        if (!invErr && invData) {
+          invoiceId = invData.id;
+        }
       }
+      
+      const now = new Date();
+      const batchId = now.toISOString().replace(/[-:T]/g, '').slice(0, 14);
+      
+      const { error: updateHoursError } = await supabase
+        .from('company_hours')
+        .update({ 
+          billed: true, 
+          batch_id: batchId,
+          ...(invoiceId ? { invoice_id: invoiceId } : {})
+        })
+        .in('id', hourIds)
+
+      if (updateHoursError) throw updateHoursError
     }
 
     // 5. Update pending invoices status if needed (we can skip if they are already pending)
