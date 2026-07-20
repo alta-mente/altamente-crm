@@ -177,11 +177,17 @@ export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, o
     }
 
     try {
+      let res;
       if (unarchiveAll && batchId) {
-        await unarchiveBatch(batchId, project.id)
+        res = await unarchiveBatch(batchId, project.id)
       } else {
-        await unarchiveCompanyHourRow(id, project.id)
+        res = await unarchiveCompanyHourRow(id, project.id)
       }
+      
+      if (res && !res.success) {
+        throw new Error(res.error || 'Errore sconosciuto dal server');
+      }
+
       if (onHoursUpdated) onHoursUpdated()
     } catch (err: any) {
       alert('Errore durante de-archiviazione: ' + (err.message || String(err)))

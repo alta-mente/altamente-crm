@@ -207,11 +207,12 @@ export async function unarchiveCompanyHourRow(id: string, projectId: string) {
     .eq('id', id);
 
   if (error) {
-    throw new Error(error.message);
+    return { success: false, error: error.message };
   }
 
   revalidatePath('/time-tracking');
   revalidatePath(`/time-tracking/${projectId}`);
+  return { success: true };
 }
 
 export async function unarchiveBatch(batchId: string, projectId: string) {
@@ -224,11 +225,12 @@ export async function unarchiveBatch(batchId: string, projectId: string) {
     .eq('project_id', projectId);
 
   if (error) {
-    throw new Error(error.message);
+    return { success: false, error: error.message };
   }
 
   revalidatePath('/time-tracking');
   revalidatePath(`/time-tracking/${projectId}`);
+  return { success: true };
 }
 
 export async function generateReportToken(projectId: string) {
