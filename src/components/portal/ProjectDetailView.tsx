@@ -501,7 +501,7 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                 const batchInvoice = batchInvoiceId ? allInvoices.find((i: any) => i.id === batchInvoiceId) : null
                 
                 const batchCost = rate > 0 ? (data.totalMinutes / 60) * rate : 0
-                const isPartiallyPaid = batchInvoice && batchInvoice.status === 'paid' && batchCost > 0 && batchInvoice.amount < (batchCost - 1)
+                const isPartiallyPaid = batchInvoice && batchInvoice.status === 'paid' && batchCost > 0 && Number(batchInvoice.amount) < (batchCost - 1)
 
                 return (
                   <details key={batchId} className={styles.accordion}>
