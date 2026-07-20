@@ -203,8 +203,25 @@ export async function unarchiveCompanyHourRow(id: string, projectId: string) {
   
   const { error } = await supabase
     .from('company_hours')
-    .update({ billed: false, batch_id: '' })
+    .update({ billed: false, batch_id: null, invoice_id: null })
     .eq('id', id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/time-tracking');
+  revalidatePath(`/time-tracking/${projectId}`);
+}
+
+export async function unarchiveBatch(batchId: string, projectId: string) {
+  const supabase = await createClient();
+  
+  const { error } = await supabase
+    .from('company_hours')
+    .update({ billed: false, batch_id: null, invoice_id: null })
+    .eq('batch_id', batchId)
+    .eq('project_id', projectId);
 
   if (error) {
     throw new Error(error.message);

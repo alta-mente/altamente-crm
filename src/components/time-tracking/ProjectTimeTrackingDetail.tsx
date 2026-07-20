@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ArrowLeft, Download, FileText, Send, Archive, Trash2, Edit2, Undo2, Clock, LayoutDashboard } from 'lucide-react'
-import { addCompanyHours, editCompanyHours, deleteCompanyHours, archiveCompanyHours, unarchiveCompanyHourRow, generateReportToken, notifyClientAboutReport } from '@/app/actions/time-tracking'
+import { addCompanyHours, editCompanyHours, deleteCompanyHours, archiveCompanyHours, unarchiveCompanyHourRow, unarchiveBatch, generateReportToken, notifyClientAboutReport } from '@/app/actions/time-tracking'
 import styles from './TimeTrackingDetail.module.css'
 
 interface Project {
@@ -163,15 +163,32 @@ export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, o
     }
   }
 
-  const handleUnarchive = async (id: string) => {
-    if (!confirm('Riportare questa singola riga tra le ore aperte?')) return
+  const handleUnarchive = async (id: string, batchId?: string | null) => {
+    let unarchiveAll = false;
+    if (batchId) {
+      const choice = window.prompt('Vuoi de-archiviare SOLO questa riga (scrivi "1") o l\'INTERO blocco (scrivi "2")?', '1');
+      if (choice === '2') {
+        unarchiveAll = true;
+      } else if (choice !== '1') {
+        return; // Annulla
+      }
+    } else {
+      if (!confirm('Riportare questa singola riga tra le ore aperte?')) return
+    }
+
     try {
-      await unarchiveCompanyHourRow(id, project.id)
+      if (unarchiveAll && batchId) {
+        await unarchiveBatch(batchId, project.id)
+      } else {
+        await unarchiveCompanyHourRow(id, project.id)
+      }
       if (onHoursUpdated) onHoursUpdated()
     } catch (err) {
       alert('Errore durante de-archiviazione')
     }
   }
+
+
 
   const handleGenerateReportUrl = async () => {
     try {
@@ -309,7 +326,7 @@ export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, o
                     <td>
                       {isArchived && (
                         <span 
-                          onClick={() => handleUnarchive(row.id)}
+                          onClick={() => handleUnarchive(row.id, row.batch_id)}
                           className={styles.badge}
                           style={{
                             background: row.invoices?.status === 'paid' ? 'rgba(0,255,0,0.1)' : 'rgba(255,150,0,0.1)',

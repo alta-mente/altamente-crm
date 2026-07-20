@@ -64,7 +64,15 @@ export default async function PublicPortalPage({
   const displayProjects = (projects || []).map(project => {
     // Invoices
     const pendingInvoices = (project.invoices || []).filter((i: any) => i.status === 'pending' || i.status === 'late')
-    const pendingAmount = pendingInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
+    let pendingAmount = pendingInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
+    
+    const discountInvoices = (project.invoices || []).filter((i: any) => i.status === 'discount')
+    const discountAmount = discountInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
+    
+    // Subtract discounts from pending amount if it's not a fixed-price project (fixed-price handles it below)
+    if (project.billing_type === 'retainer_monthly' || project.time_tracking_enabled !== false) {
+      pendingAmount = Math.max(0, pendingAmount - discountAmount)
+    }
     
     // Hours
     const activeHours = (project.company_hours || []).filter((h: any) => !h.billed)
@@ -83,7 +91,7 @@ export default async function PublicPortalPage({
     if (project.billing_type !== 'retainer_monthly' && project.time_tracking_enabled === false && project.billing_amount > 0) {
       const paidInvoices = (project.invoices || []).filter((i: any) => i.status === 'paid')
       const totalPaidAmount = paidInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
-      projectTotalPending = Math.max(0, project.billing_amount - totalPaidAmount)
+      projectTotalPending = Math.max(0, project.billing_amount - totalPaidAmount - discountAmount)
     }
 
     // Unbilled value (for display only)
@@ -101,6 +109,7 @@ export default async function PublicPortalPage({
     return {
       ...project,
       pendingAmount: projectTotalPending,
+      discountAmount,
       unbilledValue,
       remainingMin,
       totalActiveMinutes,

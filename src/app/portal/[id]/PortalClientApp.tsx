@@ -147,6 +147,15 @@ export function PortalClientApp({
           </div>
         )}
 
+        {project.discountAmount > 0 && (
+          <div className={styles.statRow}>
+            <span>Abbuoni Applicati</span>
+            <span style={{ color: 'var(--color-text-muted)' }}>
+              - € {project.discountAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+            </span>
+          </div>
+        )}
+
         {project.unbilledValue > 0 && (
           <div className={styles.statRow}>
             <span>Lavorazioni (da fatturare)</span>

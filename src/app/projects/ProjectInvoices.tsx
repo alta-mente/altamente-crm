@@ -156,7 +156,8 @@ export function ProjectInvoices({ project }: { project: Project }) {
 
   const totalAmount = project.billing_amount || 0
   const paidAmount = invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.amount, 0)
-  const remainingAmount = totalAmount - paidAmount
+  const discountAmount = invoices.filter(i => i.status === 'discount').reduce((sum, i) => sum + i.amount, 0)
+  const remainingAmount = totalAmount - paidAmount - discountAmount
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -175,6 +176,12 @@ export function ProjectInvoices({ project }: { project: Project }) {
           <span style={{ fontSize: '0.8rem', color: 'var(--color-warning)' }}>Rimanenza</span>
           <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-warning)' }}>{formatter.format(remainingAmount)}</span>
         </div>
+        {discountAmount > 0 && (
+          <div style={{ background: 'rgba(128, 128, 128, 0.05)', border: '1px solid rgba(128, 128, 128, 0.1)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Abbuoni</span>
+            <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>{formatter.format(discountAmount)}</span>
+          </div>
+        )}
       </div>
       
       {/* Header and Add Button */}
@@ -219,6 +226,7 @@ export function ProjectInvoices({ project }: { project: Project }) {
                 <option value="pending">Da Incassare / Fatturata</option>
                 <option value="paid">Pagato / Incassato</option>
                 <option value="late">In Ritardo</option>
+                <option value="discount">Abbuono / Sconto</option>
               </select>
             </div>
           </div>
@@ -283,10 +291,10 @@ export function ProjectInvoices({ project }: { project: Project }) {
                 <button 
                   onClick={() => handleToggleStatus(invoice)}
                   style={{ 
-                    background: invoice.status === 'paid' ? 'rgba(0,255,0,0.1)' : 'var(--color-bg-primary)', 
-                    border: `1px solid ${invoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-border)'}`, 
+                    background: invoice.status === 'paid' ? 'rgba(0,255,0,0.1)' : invoice.status === 'discount' ? 'rgba(128,128,128,0.1)' : 'var(--color-bg-primary)', 
+                    border: `1px solid ${invoice.status === 'paid' ? 'var(--color-success)' : invoice.status === 'discount' ? 'var(--color-text-muted)' : 'var(--color-border)'}`, 
                     cursor: 'pointer', 
-                    color: invoice.status === 'paid' ? 'var(--color-success)' : 'var(--color-text)',
+                    color: invoice.status === 'paid' ? 'var(--color-success)' : invoice.status === 'discount' ? 'var(--color-text-muted)' : 'var(--color-text)',
                     padding: '0.5rem 0.75rem',
                     borderRadius: '8px',
                     display: 'flex',
@@ -300,6 +308,8 @@ export function ProjectInvoices({ project }: { project: Project }) {
                 >
                   {invoice.status === 'paid' ? (
                     <><CheckCircle2 size={16} /> Pagato</>
+                  ) : invoice.status === 'discount' ? (
+                    <><CheckCircle2 size={16} color="var(--color-text-muted)" /> Abbuono</>
                   ) : (
                     <><Clock size={16} color="var(--color-text-muted)" /> Segna Pagato</>
                   )}

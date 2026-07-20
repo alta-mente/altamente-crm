@@ -15,8 +15,14 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
   const allInvoices = project.invoices || []
   const pendingInvoices = allInvoices.filter((i: any) => i.status === 'pending' || i.status === 'late')
   const paidInvoices = allInvoices.filter((i: any) => i.status === 'paid')
-  const totalPendingAmount = pendingInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
+  const discountInvoices = allInvoices.filter((i: any) => i.status === 'discount')
+  let totalPendingAmount = pendingInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
   const totalPaidAmount = paidInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
+  const totalDiscountAmount = discountInvoices.reduce((sum: number, inv: any) => sum + Number(inv.amount), 0)
+
+  if (project.billing_type === 'retainer_monthly' || project.time_tracking_enabled !== false) {
+    totalPendingAmount = Math.max(0, totalPendingAmount - totalDiscountAmount)
+  }
 
   const allHours = project.company_hours ? [...project.company_hours].sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()) : []
   const activeHours = allHours.filter((h: any) => !h.billed)
@@ -199,6 +205,12 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                         </div>
                       </div>
                     )}
+                    
+                    {totalDiscountAmount > 0 && (
+                      <div style={{ marginTop: '0.5rem', marginBottom: '1.5rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                        Abbuoni applicati: - € {totalDiscountAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                      </div>
+                    )}
 
                     {unInvoicedAmount > 0 && (
                       <div style={{ marginTop: totalPendingAmount > 0 ? '0.5rem' : '1.5rem', marginBottom: '1.5rem' }}>
@@ -255,6 +267,11 @@ export function ProjectDetailView({ project, settings, onBack }: ProjectDetailVi
                 {totalActiveMinutes > 0 && (
                   <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
                     + € {((totalActiveMinutes / 60) * rate).toLocaleString('it-IT', { minimumFractionDigits: 2 })} per {formatTime(totalActiveMinutes)} di nuove lavorazioni in corso non ancora fatturate.
+                  </div>
+                )}
+                {totalDiscountAmount > 0 && (
+                  <div style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: 'var(--font-size-sm)', marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
+                    Abbuoni applicati: - € {totalDiscountAmount.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
                   </div>
                 )}
                 {totalPendingAmount === 0 && totalActiveMinutes === 0 && (
