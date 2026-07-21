@@ -411,6 +411,11 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
 
               {activeTab === 'admin' && (
                 <>
+                  <div className={styles.section} style={{ marginBottom: '2rem', paddingBottom: '2rem', borderBottom: '1px solid var(--color-border)' }}>
+                    <h3 className={styles.sectionTitle} style={{ borderBottom: 'none' }}>Fatture & Incassi</h3>
+                    <ProjectInvoices project={project} />
+                  </div>
+
                   <div className={styles.section}>
                     <h3 className={styles.sectionTitle}>Amministrazione</h3>
                     <div className={styles.detailRow}>
@@ -624,11 +629,6 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                         />
                       </div>
                     </div>
-                  </div>
-
-                  <div className={styles.section} style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--color-border)' }}>
-                    <h3 className={styles.sectionTitle} style={{ borderBottom: 'none' }}>Fatture & Incassi</h3>
-                    <ProjectInvoices project={project} />
                   </div>
                 </>
               )}
