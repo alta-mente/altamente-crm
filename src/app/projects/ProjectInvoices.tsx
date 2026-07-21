@@ -164,18 +164,22 @@ export function ProjectInvoices({ project }: { project: Project }) {
       
       {/* Financial Summary */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Valore Progetto</span>
-          <span style={{ fontSize: '1.25rem', fontWeight: 600 }}>{formatter.format(totalAmount)}</span>
-        </div>
+        {totalAmount > 0 && (
+          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Valore Progetto</span>
+            <span style={{ fontSize: '1.25rem', fontWeight: 600 }}>{formatter.format(totalAmount)}</span>
+          </div>
+        )}
         <div style={{ background: 'rgba(0, 255, 0, 0.05)', border: '1px solid rgba(0, 255, 0, 0.1)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           <span style={{ fontSize: '0.8rem', color: 'var(--color-success)' }}>Incassato</span>
           <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-success)' }}>{formatter.format(paidAmount)}</span>
         </div>
-        <div style={{ background: 'rgba(255, 150, 0, 0.05)', border: '1px solid rgba(255, 150, 0, 0.1)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--color-warning)' }}>Rimanenza</span>
-          <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-warning)' }}>{formatter.format(remainingAmount)}</span>
-        </div>
+        {totalAmount > 0 && (
+          <div style={{ background: 'rgba(255, 150, 0, 0.05)', border: '1px solid rgba(255, 150, 0, 0.1)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-warning)' }}>Rimanenza</span>
+            <span style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-warning)' }}>{formatter.format(remainingAmount)}</span>
+          </div>
+        )}
         {discountAmount > 0 && (
           <div style={{ background: 'rgba(128, 128, 128, 0.05)', border: '1px solid rgba(128, 128, 128, 0.1)', borderRadius: 'var(--radius-md)', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Abbuoni</span>
