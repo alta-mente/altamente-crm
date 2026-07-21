@@ -26,7 +26,7 @@ interface ProjectDrawerProps {
 }
 
 export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDrawerProps) {
-  const [activeTab, setActiveTab] = useState<'diary' | 'description' | 'admin' | 'links' | 'deal' | 'invoices' | 'time_tracking'>('diary')
+  const [activeTab, setActiveTab] = useState<'overview' | 'diary' | 'admin' | 'time_tracking'>('overview')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
   const [formData, setFormData] = useState<any>({})
@@ -44,7 +44,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
     if (isOpen) {
       document.body.style.overflow = 'hidden'
       fetchOptions()
-      setActiveTab('diary') // Reset tab on open
+      setActiveTab('overview') // Reset tab on open
     } else {
       document.body.style.overflow = 'unset'
     }
@@ -232,49 +232,37 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
             <div className={styles.content}>
               
               <div className={styles.tabs}>
-                <button 
-                  className={`${styles.tab} ${activeTab === 'diary' ? styles.activeTab : ''}`}
-                  onClick={() => setActiveTab('diary')}
-                >
-                  Diario (Timeline)
-                </button>
-                <button 
-                  className={`${styles.tab} ${activeTab === 'description' ? styles.activeTab : ''}`}
-                  onClick={() => setActiveTab('description')}
-                >
-                  Descrizione
-                </button>
-                <button 
-                  className={`${styles.tab} ${activeTab === 'admin' ? styles.activeTab : ''}`}
-                  onClick={() => setActiveTab('admin')}
-                >
-                  Dettagli & Amministrazione
-                </button>
-                <button 
-                  className={`${styles.tab} ${activeTab === 'links' ? styles.activeTab : ''}`}
-                  onClick={() => setActiveTab('links')}
-                >
-                  Risorse & Link
-                </button>
-                <button 
-                  className={`${styles.tab} ${activeTab === 'deal' ? styles.activeTab : ''}`}
-                  onClick={() => setActiveTab('deal')}
-                >
-                  Storico Deal Originario
-                </button>
-                <button 
-                  className={`${styles.tab} ${activeTab === 'invoices' ? styles.activeTab : ''}`}
-                  onClick={() => setActiveTab('invoices')}
-                >
-                  Fatture & Incassi
-                </button>
+                {[
+                  { id: 'overview', label: 'Panoramica', icon: <BookOpen size={16} /> },
+                  { id: 'diary', label: 'Diario (Timeline)', icon: <CalendarIcon size={16} /> },
+                  { id: 'admin', label: 'Amministrazione', icon: <Euro size={16} /> }
+                ].map((tab) => (
+                  <button 
+                    key={tab.id}
+                    className={`${styles.tab} ${activeTab === tab.id ? styles.activeTab : ''}`}
+                    onClick={() => setActiveTab(tab.id as any)}
+                  >
+                    {activeTab === tab.id && (
+                      <motion.div layoutId="projectActiveTab" className={styles.activeTabBackground} />
+                    )}
+                    <span style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                      {tab.icon} {tab.label}
+                    </span>
+                  </button>
+                ))}
+                
                 {formData.time_tracking_enabled && (
                   <button 
                     className={`${styles.tab} ${activeTab === 'time_tracking' ? styles.activeTab : ''}`}
                     onClick={() => setActiveTab('time_tracking')}
-                    style={{ color: 'var(--color-primary)', fontWeight: 600 }}
+                    style={activeTab === 'time_tracking' ? {} : { color: 'var(--color-primary)', fontWeight: 600 }}
                   >
-                    Ore & Consuntivi
+                    {activeTab === 'time_tracking' && (
+                      <motion.div layoutId="projectActiveTab" className={styles.activeTabBackground} />
+                    )}
+                    <span style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <Clock size={16} /> Ore & Consuntivi
+                    </span>
                   </button>
                 )}
               </div>
@@ -290,19 +278,94 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                 </div>
               )}
 
-              {activeTab === 'description' && (
-                <div className={styles.section} style={{ flex: 1, borderBottom: 'none' }}>
-                  <h3 className={styles.sectionTitle} style={{ borderBottom: 'none', paddingBottom: 0 }}>Descrizione del Progetto</h3>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
-                    Aggiungi note, dettagli o la descrizione specifica per questo progetto.
-                  </p>
-                  <ReactQuill 
-                    theme="snow"
-                    value={formData.description || ''}
-                    onChange={(val) => setFormData({...formData, description: val})}
-                    style={{ height: '300px', marginBottom: '3rem' }}
-                  />
-                </div>
+              {activeTab === 'overview' && (
+                <>
+                  <div className={styles.section} style={{ borderBottom: 'none' }}>
+                    <h3 className={styles.sectionTitle} style={{ borderBottom: 'none', paddingBottom: 0 }}>Descrizione del Progetto</h3>
+                    <ReactQuill 
+                      theme="snow"
+                      value={formData.description || ''}
+                      onChange={(val) => setFormData({...formData, description: val})}
+                      style={{ height: '300px', marginBottom: '3rem' }}
+                    />
+                  </div>
+
+                  <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Risorse e Link</h3>
+                    <div className={styles.detailRow}>
+                      <LinkIcon size={16} className={styles.detailIcon} />
+                      <div className={styles.detailText} style={{ width: '100%' }}>
+                        <span className={styles.detailLabel}>Google Drive</span>
+                        <input 
+                          className={styles.editInput}
+                          value={formData.drive_url}
+                          onChange={e => setFormData({...formData, drive_url: e.target.value})}
+                          placeholder="https://drive.google.com/..."
+                        />
+                        {formData.drive_url && <a href={formData.drive_url} target="_blank" rel="noopener noreferrer" style={{color: 'var(--color-primary)', fontSize: '0.8rem', marginTop: '0.25rem'}}>Apri Link ↗</a>}
+                      </div>
+                    </div>
+
+                    <div className={styles.detailRow}>
+                      <div className={styles.detailIcon} style={{ display: 'flex', justifyContent: 'center', width: '16px' }}>F</div>
+                      <div className={styles.detailText} style={{ width: '100%' }}>
+                        <span className={styles.detailLabel}>Figma</span>
+                        <input 
+                          className={styles.editInput}
+                          value={formData.figma_url}
+                          onChange={e => setFormData({...formData, figma_url: e.target.value})}
+                          placeholder="https://figma.com/..."
+                        />
+                        {formData.figma_url && <a href={formData.figma_url} target="_blank" rel="noopener noreferrer" style={{color: 'var(--color-primary)', fontSize: '0.8rem', marginTop: '0.25rem'}}>Apri Link ↗</a>}
+                      </div>
+                    </div>
+
+                    <div className={styles.detailRow}>
+                      <Code size={16} className={styles.detailIcon} />
+                      <div className={styles.detailText} style={{ width: '100%' }}>
+                        <span className={styles.detailLabel}>Repository (GitHub/Vercel)</span>
+                        <input 
+                          className={styles.editInput}
+                          value={formData.github_url}
+                          onChange={e => setFormData({...formData, github_url: e.target.value})}
+                          placeholder="https://github.com/..."
+                        />
+                        {formData.github_url && <a href={formData.github_url} target="_blank" rel="noopener noreferrer" style={{color: 'var(--color-primary)', fontSize: '0.8rem', marginTop: '0.25rem'}}>Apri Link ↗</a>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {!associatedDeal ? (
+                    <div className={styles.section} style={{ flex: 1, borderBottom: 'none' }}>
+                      <h3 className={styles.sectionTitle}>Storico Deal</h3>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Non c'è nessun Deal associato a questo progetto.</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className={styles.section}>
+                        <h3 className={styles.sectionTitle}>Lettera di Preventivo</h3>
+                        <div className={styles.descriptionText}>
+                          {associatedDeal.quote_description ? (
+                            <div dangerouslySetInnerHTML={{ __html: associatedDeal.quote_description }} className={styles.quillContent} />
+                          ) : (
+                            <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Nessun preventivo associato al deal.</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className={styles.section}>
+                        <h3 className={styles.sectionTitle}>Note Esecutive / Briefing originario</h3>
+                        <div className={styles.descriptionText}>
+                          {associatedDeal.description ? (
+                            <div dangerouslySetInnerHTML={{ __html: associatedDeal.description }} className={styles.quillContent} />
+                          ) : (
+                            <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Nessuna nota originaria.</span>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
               )}
 
               {activeTab === 'admin' && (
@@ -561,96 +624,12 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                       </div>
                     </div>
                   </div>
+
+                  <div className={styles.section} style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--color-border)' }}>
+                    <h3 className={styles.sectionTitle} style={{ borderBottom: 'none' }}>Fatture & Incassi</h3>
+                    <ProjectInvoices project={project} />
+                  </div>
                 </>
-              )}
-
-              {activeTab === 'links' && (
-                <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Risorse e Link</h3>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>Salva qui i link di accesso rapidi agli asset del progetto.</p>
-                  
-                  <div className={styles.detailRow}>
-                    <LinkIcon size={16} className={styles.detailIcon} />
-                    <div className={styles.detailText} style={{ width: '100%' }}>
-                      <span className={styles.detailLabel}>Google Drive</span>
-                      <input 
-                        className={styles.editInput}
-                        value={formData.drive_url}
-                        onChange={e => setFormData({...formData, drive_url: e.target.value})}
-                        placeholder="https://drive.google.com/..."
-                      />
-                      {formData.drive_url && <a href={formData.drive_url} target="_blank" rel="noopener noreferrer" style={{color: 'var(--color-primary)', fontSize: '0.8rem', marginTop: '0.25rem'}}>Apri Link ↗</a>}
-                    </div>
-                  </div>
-
-                  <div className={styles.detailRow}>
-                    <div className={styles.detailIcon} style={{ display: 'flex', justifyContent: 'center', width: '16px' }}>F</div>
-                    <div className={styles.detailText} style={{ width: '100%' }}>
-                      <span className={styles.detailLabel}>Figma</span>
-                      <input 
-                        className={styles.editInput}
-                        value={formData.figma_url}
-                        onChange={e => setFormData({...formData, figma_url: e.target.value})}
-                        placeholder="https://figma.com/..."
-                      />
-                      {formData.figma_url && <a href={formData.figma_url} target="_blank" rel="noopener noreferrer" style={{color: 'var(--color-primary)', fontSize: '0.8rem', marginTop: '0.25rem'}}>Apri Link ↗</a>}
-                    </div>
-                  </div>
-
-                  <div className={styles.detailRow}>
-                    <Code size={16} className={styles.detailIcon} />
-                    <div className={styles.detailText} style={{ width: '100%' }}>
-                      <span className={styles.detailLabel}>Repository (GitHub/Vercel)</span>
-                      <input 
-                        className={styles.editInput}
-                        value={formData.github_url}
-                        onChange={e => setFormData({...formData, github_url: e.target.value})}
-                        placeholder="https://github.com/..."
-                      />
-                      {formData.github_url && <a href={formData.github_url} target="_blank" rel="noopener noreferrer" style={{color: 'var(--color-primary)', fontSize: '0.8rem', marginTop: '0.25rem'}}>Apri Link ↗</a>}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'deal' && (
-                <>
-                  {!associatedDeal ? (
-                    <div className={styles.section} style={{ flex: 1, borderBottom: 'none' }}>
-                       <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Non c'è nessun Deal associato a questo progetto.</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className={styles.section}>
-                        <h3 className={styles.sectionTitle}>Lettera di Preventivo</h3>
-                        <div className={styles.descriptionText}>
-                          {associatedDeal.quote_description ? (
-                            <div dangerouslySetInnerHTML={{ __html: associatedDeal.quote_description }} className={styles.quillContent} />
-                          ) : (
-                            <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Nessun preventivo associato al deal.</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className={styles.section}>
-                        <h3 className={styles.sectionTitle}>Note Esecutive / Briefing originario</h3>
-                        <div className={styles.descriptionText}>
-                          {associatedDeal.description ? (
-                            <div dangerouslySetInnerHTML={{ __html: associatedDeal.description }} className={styles.quillContent} />
-                          ) : (
-                            <span style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>Nessuna nota originaria.</span>
-                          )}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-
-              {activeTab === 'invoices' && (
-                <div className={styles.section} style={{ flex: 1, borderBottom: 'none' }}>
-                  <ProjectInvoices project={project} />
-                </div>
               )}
 
               {activeTab === 'time_tracking' && (
