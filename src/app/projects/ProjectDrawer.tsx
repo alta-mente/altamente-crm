@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Building, BookOpen, Euro, Calendar as CalendarIcon, Trash2, Link as LinkIcon, FileText, Code } from 'lucide-react'
+import { X, Building, BookOpen, Euro, Calendar as CalendarIcon, Trash2, Link as LinkIcon, FileText, Code, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
