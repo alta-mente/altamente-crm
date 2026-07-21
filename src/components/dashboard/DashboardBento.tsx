@@ -4,7 +4,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import CountUp from 'react-countup'
-import { TrendingUp, Briefcase, Award, Calendar, Clock, Info } from 'lucide-react'
+import { TrendingUp, Briefcase, Award, Calendar, Clock, Info, Target } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import styles from '@/app/Dashboard.module.css'
@@ -428,6 +428,25 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       </motion.div>
   )
   
+  const DealsCard = (
+      <motion.div key="deals" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoSmall}`}>
+        <div className={styles.cardContent}>
+          <div className={styles.cardTop}>
+            <span className={styles.cardLabel} title="Opportunità commerciali aperte (Deals attivi)" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'help' }}>
+              Deal Attivi <Info size={12} opacity={0.6}/>
+            </span>
+            <Target size={16} className={styles.cardIcon}/>
+          </div>
+          <div>
+            <div className={styles.cardValue}>
+              <CountUp end={metrics.activeDealsCount} duration={2} separator="." />
+            </div>
+            <div className={styles.cardSub}>Clienti totali: {metrics.companiesCount}</div>
+          </div>
+        </div>
+      </motion.div>
+  )
+
   const ActivityChartCard = (
       <motion.div key="activity-chart" variants={itemVariants} className={`bento-card bento-dark ${styles.bentoFull}`} style={{ padding: 0 }}>
         <div className={styles.cardTop} style={{ padding: '1.5rem 1.5rem 0' }}>
@@ -474,11 +493,10 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
       case 'overview':
         return [
           HeroCard,
+          PrevisioniCassaCard,
+          AgendaCard,
           GoalsCard,
           MRRCard,
-          ARRCard,
-          PrevisioniCassaCard,
-          CassaCard,
           ActivityChartCard
         ]
       case 'sales':
@@ -486,6 +504,7 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           HeroCard,
           PipelineCard,
           VendutoCard,
+          GoalsCard,
           MRRCard,
           ARRCard,
           SalesChartCard
@@ -495,16 +514,15 @@ export function DashboardBento({ metrics, appointments, invoices, projectsAll, s
           CassaCard,
           PrevisioniCassaCard,
           DaIncassareCard,
-          MRRCard,
-          ARRCard,
+          OreCard,
           CashChartCard
         ]
       case 'projects':
         return [
           HeroCard,
           OreCard,
-          MRRCard,
-          ARRCard,
+          AgendaCard,
+          DealsCard,
           ActivityChartCard
         ]
       default:
