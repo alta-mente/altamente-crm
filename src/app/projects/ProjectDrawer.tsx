@@ -222,6 +222,47 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                       {phases.filter(p => p.project_type_id === formData.type_id).map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
                     </select>
                   </div>
+
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginLeft: 'auto' }}>
+                    {project?.company_id && (
+                      <Button
+                        variant="secondary"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.open(`/portal/${project.company_id}`, '_blank');
+                        }}
+                        style={{ padding: '4px 10px', fontSize: '0.75rem', whiteSpace: 'nowrap', borderRadius: 'var(--radius-full)' }}
+                        title="Visualizza la Dashboard Aziendale del cliente"
+                      >
+                        <LayoutDashboard size={14} style={{ marginRight: '4px' }} /> Area Cliente
+                      </Button>
+                    )}
+                    <Button
+                      variant="secondary"
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        try {
+                          const token = project?.report_token || await generateReportToken(project!.id);
+                          window.open(`/report/${token}`, '_blank');
+                        } catch (err) {
+                          alert('Errore durante la generazione del link report');
+                        }
+                      }}
+                      style={{ padding: '4px 10px', fontSize: '0.75rem', whiteSpace: 'nowrap', borderRadius: 'var(--radius-full)' }}
+                      title="Visualizza il Report Pubblico di questo singolo progetto"
+                    >
+                      <FileText size={14} style={{ marginRight: '4px' }} /> Report
+                    </Button>
+                    <Button 
+                      variant="secondary" 
+                      onClick={handleSendReportNow} 
+                      disabled={isSendingEmail} 
+                      style={{ padding: '4px 10px', fontSize: '0.75rem', whiteSpace: 'nowrap', borderRadius: 'var(--radius-full)' }}
+                      title="Invia subito il report aggiornato via email"
+                    >
+                      <Send size={14} style={{ marginRight: '4px' }} /> {isSendingEmail ? 'Invio...' : 'Invia al Cliente'}
+                    </Button>
+                  </div>
                 </div>
               </div>
               <button className={styles.closeBtn} onClick={onClose}>
@@ -468,46 +509,6 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                             />
                             <span className={styles.detailLabel} style={{ marginBottom: 0 }}>Invia sempre report mensile via email (anche senza ore a consuntivo / canoni da fatturare)</span>
                           </label>
-                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                            {project?.company_id && (
-                              <Button
-                                variant="secondary"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  window.open(`/portal/${project.company_id}`, '_blank');
-                                }}
-                                style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
-                                title="Visualizza la Dashboard Aziendale del cliente"
-                              >
-                                <LayoutDashboard size={14} style={{ marginRight: '4px' }} /> Area Cliente
-                              </Button>
-                            )}
-                            <Button
-                              variant="secondary"
-                              onClick={async (e) => {
-                                e.preventDefault();
-                                try {
-                                  const token = project?.report_token || await generateReportToken(project!.id);
-                                  window.open(`/report/${token}`, '_blank');
-                                } catch (err) {
-                                  alert('Errore durante la generazione del link report');
-                                }
-                              }}
-                              style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
-                              title="Visualizza il Report Pubblico di questo singolo progetto"
-                            >
-                              <FileText size={14} style={{ marginRight: '4px' }} /> Report Progetto
-                            </Button>
-                            <Button 
-                              variant="primary" 
-                              onClick={handleSendReportNow} 
-                              disabled={isSendingEmail} 
-                              style={{ padding: '4px 8px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
-                              title="Invia subito il report aggiornato via email"
-                            >
-                              <Send size={14} style={{ marginRight: '4px' }} /> {isSendingEmail ? 'Invio...' : 'Invia Ora'}
-                            </Button>
-                          </div>
                         </div>
                       </div>
                     </div>
