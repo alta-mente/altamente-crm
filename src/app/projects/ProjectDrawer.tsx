@@ -26,7 +26,7 @@ interface ProjectDrawerProps {
 }
 
 export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDrawerProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'diary' | 'admin' | 'time_tracking'>('overview')
+  const [activeTab, setActiveTab] = useState<'admin' | 'overview' | 'time_tracking' | 'diary'>('admin')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
   const [formData, setFormData] = useState<any>({})
@@ -224,6 +224,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                   </div>
 
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginLeft: 'auto' }}>
+                    <div style={{ width: '1px', height: '20px', backgroundColor: 'var(--color-border)', margin: '0 0.25rem' }} />
                     {project?.company_id && (
                       <Button
                         variant="secondary"
@@ -274,9 +275,9 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
               
               <div className={styles.tabs}>
                 {[
+                  { id: 'admin', label: 'Amministrazione', icon: <Euro size={16} /> },
                   { id: 'overview', label: 'Panoramica', icon: <BookOpen size={16} /> },
-                  { id: 'diary', label: 'Diario (Timeline)', icon: <CalendarIcon size={16} /> },
-                  { id: 'admin', label: 'Amministrazione', icon: <Euro size={16} /> }
+                  { id: 'diary', label: 'Diario (Timeline)', icon: <CalendarIcon size={16} /> }
                 ].map((tab) => (
                   <button 
                     key={tab.id}

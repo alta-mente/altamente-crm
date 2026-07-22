@@ -239,17 +239,6 @@ export function ProjectTimeTrackingDetail({ project, initialHours, isEmbedded, o
         <div className={styles.cardHeader}>
           <h2 className={styles.cardTitle}>{project.title} {!isEmbedded && <span style={{fontWeight: 'normal', color: 'var(--color-text-muted)'}}>({project.companies?.name || 'Senza Azienda'})</span>}</h2>
           <div className={styles.headerButtons}>
-            {project.company_id && (
-              <Button onClick={() => window.open(`/portal/${project.company_id}`, '_blank')} title="Apri la Dashboard Aziendale">
-                <LayoutDashboard size={16} style={{ marginRight: '8px' }} /> Dashboard
-              </Button>
-            )}
-            <Button onClick={handleGenerateReportUrl} title="Genera Link Report Pubblico">
-              <FileText size={16} style={{ marginRight: '8px' }} /> Visualizza Report
-            </Button>
-            <Button onClick={handleSendReportEmail} disabled={isSendingEmail} title="Invia Report al Cliente via Email" variant="primary">
-              <Send size={16} style={{ marginRight: '8px' }} /> Invia Email
-            </Button>
             <Link href={`/api/export-hours?pid=${project.id}`}>
               <Button title="Scarica CSV delle ore non archiviate">
                 <Download size={16} style={{ marginRight: '8px' }} /> CSV
