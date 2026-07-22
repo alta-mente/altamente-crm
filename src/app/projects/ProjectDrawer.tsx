@@ -441,7 +441,7 @@ export function ProjectDrawer({ isOpen, onClose, project, onSaved }: ProjectDraw
                             style={{ width: '120px' }}
                           />
                         </div>
-                        {formData.billing_type.startsWith('retainer') && (
+                        {formData.billing_type?.startsWith('retainer') && (
                           <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                             <span className={styles.detailLabel} style={{ fontSize: '0.75rem' }}>Data di Partenza Retainer</span>
                             <input 
